@@ -132,7 +132,12 @@ final class Entry
             $w[] = 'e.is_demo = 1';
         }
         if (isset($f['q']) && trim((string) $f['q']) !== '') {
-            foreach (array_slice(explode(' ', search_normalize((string) $f['q'])), 0, 6) as $term) {
+            $normalized = search_normalize((string) $f['q']);
+            if ($normalized === '') {
+                // Solo símbolos: no hay nada que buscar.
+                $w[] = '1 = 0';
+            }
+            foreach (array_slice(explode(' ', $normalized), 0, 6) as $term) {
                 if ($term === '') {
                     continue;
                 }

@@ -62,6 +62,9 @@ final class Geo
 
     public static function search(string $q, int $limit = 8): array
     {
+        if (search_normalize($q) === '') {
+            return [];
+        }
         $term = '%' . like_escape(search_normalize($q)) . '%';
         $deps = DB::all("SELECT 'department' AS type, id, name, slug, NULL AS department_slug, NULL AS department_name FROM departments WHERE search_name LIKE ? ESCAPE '!' ORDER BY name LIMIT $limit", [$term]);
         $muns = DB::all("SELECT 'municipality' AS type, m.id, m.name, m.slug, d.slug AS department_slug, d.name AS department_name FROM municipalities m JOIN departments d ON d.id = m.department_id

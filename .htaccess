@@ -1,0 +1,20 @@
+# Si el servidor (por ejemplo XAMPP) apunta a la carpeta del proyecto y no a public/,
+# estas reglas envían todo a public/ y bloquean el código, la configuración y la base de datos.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(app|bin|database|storage|tests|tools)(/|$) - [F,L]
+    RewriteRule ^public/ - [L]
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<FilesMatch "^\.|\.(env|sqlite|sqlite-.*|sql|md|log|lock|json|csv|py|mjs|sh)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>

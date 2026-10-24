@@ -3,9 +3,15 @@
 Genera los archivos geográficos de la plataforma a partir de geoBoundaries (gbOpen, COL).
 
 Fuente: https://www.geoboundaries.org  (datos de OpenStreetMap, licencia ODbL 1.0)
-Pasos previos (ver tools/geo/README.md):
-  1. Descargar ADM1 y ADM2 simplificados de geoBoundaries.
-  2. Unir cada municipio con su departamento y simplificar con mapshaper.
+Pasos previos:
+  1. Descargar ADM1 y ADM2 simplificados de geoBoundaries:
+     https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/main/releaseData/gbOpen/COL/ADM1/geoBoundaries-COL-ADM1_simplified.geojson
+     (y lo mismo con ADM2).
+  2. Unir cada municipio con su departamento y simplificar con mapshaper (npm i mapshaper):
+     mapshaper -i adm2.geojson -join adm1.geojson point-method fields=shapeName,shapeISO prefix=d_ \
+       -each 'cx=this.innerX, cy=this.innerY' -o adm2_joined.geojson
+     mapshaper -i adm1.geojson -simplify 6% weighted keep-shapes -filter-fields shapeName,shapeISO -o precision=0.0001 dep_s.geojson
+     mapshaper -i adm2_joined.geojson -simplify 12% weighted keep-shapes -filter-fields shapeName,d_shapeName,cx,cy -o precision=0.0001 mun_s.geojson
 Uso:
   python3 build_geo.py dep_s.geojson mun_s.geojson <raiz_del_proyecto>
 """

@@ -67,6 +67,7 @@ final class Session
             setcookie(session_name(), '', ['expires' => time() - 3600, 'path' => $p['path'], 'secure' => $p['secure'], 'httponly' => true, 'samesite' => 'Lax']);
             session_destroy();
         }
+        self::$started = false;
     }
 
     /** Guarda un valor para la siguiente petición. */

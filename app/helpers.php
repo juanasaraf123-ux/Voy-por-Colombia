@@ -239,3 +239,28 @@ function md(?string $text): string
 {
     return App\Core\Markdown::render((string) $text);
 }
+
+/** Mensaje de error de validación de un campo (formularios del panel). */
+function field_error(string $name): string
+{
+    $errors = App\Core\Session::errors();
+    return isset($errors[$name]) ? '<p class="field-error" id="err-' . e($name) . '">' . e($errors[$name]) . '</p>' : '';
+}
+
+function has_error(string $name): bool
+{
+    return isset(App\Core\Session::errors()[$name]);
+}
+
+/** Valor del formulario: lo enviado (si hubo error) o el valor guardado. */
+function val(string $name, mixed $saved = ''): mixed
+{
+    $old = App\Core\Session::peekFlash('old');
+    return is_array($old) && array_key_exists($name, $old) ? $old[$name] : $saved;
+}
+
+/** Convierte "Y-m-d H:i:s" al formato de los campos datetime-local. */
+function dt_local(?string $value): string
+{
+    return $value ? str_replace(' ', 'T', substr($value, 0, 16)) : '';
+}

@@ -1,0 +1,28 @@
+# Voy por Colombia · reglas para Apache (la raíz pública del sitio es esta carpeta)
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Redirige a HTTPS en producción (descomenta cuando tengas certificado):
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Archivos y carpetas reales se sirven directamente; todo lo demás va al enrutador.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    <FilesMatch "\.(css|js|woff2|svg|webp|png|jpg|jpeg|gif|geojson)$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_mime.c>
+    AddType application/geo+json .geojson
+    AddType image/webp .webp
+    AddType font/woff2 .woff2
+</IfModule>
