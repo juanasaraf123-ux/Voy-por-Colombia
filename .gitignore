@@ -1,0 +1,21 @@
+# Configuración local y secretos
+.env
+
+# Base de datos local, sesiones, registros y caché
+storage/*.sqlite
+storage/*.sqlite-*
+storage/sessions/*
+storage/logs/*
+storage/cache/*
+!storage/**/.gitkeep
+
+# Archivos subidos por los administradores (se respaldan aparte)
+public/uploads/*
+!public/uploads/.htaccess
+!public/uploads/.gitkeep
+
+node_modules/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

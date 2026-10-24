@@ -1,0 +1,1 @@
+<svg class="<?= e($class ?? 'page-wave') ?>" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 64c120-30 240-46 360-40s240 34 360 40 240-14 360-30 240-18 360 0v86H0z"/></svg>

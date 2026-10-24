@@ -1,0 +1,1123 @@
+departamento_slug,nombre,slug,lat,lng
+amazonas,El Encanto,el-encanto,-2.00498,-72.73717
+amazonas,La Chorrera,la-chorrera,-0.88034,-73.13407
+amazonas,La Pedrera,la-pedrera,-1.55358,-70.03855
+amazonas,La Victoria (Pacoa),la-victoria-pacoa,-0.12732,-71.1255
+amazonas,Leticia,leticia,-3.52883,-70.08279
+amazonas,Mirití-paraná (Campoamor),miriti-parana-campoamor,-0.67527,-71.12492
+amazonas,Puerto Alegría,puerto-alegria,-0.9317,-73.74653
+amazonas,Puerto Arica,puerto-arica,-1.81541,-71.01288
+amazonas,Puerto Nariño,puerto-narino,-3.66534,-70.48611
+amazonas,Santander (Araracuara),santander-araracuara,-1.2152,-71.83039
+amazonas,Tarapacá,tarapaca,-2.33811,-69.96761
+antioquia,Abejorral,abejorral,5.8145,-75.4363
+antioquia,Abriaquí,abriaqui,6.62177,-76.09194
+antioquia,Alejandría,alejandria,6.36145,-75.10781
+antioquia,Amagá,amaga,6.02258,-75.70697
+antioquia,Amalfi,amalfi,6.98611,-74.96432
+antioquia,Andes,andes,5.62836,-75.94455
+antioquia,Angelópolis,angelopolis,6.11558,-75.71673
+antioquia,Angostura,angostura,6.86336,-75.33761
+antioquia,Anorí,anori,7.15378,-75.14081
+antioquia,Anzá,anza,6.29659,-75.91092
+antioquia,Apartadó,apartado,7.86805,-76.58364
+antioquia,Arboletes,arboletes,8.58915,-76.42581
+antioquia,Argelia,argelia,5.71122,-75.11262
+antioquia,Armenia,armenia,6.15621,-75.80592
+antioquia,Barbosa,barbosa,6.4497,-75.31963
+antioquia,Bello,bello,6.35683,-75.58864
+antioquia,Belmira,belmira,6.69834,-75.66864
+antioquia,Betania,betania,5.73382,-75.98688
+antioquia,Betulia,betulia,6.17041,-75.95661
+antioquia,Briceño,briceno,7.1155,-75.56408
+antioquia,Buriticá,buritica,6.80532,-75.91729
+antioquia,Caicedo,caicedo,6.42468,-75.99216
+antioquia,Caldas,caldas,6.05262,-75.62754
+antioquia,Campamento,campamento,7.00937,-75.27461
+antioquia,Caracolí,caracoli,6.33009,-74.73354
+antioquia,Caramanta,caramanta,5.5527,-75.63086
+antioquia,Carepa,carepa,7.76533,-76.70175
+antioquia,Carolina,carolina,6.75465,-75.30589
+antioquia,Caucasia,caucasia,7.89579,-75.05368
+antioquia,Cañasgordas,canasgordas,6.8324,-76.04045
+antioquia,Chigorodó,chigorodo,7.62364,-76.6256
+antioquia,Cisneros,cisneros,6.55481,-75.07463
+antioquia,Ciudad Bolívar,ciudad-bolivar,5.83648,-76.01832
+antioquia,Cocorná,cocorna,6.02176,-75.15853
+antioquia,Concepción,concepcion,6.37746,-75.21183
+antioquia,Concordia,concordia,6.07509,-75.90829
+antioquia,Copacabana,copacabana,6.33871,-75.49658
+antioquia,Cáceres,caceres,7.66816,-75.22756
+antioquia,Dabeiba,dabeiba,7.01263,-76.37397
+antioquia,Don Matías,don-matias,6.48532,-75.41419
+antioquia,Ebéjico,ebejico,6.32889,-75.78189
+antioquia,El Bagre,el-bagre,7.76534,-74.64707
+antioquia,El Carmen de Viboral,el-carmen-de-viboral,5.96809,-75.24048
+antioquia,Entrerrios,entrerrios,6.5931,-75.56073
+antioquia,Envigado,envigado,6.14776,-75.56435
+antioquia,Fredonia,fredonia,5.88278,-75.68046
+antioquia,Frontino,frontino,6.67977,-76.3358
+antioquia,Giraldo,giraldo,6.6671,-75.95358
+antioquia,Girardota,girardota,6.37243,-75.44249
+antioquia,Granada,granada,6.12766,-75.12626
+antioquia,Guadalupe,guadalupe,6.86553,-75.22007
+antioquia,Guarne,guarne,6.26843,-75.43841
+antioquia,Guatapé,guatape,6.23289,-75.16245
+antioquia,Gómez Plata,gomez-plata,6.7125,-75.19122
+antioquia,Heliconia,heliconia,6.21921,-75.73832
+antioquia,Hispania,hispania,5.79322,-75.90321
+antioquia,Itagüí,itagui,6.1798,-75.61466
+antioquia,Ituango,ituango,7.25559,-75.74055
+antioquia,Jardín,jardin,5.5746,-75.81973
+antioquia,Jericó,jerico,5.77696,-75.76625
+antioquia,La Ceja,la-ceja,5.97262,-75.44936
+antioquia,La Estrella,la-estrella,6.13784,-75.65331
+antioquia,La Pintada,la-pintada,5.75738,-75.59668
+antioquia,La Unión,la-union,5.93344,-75.36236
+antioquia,Liborina,liborina,6.7262,-75.78295
+antioquia,Maceo,maceo,6.53906,-74.691
+antioquia,Marinilla,marinilla,6.18944,-75.29409
+antioquia,Medellín,medellin,6.25492,-75.62576
+antioquia,Montebello,montebello,5.91446,-75.51607
+antioquia,Murindó,murindo,6.83457,-76.68426
+antioquia,Mutatá,mutata,7.32638,-76.46277
+antioquia,Nariño,narino,5.58713,-75.18713
+antioquia,Nechí,nechi,8.02272,-74.72468
+antioquia,Necoclí,necocli,8.50634,-76.6771
+antioquia,Olaya,olaya,6.62757,-75.78018
+antioquia,Peque,peque,7.0399,-75.90528
+antioquia,Peñol,penol,6.2346,-75.22762
+antioquia,Pueblorrico,pueblorrico,5.79154,-75.84685
+antioquia,Puerto Berrío,puerto-berrio,6.47034,-74.52574
+antioquia,Puerto Nare,puerto-nare,6.12622,-74.70619
+antioquia,Puerto Triunfo,puerto-triunfo,5.94271,-74.67428
+antioquia,Remedios,remedios,7.04136,-74.52826
+antioquia,Retiro,retiro,6.0559,-75.51435
+antioquia,Rionegro,rionegro,6.15372,-75.41211
+antioquia,Sabanalarga,sabanalarga,6.90566,-75.78552
+antioquia,Sabaneta,sabaneta,6.14227,-75.61255
+antioquia,Salgar,salgar,5.97877,-76.00017
+antioquia,San Andrès,san-andres,6.93462,-75.64852
+antioquia,San Carlos,san-carlos,6.17852,-74.91026
+antioquia,San Francisco,san-francisco,5.86555,-74.96668
+antioquia,San Jerónimo,san-jeronimo,6.43537,-75.70867
+antioquia,San José de la Montaña,san-jose-de-la-montana,6.82156,-75.67887
+antioquia,San Juan de Urabá,san-juan-de-uraba,8.70678,-76.54082
+antioquia,San Luis,san-luis,6.02143,-74.99926
+antioquia,San Pedro,san-pedro,6.46095,-75.54492
+antioquia,San Pedro de Uraba,san-pedro-de-uraba,8.38761,-76.3166
+antioquia,San Rafael,san-rafael,6.31184,-75.00107
+antioquia,San Roque,san-roque,6.4652,-74.95904
+antioquia,San Vicente,san-vicente,6.30903,-75.32911
+antioquia,Santa Bárbara,santa-barbara,5.85649,-75.57808
+antioquia,Santa Fe de Antioquia,santa-fe-de-antioquia,6.53808,-75.90191
+antioquia,Santa Rosa de Osos,santa-rosa-de-osos,6.67802,-75.43826
+antioquia,Santo Domingo,santo-domingo,6.48711,-75.16113
+antioquia,Santuario,santuario,6.13023,-75.25925
+antioquia,Segovia,segovia,7.26823,-74.60126
+antioquia,Sonsón,sonson,5.82082,-75.09179
+antioquia,Sopetrán,sopetran,6.53866,-75.71455
+antioquia,Tarazá,taraza,7.4829,-75.4233
+antioquia,Tarso,tarso,5.86647,-75.83002
+antioquia,Titiribí,titiribi,6.05505,-75.80098
+antioquia,Toledo,toledo,7.03076,-75.71284
+antioquia,Turbo,turbo,8.15373,-76.57629
+antioquia,Támesis,tamesis,5.6707,-75.71542
+antioquia,Uramita,uramita,6.90753,-76.15435
+antioquia,Urrao,urrao,6.36203,-76.28873
+antioquia,Valdivia,valdivia,7.29509,-75.37776
+antioquia,Valparaíso,valparaiso,5.63604,-75.62298
+antioquia,Vegachí,vegachi,6.83823,-74.75402
+antioquia,Venecia,venecia,5.95877,-75.78433
+antioquia,Vigia del Fuerte,vigia-del-fuerte,6.44409,-76.65497
+antioquia,Yali,yali,6.72379,-74.7521
+antioquia,Yarumal,yarumal,6.98554,-75.43689
+antioquia,Yolombó,yolombo,6.6664,-75.0357
+antioquia,Yondó (Casabe),yondo-casabe,6.92746,-74.15364
+antioquia,Zaragoza,zaragoza,7.50405,-74.85808
+arauca,Arauca,arauca,6.82872,-70.69091
+arauca,Arauquita,arauquita,6.82903,-71.37342
+arauca,Cravo Norte,cravo-norte,6.3476,-69.9518
+arauca,Fortul,fortul,6.7658,-71.68356
+arauca,Puerto Rondón,puerto-rondon,6.39812,-70.96622
+arauca,Saravena,saravena,6.90907,-71.84742
+arauca,Tame,tame,6.41011,-71.80293
+atlantico,Baranoa,baranoa,10.80802,-74.92114
+atlantico,Barranquilla,barranquilla,10.97322,-74.81529
+atlantico,Campo de la Cruz,campo-de-la-cruz,10.38153,-74.89133
+atlantico,Candelaria,candelaria,10.49338,-74.87296
+atlantico,Galapa,galapa,10.89844,-74.88578
+atlantico,Juan de Acosta,juan-de-acosta,10.82765,-75.07054
+atlantico,Luruaco,luruaco,10.63413,-75.1617
+atlantico,Malambo,malambo,10.84483,-74.81337
+atlantico,Manatí,manati,10.44848,-74.98475
+atlantico,Palmar de Varela,palmar-de-varela,10.69274,-74.76537
+atlantico,Piojó,piojo,10.74494,-75.15258
+atlantico,Polonuevo,polonuevo,10.76782,-74.85499
+atlantico,Ponedera,ponedera,10.58465,-74.791
+atlantico,Puerto Colombia,puerto-colombia,11.00084,-74.91399
+atlantico,Repelón,repelon,10.50816,-75.11306
+atlantico,Sabanagrande,sabanagrande,10.80054,-74.765
+atlantico,Sabanalarga,sabanalarga,10.61632,-74.94184
+atlantico,Santa Lucía,santa-lucia,10.35443,-74.9597
+atlantico,Santo Tomás,santo-tomas,10.75133,-74.80433
+atlantico,Soledad,soledad,10.90999,-74.77822
+atlantico,Suan,suan,10.30583,-74.91318
+atlantico,Tubará,tubara,10.90681,-74.9842
+atlantico,Usiacurí,usiacuri,10.74263,-74.9778
+bogota-d-c,Bogotá D.C.,bogota-d-c,4.60447,-74.10037
+bolivar,Achí,achi,8.63001,-74.47585
+bolivar,Altos del Rosario,altos-del-rosario,8.76166,-74.19331
+bolivar,Arenal,arenal,8.36259,-74.10702
+bolivar,Arjona,arjona,10.16496,-75.35585
+bolivar,Arroyohondo,arroyohondo,10.24499,-75.00605
+bolivar,Barranco de Loba,barranco-de-loba,8.8876,-74.17871
+bolivar,Calamar,calamar,10.15363,-75.00252
+bolivar,Cantagallo,cantagallo,7.21806,-74.11376
+bolivar,Cartagena de Indias,cartagena-de-indias,10.45792,-75.45573
+bolivar,Cicuco,cicuco,9.23744,-74.69284
+bolivar,Clemencia,clemencia,10.56489,-75.32583
+bolivar,Córdoba,cordoba,9.54063,-74.89698
+bolivar,El Carmen de Bolívar,el-carmen-de-bolivar,9.66972,-75.08236
+bolivar,El Guamo,el-guamo,10.03979,-74.93076
+bolivar,El Peñon,el-penon,8.84658,-73.89932
+bolivar,Hatillo de Loba,hatillo-de-loba,8.98628,-74.07203
+bolivar,Magangué,magangue,9.30015,-74.82504
+bolivar,Mahates,mahates,10.18277,-75.18186
+bolivar,Margarita,margarita,9.04271,-74.21484
+bolivar,Maria la Baja,maria-la-baja,9.97623,-75.34116
+bolivar,Mompós,mompos,9.13043,-74.54218
+bolivar,Montecristo,montecristo,8.07407,-74.44562
+bolivar,Morales,morales,8.27905,-73.97138
+bolivar,Norosi,norosi,8.53309,-74.08941
+bolivar,Pinillos,pinillos,8.91596,-74.41583
+bolivar,Regidor,regidor,8.69915,-73.84293
+bolivar,Rioviejo,rioviejo,8.55049,-73.88785
+bolivar,San Cristóbal,san-cristobal,10.37128,-75.07376
+bolivar,San Estanislao,san-estanislao,10.35231,-75.204
+bolivar,San Fernando,san-fernando,9.07467,-74.36932
+bolivar,San Jacinto,san-jacinto,9.82337,-75.10606
+bolivar,San Jacinto del Cauca,san-jacinto-del-cauca,8.21379,-74.7399
+bolivar,San Juan Nepomuceno,san-juan-nepomuceno,9.99445,-75.12794
+bolivar,San Martín de Loba,san-martin-de-loba,8.75318,-73.99722
+bolivar,San Pablo,san-pablo,7.49883,-74.0548
+bolivar,Santa Catalina,santa-catalina,10.62359,-75.26974
+bolivar,Santa Rosa,santa-rosa,10.47597,-75.35975
+bolivar,Santa Rosa del Sur,santa-rosa-del-sur,7.79612,-74.26265
+bolivar,Simití,simiti,7.82254,-73.93229
+bolivar,Soplaviento,soplaviento,10.31406,-75.11793
+bolivar,Talaigua Nuevo,talaigua-nuevo,9.3274,-74.64787
+bolivar,Tiquiso,tiquiso,8.53231,-74.26832
+bolivar,Turbaco,turbaco,10.3541,-75.37969
+bolivar,Turbana,turbana,10.24671,-75.44407
+bolivar,Villanueva,villanueva,10.45319,-75.26628
+bolivar,Zambrano,zambrano,9.73918,-74.88248
+boyaca,Almeida,almeida,4.95311,-73.3835
+boyaca,Aquitania,aquitania,5.45423,-72.87456
+boyaca,Arcabuco,arcabuco,5.76527,-73.46615
+boyaca,Belén,belen,6.00493,-72.9073
+boyaca,Berbeo,berbeo,5.23724,-73.11946
+boyaca,Betéitiva,beteitiva,5.91419,-72.84355
+boyaca,Boavita,boavita,6.33723,-72.61526
+boyaca,Boyacá,boyaca,5.43928,-73.38148
+boyaca,Briceño,briceno,5.67658,-73.92172
+boyaca,Buenavista,buenavista,5.49147,-73.94951
+boyaca,Busbanzá,busbanza,5.84321,-72.87524
+boyaca,Caldas,caldas,5.5747,-73.88056
+boyaca,Campohermoso,campohermoso,5.00881,-73.14472
+boyaca,Cerinza,cerinza,5.96088,-72.97184
+boyaca,Chinavita,chinavita,5.19511,-73.33944
+boyaca,Chiquinquirá,chiquinquira,5.60892,-73.81151
+boyaca,Chiscas,chiscas,6.7226,-72.40267
+boyaca,Chita,chita,6.06227,-72.45061
+boyaca,Chitaraque,chitaraque,5.98633,-73.42153
+boyaca,Chivatá,chivata,5.55394,-73.27978
+boyaca,Chivor,chivor,4.86477,-73.35625
+boyaca,Chíquiza,chiquiza,5.64387,-73.45021
+boyaca,Ciénega,cienega,5.38879,-73.28576
+boyaca,Combita,combita,5.66473,-73.31327
+boyaca,Coper,coper,5.44428,-74.04778
+boyaca,Corrales,corrales,5.84712,-72.82883
+boyaca,Covarachia,covarachia,6.52204,-72.74125
+boyaca,Cubará,cubara,6.87218,-72.18576
+boyaca,Cucaita,cucaita,5.53423,-73.44666
+boyaca,Cuìtiva,cuitiva,5.58993,-72.92985
+boyaca,Duitama,duitama,5.89355,-73.0657
+boyaca,El Cocuy,el-cocuy,6.35559,-72.42074
+boyaca,El Espino,el-espino,6.51004,-72.48128
+boyaca,Firavitoba,firavitoba,5.68132,-73.00701
+boyaca,Floresta,floresta,5.85926,-72.93004
+boyaca,Gachantivá,gachantiva,5.74612,-73.54172
+boyaca,Gameza,gameza,5.79978,-72.71953
+boyaca,Garagoa,garagoa,5.09665,-73.31587
+boyaca,Guacamayas,guacamayas,6.44622,-72.51309
+boyaca,Guateque,guateque,5.01293,-73.49065
+boyaca,Guayatá,guayata,4.92904,-73.50325
+boyaca,Güicán,guican,6.56845,-72.25334
+boyaca,Iza,iza,5.61721,-72.97272
+boyaca,Jenesano,jenesano,5.38261,-73.38615
+boyaca,Jericó,jerico,6.15698,-72.59766
+boyaca,La Capilla,la-capilla,5.11437,-73.45855
+boyaca,La Uvita,la-uvita,6.26545,-72.545
+boyaca,La Victoria,la-victoria,5.50266,-74.23587
+boyaca,Labranza Grande,labranza-grande,5.52303,-72.56762
+boyaca,Macanal,macanal,4.97371,-73.29535
+boyaca,Maripí,maripi,5.56157,-74.02776
+boyaca,Miraflores,miraflores,5.15608,-73.16871
+boyaca,Mongua,mongua,5.72487,-72.66611
+boyaca,Monguí,mongui,5.6981,-72.82997
+boyaca,Moniquira,moniquira,5.86146,-73.55727
+boyaca,Motavita,motavita,5.60488,-73.3779
+boyaca,Muzo,muzo,5.51381,-74.09944
+boyaca,Nobsa,nobsa,5.77737,-72.94508
+boyaca,Nuevo Colón,nuevo-colon,5.35574,-73.44918
+boyaca,Oicata,oicata,5.61054,-73.27663
+boyaca,Otanche,otanche,5.76084,-74.21796
+boyaca,Pachavita,pachavita,5.14043,-73.40006
+boyaca,Paipa,paipa,5.76904,-73.12486
+boyaca,Pajarito,pajarito,5.37678,-72.69478
+boyaca,Panqueba,panqueba,6.44405,-72.45409
+boyaca,Pauna,pauna,5.66581,-73.99681
+boyaca,Paya,paya,5.61872,-72.3547
+boyaca,Paz de Río,paz-de-rio,6.03602,-72.76049
+boyaca,Pesca,pesca,5.49931,-73.09099
+boyaca,Pisba,pisba,5.76794,-72.43605
+boyaca,Puerto Boyacá,puerto-boyaca,5.92129,-74.44947
+boyaca,Páez,paez,5.08586,-73.00595
+boyaca,Quípama,quipama,5.5818,-74.23471
+boyaca,Ramiriquí,ramiriqui,5.30928,-73.30178
+boyaca,Rondón,rondon,5.38046,-73.18835
+boyaca,Ráquira,raquira,5.49954,-73.6305
+boyaca,Saboyá,saboya,5.70732,-73.73647
+boyaca,Samacá,samaca,5.48119,-73.49796
+boyaca,San Eduardo,san-eduardo,5.23145,-73.04531
+boyaca,San José de Pare,san-jose-de-pare,5.99577,-73.54307
+boyaca,San Luis de Gaceno,san-luis-de-gaceno,4.83686,-73.13422
+boyaca,San Mateo,san-mateo,6.39121,-72.55845
+boyaca,San Miguel de Sema,san-miguel-de-sema,5.53496,-73.75511
+boyaca,San Pablo de Borbur,san-pablo-de-borbur,5.67878,-74.11402
+boyaca,Santa María,santa-maria,4.82378,-73.27642
+boyaca,Santa Rosa de Viterbo,santa-rosa-de-viterbo,5.89724,-72.98569
+boyaca,Santa Sofía,santa-sofia,5.72746,-73.60456
+boyaca,Santana,santana,6.05877,-73.48886
+boyaca,Sativanorte,sativanorte,6.12833,-72.72875
+boyaca,Sativasur,sativasur,6.05746,-72.69674
+boyaca,Siachoque,siachoque,5.49785,-73.21173
+boyaca,Soatá,soata,6.3297,-72.69489
+boyaca,Socha,socha,5.96546,-72.68154
+boyaca,Socotá,socota,5.9198,-72.53911
+boyaca,Sogamoso,sogamoso,5.67008,-72.90983
+boyaca,Somondoco,somondoco,4.97301,-73.42944
+boyaca,Sora,sora,5.57853,-73.44365
+boyaca,Soracá,soraca,5.49639,-73.31969
+boyaca,Sotaquirá,sotaquira,5.76484,-73.27017
+boyaca,Susacón,susacon,6.21528,-72.70632
+boyaca,Sutamarchàn,sutamarchan,5.65193,-73.63114
+boyaca,Sutatenza,sutatenza,5.02156,-73.44607
+boyaca,Sáchica,sachica,5.56637,-73.53904
+boyaca,Tasco,tasco,5.88966,-72.75425
+boyaca,Tenza,tenza,5.07748,-73.41281
+boyaca,Tibana,tibana,5.30078,-73.39212
+boyaca,Tibasosa,tibasosa,5.75252,-73.01021
+boyaca,Tinjacá,tinjaca,5.57802,-73.67503
+boyaca,Tipacoque,tipacoque,6.4179,-72.6954
+boyaca,Toca,toca,5.57253,-73.15488
+boyaca,Togüí,togui,5.92331,-73.49412
+boyaca,Tota,tota,5.50887,-73.00022
+boyaca,Tunja,tunja,5.52439,-73.37807
+boyaca,Tununguá,tunungua,5.71796,-73.94951
+boyaca,Turmequé,turmeque,5.30683,-73.51191
+boyaca,Tuta,tuta,5.68496,-73.20585
+boyaca,Tutazá,tutaza,6.08101,-72.85813
+boyaca,Tópaga,topaga,5.76263,-72.83598
+boyaca,Umbita,umbita,5.20577,-73.46786
+boyaca,Ventaquemada,ventaquemada,5.38376,-73.52241
+boyaca,Villa de Leyva,villa-de-leyva,5.66476,-73.51359
+boyaca,Viracachá,viracacha,5.43693,-73.26197
+boyaca,Zetaquirá,zetaquira,5.28606,-73.16565
+caldas,Aguadas,aguadas,5.61344,-75.44047
+caldas,Anserma,anserma,5.22088,-75.75154
+caldas,Aranzazu,aranzazu,5.26224,-75.47241
+caldas,Belalcázar,belalcazar,4.99269,-75.82167
+caldas,Chinchiná,chinchina,4.96979,-75.67567
+caldas,Filadelfia,filadelfia,5.28436,-75.59119
+caldas,La Dorada,la-dorada,5.63664,-74.69822
+caldas,La Merced,la-merced,5.39286,-75.55871
+caldas,Manizales,manizales,5.08561,-75.47798
+caldas,Manzanares,manzanares,5.23141,-75.14503
+caldas,Marmato,marmato,5.49009,-75.59888
+caldas,Marquetalia,marquetalia,5.3041,-75.05515
+caldas,Marulanda,marulanda,5.24796,-75.30029
+caldas,Neira,neira,5.18065,-75.50692
+caldas,Norcasia,norcasia,5.64658,-74.82765
+caldas,Palestina,palestina,5.04057,-75.66569
+caldas,Pensilvania,pensilvania,5.41901,-75.16694
+caldas,Pácora,pacora,5.50517,-75.48439
+caldas,Riosucio,riosucio,5.46822,-75.75424
+caldas,Risaralda,risaralda,5.09488,-75.73523
+caldas,Salamina,salamina,5.36358,-75.41826
+caldas,Samana,samana,5.46664,-75.00297
+caldas,San José,san-jose,5.08672,-75.79188
+caldas,Supia,supia,5.4496,-75.64537
+caldas,Victoria,victoria,5.45811,-74.83826
+caldas,Villamaria,villamaria,4.94859,-75.42206
+caldas,Viterbo,viterbo,5.05223,-75.88476
+caqueta,Albania,albania,1.23116,-75.89043
+caqueta,Belén de los Andaquíes,belen-de-los-andaquies,1.47173,-75.89159
+caqueta,Cartagena del Chairá,cartagena-del-chaira,0.49062,-74.28767
+caqueta,Curillo,curillo,1.1135,-75.96776
+caqueta,El Doncello,el-doncello,1.70215,-75.26834
+caqueta,El Paujil,el-paujil,1.49696,-75.19134
+caqueta,Florencia,florencia,1.7535,-75.58119
+caqueta,La Montañita,la-montanita,1.24433,-75.20615
+caqueta,Milán,milan,1.1722,-75.43755
+caqueta,Morelia,morelia,1.38343,-75.67199
+caqueta,Puerto Rico,puerto-rico,1.9311,-75.12002
+caqueta,San José del Fragua,san-jose-del-fragua,1.31065,-76.09626
+caqueta,San Vicente del Caguán,san-vicente-del-caguan,1.19014,-73.88029
+caqueta,Solano,solano,0.19716,-72.56058
+caqueta,Solita,solita,0.9351,-75.66789
+caqueta,Valparaíso,valparaiso,1.12118,-75.65392
+casanare,Aguazul,aguazul,5.13437,-72.56876
+casanare,Chameza,chameza,5.22306,-72.87532
+casanare,Hato Corozal,hato-corozal,6.03558,-71.60518
+casanare,La Salina,la-salina,6.16577,-72.33362
+casanare,Maní,mani,4.67182,-72.22013
+casanare,Monterrey,monterrey,4.83293,-72.85755
+casanare,Nunchia,nunchia,5.52575,-72.09613
+casanare,Orocué,orocue,4.86416,-71.64802
+casanare,Paz de Ariporo,paz-de-ariporo,5.74541,-70.86927
+casanare,Pore,pore,5.63878,-71.92246
+casanare,Recetor,recetor,5.26779,-72.76387
+casanare,Sabanalarga,sabanalarga,4.79931,-73.01254
+casanare,Sacama,sacama,6.05483,-72.21328
+casanare,San Luis de Palenque,san-luis-de-palenque,5.26883,-71.79461
+casanare,Tamara,tamara,5.85526,-72.2007
+casanare,Tauramena,tauramena,4.57805,-72.63424
+casanare,Trinidad,trinidad,5.33489,-71.13018
+casanare,Villanueva,villanueva,4.56389,-72.84401
+casanare,Yopal,yopal,5.25839,-72.25334
+cauca,Almaguer,almaguer,1.91399,-76.84364
+cauca,Argelia,argelia,2.34017,-77.2657
+cauca,Balboa,balboa,2.08315,-77.21065
+cauca,Bolívar,bolivar,1.85592,-76.9658
+cauca,Buenos Aires,buenos-aires,3.04754,-76.62679
+cauca,Cajibío,cajibio,2.647,-76.70431
+cauca,Caldono,caldono,2.79819,-76.42857
+cauca,Caloto,caloto,3.01674,-76.38014
+cauca,Corinto,corinto,3.13454,-76.22261
+cauca,El Tambo,el-tambo,2.54459,-76.99946
+cauca,Florencia,florencia,1.69082,-77.08669
+cauca,Guachené,guachene,3.15701,-76.3889
+cauca,Guapi,guapi,2.39733,-77.69577
+cauca,Inzá,inza,2.51997,-76.10368
+cauca,Jambaló,jambalo,2.82761,-76.31664
+cauca,La Sierra,la-sierra,2.18691,-76.75528
+cauca,La Vega,la-vega,2.06627,-76.76988
+cauca,López,lopez,2.95773,-77.18038
+cauca,Mercaderes,mercaderes,1.78883,-77.18359
+cauca,Miranda,miranda,3.25251,-76.25641
+cauca,Morales,morales,2.77627,-76.791
+cauca,Padilla,padilla,3.20056,-76.33325
+cauca,Patía,patia,2.13646,-77.01681
+cauca,Piamonte,piamonte,1.08262,-76.3635
+cauca,Piendamó,piendamo,2.68352,-76.55151
+cauca,Popayán,popayan,2.48171,-76.59505
+cauca,Puerto Tejada,puerto-tejada,3.26617,-76.41851
+cauca,Puracé (Coconuco),purace-coconuco,2.31285,-76.44045
+cauca,Páez,paez,2.72431,-75.93052
+cauca,Rosas,rosas,2.2642,-76.77066
+cauca,San Sebastian,san-sebastian,1.88797,-76.67816
+cauca,Santa Rosa,santa-rosa,1.55537,-76.50811
+cauca,Santander de Quilichao,santander-de-quilichao,2.98125,-76.51086
+cauca,Silvia,silvia,2.64531,-76.35059
+cauca,Sotará (Paispamba),sotara-paispamba,2.26457,-76.60223
+cauca,Sucre,sucre,2.04589,-76.91611
+cauca,Suárez,suarez,2.92896,-76.73865
+cauca,Timbiquí,timbiqui,2.72946,-77.48666
+cauca,Timbío,timbio,2.35626,-76.70327
+cauca,Toribío,toribio,2.97173,-76.2135
+cauca,Totoró,totoro,2.46997,-76.36166
+cauca,Villa Rica,villa-rica,3.18911,-76.465
+cesar,Aguachica,aguachica,8.26382,-73.62017
+cesar,Agustín Codazzi,agustin-codazzi,9.93667,-73.24849
+cesar,Astrea,astrea,9.50363,-73.945
+cesar,Becerrill,becerrill,9.70578,-73.25277
+cesar,Bosconia,bosconia,9.94826,-73.85132
+cesar,Chimichagua,chimichagua,9.26683,-73.80534
+cesar,Chiriguaná,chiriguana,9.41191,-73.59597
+cesar,Curumaní,curumani,9.2326,-73.47345
+cesar,El Copey,el-copey,10.18597,-73.91024
+cesar,El Paso,el-paso,9.67672,-73.72435
+cesar,Gamarra,gamarra,8.37964,-73.70081
+cesar,Gonzalez,gonzalez,8.40703,-73.37485
+cesar,La Gloria,la-gloria,8.57172,-73.64705
+cesar,La Jagua de Ibirico,la-jagua-de-ibirico,9.53395,-73.36706
+cesar,La Paz,la-paz,10.25383,-73.03265
+cesar,Manaure Balcón del Cesar,manaure-balcon-del-cesar,10.38255,-73.02206
+cesar,Pailitas,pailitas,8.94216,-73.56989
+cesar,Pelaya,pelaya,8.79944,-73.63031
+cesar,Pueblo Bello,pueblo-bello,10.41821,-73.57096
+cesar,Río de Oro,rio-de-oro,8.20194,-73.48972
+cesar,San Alberto,san-alberto,7.81814,-73.41784
+cesar,San Diego,san-diego,10.1939,-73.23198
+cesar,San Martín,san-martin,7.94129,-73.54791
+cesar,Tamalameque,tamalameque,8.90878,-73.77527
+cesar,Valledupar,valledupar,10.56606,-73.30982
+choco,Acandí,acandi,8.38639,-77.27088
+choco,Alto Baudó (Pie de Pato),alto-baudo-pie-de-pato,5.63152,-77.08106
+choco,Atrato (Yuto),atrato-yuto,5.57877,-76.62557
+choco,Bagadó,bagado,5.50614,-76.17661
+choco,Bahía Solano,bahia-solano,6.17268,-77.32974
+choco,Bajo Baudó (Pizarro),bajo-baudo-pizarro,4.78566,-77.167
+choco,Bojayá (Bellavista),bojaya-bellavista,6.48832,-77.1042
+choco,Carmen del Darién  (Curbaradó),carmen-del-darien-curbarado,7.01954,-77.00457
+choco,Condoto,condoto,5.06169,-76.51248
+choco,Cértegui,certegui,5.39871,-76.51972
+choco,El Cantón del San Pablo (Managrú),el-canton-del-san-pablo-managru,5.36156,-76.77062
+choco,El Carmen,el-carmen,5.78144,-76.1894
+choco,El Litoral del San Juán (Docordó),el-litoral-del-san-juan-docordo,4.27503,-76.95427
+choco,Istmina,istmina,4.51628,-76.84749
+choco,Juradó,jurado,7.14364,-77.6835
+choco,Lloró,lloro,5.59275,-76.38895
+choco,Medio Atrato (Beté),medio-atrato-bete,6.02209,-76.67896
+choco,Medio Baudó(boca de Pepé),medio-baudo-boca-de-pepe,5.08394,-76.97934
+choco,Medio San Juan (Andagoya),medio-san-juan-andagoya,4.89485,-76.8146
+choco,Nuquí,nuqui,5.61702,-77.26392
+choco,Nóvita,novita,4.83824,-76.62147
+choco,Quibdó,quibdo,5.7945,-76.57506
+choco,Rio Iró (Santa Rita),rio-iro-santa-rita,5.20389,-76.43822
+choco,Rio Quito (Paimadó),rio-quito-paimado,5.57697,-76.7963
+choco,Riosucio,riosucio,7.44621,-77.24072
+choco,San José del Palmar,san-jose-del-palmar,4.96182,-76.27569
+choco,Sipí,sipi,4.55908,-76.53788
+choco,Tadó,tado,5.26654,-76.26524
+choco,Unguía,unguia,8.12325,-77.08879
+choco,Unión Panamericana ( Animas),union-panamericana-animas,5.3014,-76.63841
+cordoba,Ayapel,ayapel,8.25549,-75.05384
+cordoba,Buenavista,buenavista,8.18146,-75.4508
+cordoba,Canalete,canalete,8.7255,-76.24016
+cordoba,Cereté,cerete,8.86752,-75.78883
+cordoba,Chimá,chima,9.10482,-75.65386
+cordoba,Chinú,chinu,9.05393,-75.37478
+cordoba,Cienaga de Oro,cienaga-de-oro,8.90028,-75.62842
+cordoba,Cotorra,cotorra,9.08037,-75.76278
+cordoba,La Apartada,la-apartada,8.04995,-75.29926
+cordoba,Lorica,lorica,9.17746,-75.89039
+cordoba,Los Córdobas,los-cordobas,8.85587,-76.33077
+cordoba,Momil,momil,9.26429,-75.65087
+cordoba,Montelíbano,montelibano,7.94299,-75.906
+cordoba,Montería,monteria,8.55642,-75.95659
+cordoba,Moñitos,monitos,9.19619,-76.12472
+cordoba,Planeta Rica,planeta-rica,8.35921,-75.57495
+cordoba,Pueblo Nuevo,pueblo-nuevo,8.49818,-75.40134
+cordoba,Puerto Escondido,puerto-escondido,9.00176,-76.19207
+cordoba,Puerto Libertador,puerto-libertador,7.71489,-75.76758
+cordoba,Purísima,purisima,9.26094,-75.73529
+cordoba,Sahagún,sahagun,8.82162,-75.45342
+cordoba,San Andres de Sotavento,san-andres-de-sotavento,9.11172,-75.52824
+cordoba,San Antero,san-antero,9.35009,-75.78861
+cordoba,San Bernardo del Viento,san-bernardo-del-viento,9.32737,-75.976
+cordoba,San Carlos,san-carlos,8.70741,-75.69096
+cordoba,San José de Uré,san-jose-de-ure,7.69444,-75.60793
+cordoba,San Pelayo,san-pelayo,8.98325,-75.90617
+cordoba,Tierralta,tierralta,7.73849,-76.22612
+cordoba,Tuchín,tuchin,9.22383,-75.54927
+cordoba,Valencia,valencia,8.26472,-76.19249
+cundinamarca,Agua de Dios,agua-de-dios,4.37398,-74.67802
+cundinamarca,Albán,alban,4.89688,-74.4355
+cundinamarca,Anapoima,anapoima,4.56384,-74.5211
+cundinamarca,Anolaima,anolaima,4.79054,-74.46196
+cundinamarca,Apulo,apulo,4.50978,-74.58742
+cundinamarca,Arbeláez,arbelaez,4.23765,-74.39575
+cundinamarca,Beltrán,beltran,4.7193,-74.78056
+cundinamarca,Bituima,bituima,4.85273,-74.52908
+cundinamarca,Bojacá,bojaca,4.7077,-74.33326
+cundinamarca,Cabrera,cabrera,3.92497,-74.43869
+cundinamarca,Cachipay,cachipay,4.70739,-74.47776
+cundinamarca,Cajicá,cajica,4.92946,-74.03269
+cundinamarca,Caparrapi,caparrapi,5.39367,-74.52947
+cundinamarca,Carmen de Carupa,carmen-de-carupa,5.36076,-73.92743
+cundinamarca,Chaguaní,chaguani,4.951,-74.62365
+cundinamarca,Chia,chia,4.86247,-74.04836
+cundinamarca,Chipaque,chipaque,4.42578,-74.08261
+cundinamarca,Choachí,choachi,4.56463,-73.94127
+cundinamarca,Chocontá,choconta,5.11857,-73.68888
+cundinamarca,Cogua,cogua,5.0965,-73.96851
+cundinamarca,Cota,cota,4.77811,-74.13769
+cundinamarca,Cucunubá,cucunuba,5.22612,-73.78687
+cundinamarca,Cáqueza,caqueza,4.40839,-73.94591
+cundinamarca,El Colegio,el-colegio,4.5593,-74.42757
+cundinamarca,El Peñon,el-penon,5.26761,-74.30333
+cundinamarca,El Rosal,el-rosal,4.87877,-74.23722
+cundinamarca,Facatativá,facatativa,4.83386,-74.33953
+cundinamarca,Fosca,fosca,4.31661,-73.9476
+cundinamarca,Funza,funza,4.7364,-74.19385
+cundinamarca,Fuquene,fuquene,5.41664,-73.76981
+cundinamarca,Fusagasugá,fusagasuga,4.3217,-74.38843
+cundinamarca,Fómeque,fomeque,4.5225,-73.79525
+cundinamarca,Gachalá,gachala,4.66265,-73.51045
+cundinamarca,Gachancipá,gachancipa,5.00994,-73.87419
+cundinamarca,Gachetá,gacheta,4.86164,-73.60224
+cundinamarca,Gama,gama,4.72443,-73.60143
+cundinamarca,Girardot,girardot,4.33478,-74.80635
+cundinamarca,Granada,granada,4.52354,-74.33837
+cundinamarca,Guachetá,guacheta,5.38757,-73.69465
+cundinamarca,Guaduas,guaduas,5.11985,-74.62884
+cundinamarca,Guasca,guasca,4.80351,-73.84484
+cundinamarca,Guataquí,guataqui,4.52449,-74.77582
+cundinamarca,Guatavita,guatavita,4.91088,-73.77899
+cundinamarca,Guayabal de Síquima,guayabal-de-siquima,4.86801,-74.47685
+cundinamarca,Guayabetal,guayabetal,4.23478,-73.83394
+cundinamarca,Gutierrez,gutierrez,4.17585,-74.0017
+cundinamarca,Jerusalén,jerusalen,4.57938,-74.69053
+cundinamarca,Junín,junin,4.70284,-73.70043
+cundinamarca,La Calera,la-calera,4.70852,-73.9376
+cundinamarca,La Mesa,la-mesa,4.64848,-74.47444
+cundinamarca,La Palma,la-palma,5.32931,-74.40674
+cundinamarca,La Peña,la-pena,5.20221,-74.40789
+cundinamarca,La Vega,la-vega,4.97524,-74.35008
+cundinamarca,Lenguazaque,lenguazaque,5.28958,-73.69461
+cundinamarca,Machetá,macheta,5.04171,-73.61743
+cundinamarca,Madrid,madrid,4.75246,-74.28056
+cundinamarca,Manta,manta,4.97763,-73.56234
+cundinamarca,Medina,medina,4.50939,-73.38159
+cundinamarca,Mosquera,mosquera,4.66754,-74.2286
+cundinamarca,Nariño,narino,4.40005,-74.81566
+cundinamarca,Nemocón,nemocon,5.09395,-73.87853
+cundinamarca,Nilo,nilo,4.30606,-74.60675
+cundinamarca,Nimaima,nimaima,5.12735,-74.38595
+cundinamarca,Nocaima,nocaima,5.07736,-74.39054
+cundinamarca,Pacho,pacho,5.15473,-74.14365
+cundinamarca,Paime,paime,5.38521,-74.1699
+cundinamarca,Pandi,pandi,4.1835,-74.46423
+cundinamarca,Paratebueno,paratebueno,4.3718,-73.19056
+cundinamarca,Pasca,pasca,4.30465,-74.2799
+cundinamarca,Puerto Salgar,puerto-salgar,5.65781,-74.5699
+cundinamarca,Pulí,puli,4.69681,-74.68962
+cundinamarca,Quebradanegra,quebradanegra,5.0997,-74.48877
+cundinamarca,Quetame,quetame,4.35645,-73.83952
+cundinamarca,Quipile,quipile,4.72403,-74.55327
+cundinamarca,Ricaurte,ricaurte,4.29627,-74.72274
+cundinamarca,San Antonio del Tequendama,san-antonio-del-tequendama,4.6002,-74.34586
+cundinamarca,San Bernardo,san-bernardo,4.14173,-74.37452
+cundinamarca,San Cayetano,san-cayetano,5.30919,-74.07231
+cundinamarca,San Francisco,san-francisco,4.96853,-74.26753
+cundinamarca,San Juan de Rio Seco,san-juan-de-rio-seco,4.83919,-74.63442
+cundinamarca,Sasaima,sasaima,4.95489,-74.41847
+cundinamarca,Sesquilé,sesquile,5.00798,-73.80333
+cundinamarca,Sibaté,sibate,4.46937,-74.2642
+cundinamarca,Silvania,silvania,4.44698,-74.36435
+cundinamarca,Simijaca,simijaca,5.50924,-73.83995
+cundinamarca,Soacha,soacha,4.56396,-74.21432
+cundinamarca,Sopo,sopo,4.88276,-73.95552
+cundinamarca,Subachoque,subachoque,4.96839,-74.16434
+cundinamarca,Suesca,suesca,5.11823,-73.79962
+cundinamarca,Supatá,supata,5.0636,-74.23137
+cundinamarca,Susa,susa,5.43525,-73.83001
+cundinamarca,Sutatausa,sutatausa,5.24552,-73.85943
+cundinamarca,Tabio,tabio,4.95202,-74.08115
+cundinamarca,Tausa,tausa,5.18729,-73.91446
+cundinamarca,Tena,tena,4.66694,-74.3752
+cundinamarca,Tenjo,tenjo,4.8513,-74.14008
+cundinamarca,Tibacuy,tibacuy,4.32618,-74.48016
+cundinamarca,Tibirita,tibirita,5.08538,-73.51424
+cundinamarca,Tocaima,tocaima,4.46333,-74.65863
+cundinamarca,Tocancipá,tocancipa,4.95679,-73.92315
+cundinamarca,Topaipí,topaipi,5.35598,-74.28848
+cundinamarca,Ubalá,ubala,4.80932,-73.47478
+cundinamarca,Ubaque,ubaque,4.50959,-73.99295
+cundinamarca,Ubate,ubate,5.31299,-73.81387
+cundinamarca,Une,une,4.25874,-74.1021
+cundinamarca,Venecia,venecia,4.06407,-74.43743
+cundinamarca,Vergara,vergara,5.13196,-74.32113
+cundinamarca,Vianí,viani,4.92122,-74.53858
+cundinamarca,Villa Gómez,villa-gomez,5.25724,-74.18224
+cundinamarca,Villapinzón,villapinzon,5.2329,-73.58368
+cundinamarca,Villeta,villeta,5.01433,-74.48898
+cundinamarca,Viotá,viota,4.42726,-74.48547
+cundinamarca,Yacopí,yacopi,5.62169,-74.39787
+cundinamarca,Zipacón,zipacon,4.75302,-74.38271
+cundinamarca,Zipaquirá,zipaquira,5.01551,-74.02453
+cundinamarca,Útica,utica,5.18357,-74.48255
+guainia,Barranco Mina,barranco-mina,3.37359,-69.41008
+guainia,Cacahual,cacahual,3.35945,-67.58937
+guainia,Inírida,inirida,3.49806,-68.15796
+guainia,La Guadalupe,la-guadalupe,1.33422,-66.97814
+guainia,Mapiripana,mapiripana,2.77548,-70.1718
+guainia,Morichal (Morichal Nuevo),morichal-morichal-nuevo,2.3796,-69.76893
+guainia,Paná-paná (Campo Alegre),pana-pana-campo-alegre,2.0451,-69.18307
+guainia,Puerto Colombia,puerto-colombia,2.56742,-68.20958
+guainia,San Felipe,san-felipe,2.36026,-67.39407
+guaviare,Calamar,calamar,1.58035,-73.02043
+guaviare,El Retorno,el-retorno,2.00501,-71.39045
+guaviare,Miraflores,miraflores,1.32616,-71.95117
+guaviare,San José del Guaviare,san-jose-del-guaviare,2.55432,-71.526
+huila,Acevedo,acevedo,1.71264,-75.98537
+huila,Agrado,agrado,2.28311,-75.71778
+huila,Aipe,aipe,3.20551,-75.31824
+huila,Algeciras,algeciras,2.49723,-75.29383
+huila,Altamira,altamira,2.06476,-75.79244
+huila,Baraya,baraya,3.16408,-74.95505
+huila,Campoalegre,campoalegre,2.65906,-75.33137
+huila,Colombia,colombia,3.32467,-74.73666
+huila,Elías,elias,2.01022,-75.95775
+huila,Garzón,garzon,2.18139,-75.5822
+huila,Gigante,gigante,2.36498,-75.52644
+huila,Guadalupe,guadalupe,1.99092,-75.69532
+huila,Hobo,hobo,2.53353,-75.44257
+huila,Isnos,isnos,1.94908,-76.21845
+huila,La Argentina,la-argentina,2.14203,-76.05565
+huila,La Plata,la-plata,2.31577,-76.02051
+huila,Neiva,neiva,2.93029,-75.2215
+huila,Nátaga,nataga,2.55561,-75.8014
+huila,Oporapa,oporapa,2.05257,-76.02684
+huila,Paicol,paicol,2.4049,-75.73967
+huila,Palermo,palermo,2.88672,-75.4104
+huila,Palestina,palestina,1.67674,-76.14915
+huila,Pital,pital,2.26463,-75.83832
+huila,Pitalito,pitalito,1.85457,-76.077
+huila,Rivera,rivera,2.7924,-75.23406
+huila,Saladoblanco,saladoblanco,2.1145,-76.25768
+huila,San Agustín,san-agustin,1.94058,-76.41642
+huila,Santa María,santa-maria,2.93623,-75.63568
+huila,Suaza,suaza,1.87079,-75.79706
+huila,Tarqui,tarqui,2.13006,-75.88875
+huila,Tello,tello,3.02081,-75.0576
+huila,Teruel,teruel,2.85195,-75.75933
+huila,Tesalia,tesalia,2.5287,-75.70229
+huila,Timaná,timana,1.94531,-75.93082
+huila,Villavieja,villavieja,3.27781,-75.1475
+huila,Yaguará,yaguara,2.64105,-75.52188
+huila,Íquira,iquira,2.715,-75.68324
+la-guajira,Albania,albania,11.24395,-72.52337
+la-guajira,Barrancas,barrancas,10.96838,-72.65113
+la-guajira,Dibulla,dibulla,11.07592,-73.47507
+la-guajira,Distracción,distraccion,10.9355,-72.95803
+la-guajira,El Molino,el-molino,10.62422,-72.855
+la-guajira,Fonseca,fonseca,10.80621,-72.77267
+la-guajira,Hatonuevo,hatonuevo,11.09901,-72.7383
+la-guajira,La Jagua del Pilar,la-jagua-del-pilar,10.47053,-73.07213
+la-guajira,Maicao,maicao,11.36575,-72.30104
+la-guajira,Manaure,manaure,11.6009,-72.54554
+la-guajira,Riohacha,riohacha,11.29962,-72.93198
+la-guajira,San Juan del Cesar,san-juan-del-cesar,10.83002,-73.1217
+la-guajira,Uribia,uribia,11.97117,-71.73889
+la-guajira,Urumita,urumita,10.48375,-72.97529
+la-guajira,Villanueva,villanueva,10.58414,-72.97524
+magdalena,Algarrobo,algarrobo,10.27758,-74.11306
+magdalena,Aracataca,aracataca,10.62497,-73.87457
+magdalena,Ariguaní,ariguani,9.83097,-74.09992
+magdalena,Cerro de San Antonio,cerro-de-san-antonio,10.31815,-74.83609
+magdalena,Chivolo,chivolo,10.12156,-74.51636
+magdalena,Ciénaga,cienaga,10.85155,-73.98181
+magdalena,Concordia,concordia,10.22091,-74.75641
+magdalena,El Banco,el-banco,9.10494,-73.96812
+magdalena,El Piñón,el-pinon,10.3702,-74.69633
+magdalena,El Retén,el-reten,10.6731,-74.35587
+magdalena,Fundación,fundacion,10.44973,-73.88895
+magdalena,Guamal,guamal,9.24697,-74.15045
+magdalena,Nueva Granada,nueva-granada,9.69281,-74.32612
+magdalena,Pedraza,pedraza,10.15735,-74.83383
+magdalena,Pijiño del Carmen,pijino-del-carmen,9.53756,-74.13988
+magdalena,Pivijay,pivijay,10.42456,-74.40863
+magdalena,Plato,plato,9.77838,-74.60202
+magdalena,Pueblo Viejo,pueblo-viejo,10.86006,-74.37636
+magdalena,Remolino,remolino,10.63985,-74.57805
+magdalena,Sabanas de San Angel,sabanas-de-san-angel,10.09155,-74.26441
+magdalena,Salamina,salamina,10.49888,-74.72151
+magdalena,San Sebastian de Buenavista,san-sebastian-de-buenavista,9.40545,-74.14317
+magdalena,San Zenón,san-zenon,9.30224,-74.38321
+magdalena,Santa Ana,santa-ana,9.5019,-74.44511
+magdalena,Santa Bárbara de Pinto,santa-barbara-de-pinto,9.49785,-74.65994
+magdalena,Santa Marta,santa-marta,11.14263,-73.89056
+magdalena,Sitionuevo,sitionuevo,10.86736,-74.60867
+magdalena,Tenerife,tenerife,9.93717,-74.73572
+magdalena,Zapayán,zapayan,10.12052,-74.68299
+magdalena,Zona Bananera,zona-bananera,10.79477,-74.17607
+meta,Acacías,acacias,4.06225,-73.85317
+meta,Barranca de Upia,barranca-de-upia,4.52762,-73.01625
+meta,Cabuyaro,cabuyaro,4.27964,-72.97207
+meta,Castilla la Nueva,castilla-la-nueva,3.79447,-73.52565
+meta,Cubarral,cubarral,3.85006,-74.10835
+meta,Cumaral,cumaral,4.22974,-73.3186
+meta,El Calvario,el-calvario,4.34704,-73.73037
+meta,El Castillo,el-castillo,3.59702,-73.88522
+meta,El Dorado,el-dorado,3.71425,-73.83261
+meta,Fuente de Oro,fuente-de-oro,3.37919,-73.60981
+meta,Granada,granada,3.4631,-73.75885
+meta,Guamal,guamal,3.96859,-74.01754
+meta,La Macarena,la-macarena,2.14136,-74.08245
+meta,Lejanías,lejanias,3.65649,-74.13233
+meta,Mapiripán,mapiripan,3.10859,-71.92145
+meta,Mesetas,mesetas,3.33267,-74.14187
+meta,Puerto Concordia,puerto-concordia,2.73951,-72.71714
+meta,Puerto Gaitán,puerto-gaitan,4.01665,-71.61912
+meta,Puerto Lleras,puerto-lleras,3.20006,-73.29128
+meta,Puerto López,puerto-lopez,4.02374,-72.63709
+meta,Puerto Rico,puerto-rico,2.75766,-73.10335
+meta,Restrepo,restrepo,4.22148,-73.53408
+meta,San Carlos de Guaroa,san-carlos-de-guaroa,3.84203,-73.2796
+meta,San Juan de Arama,san-juan-de-arama,3.3141,-73.84542
+meta,San Juanito,san-juanito,4.46593,-73.66919
+meta,San Martín,san-martin,3.4549,-72.93374
+meta,Uribe,uribe,3.02874,-74.47802
+meta,Villavicencio,villavicencio,4.08055,-73.49747
+meta,Vistahermosa,vistahermosa,2.87099,-73.75671
+narino,Albán (San José),alban-san-jose,1.47129,-77.06811
+narino,Aldana,aldana,0.92088,-77.70309
+narino,Ancuya,ancuya,1.22529,-77.53188
+narino,Arboleda,arboleda,1.47391,-77.12988
+narino,Barbacoas,barbacoas,1.56646,-78.09102
+narino,Belen,belen,1.58364,-77.03655
+narino,Buesaco,buesaco,1.31306,-77.11944
+narino,Chachagüí,chachagui,1.35715,-77.25753
+narino,Colon,colon,1.64232,-77.04639
+narino,Consacá,consaca,1.19989,-77.44169
+narino,Contadero,contadero,0.92287,-77.53774
+narino,Cuaspud,cuaspud,0.87427,-77.73658
+narino,Cumbal,cumbal,0.95693,-77.94392
+narino,Cumbitara,cumbitara,1.70081,-77.57487
+narino,Córdoba,cordoba,0.75463,-77.32534
+narino,El Charco,el-charco,2.21666,-77.99436
+narino,El Peñol,el-penol,1.498,-77.4298
+narino,El Rosario,el-rosario,1.87115,-77.46711
+narino,El Tablón de Gómez,el-tablon-de-gomez,1.42751,-76.99205
+narino,El Tambo,el-tambo,1.42127,-77.37638
+narino,Francisco Pizarro (Salahonda),francisco-pizarro-salahonda,2.09231,-78.59375
+narino,Funes,funes,0.94421,-77.40224
+narino,Guachucal,guachucal,0.96627,-77.75735
+narino,Guaitarilla,guaitarilla,1.15169,-77.53003
+narino,Gualmatán,gualmatan,0.92946,-77.58219
+narino,Iles,iles,0.97818,-77.51989
+narino,Imues,imues,1.07332,-77.49053
+narino,Ipiales,ipiales,0.51294,-77.37055
+narino,La Cruz,la-cruz,1.57771,-76.92162
+narino,La Florida,la-florida,1.30964,-77.40422
+narino,La Llanada,la-llanada,1.5411,-77.71694
+narino,La Tola,la-tola,2.57829,-78.22789
+narino,La Unión,la-union,1.61662,-77.14146
+narino,Leiva,leiva,1.91083,-77.30457
+narino,Linares,linares,1.39262,-77.52592
+narino,Los Andes,los-andes,1.73253,-77.75036
+narino,Magüí (Payán),magui-payan,1.91092,-78.04478
+narino,Mallama (Piedrancha),mallama-piedrancha,1.14588,-77.84872
+narino,Mosquera,mosquera,2.44496,-78.44084
+narino,Nariño,narino,1.28651,-77.35144
+narino,Olaya Herrera (Bocas de Satinga),olaya-herrera-bocas-de-satinga,2.27673,-78.31559
+narino,Ospina,ospina,1.03366,-77.55331
+narino,Pasto,pasto,1.09272,-77.19401
+narino,Policarpa,policarpa,1.75089,-77.46779
+narino,Potosí,potosi,0.72255,-77.40248
+narino,Providencia,providencia,1.22451,-77.60011
+narino,Puerres,puerres,0.83254,-77.27185
+narino,Pupiales,pupiales,0.90735,-77.63757
+narino,Ricaurte,ricaurte,1.13726,-78.05102
+narino,Roberto Payán (San José),roberto-payan-san-jose,1.96032,-78.38116
+narino,Samaniego,samaniego,1.43931,-77.67471
+narino,San Bernardo,san-bernardo,1.53513,-77.02533
+narino,San Lorenzo,san-lorenzo,1.53747,-77.20676
+narino,San Pablo,san-pablo,1.68006,-76.94702
+narino,San Pedro de Cartago,san-pedro-de-cartago,1.53488,-77.1084
+narino,Sandoná,sandona,1.28501,-77.46943
+narino,Santa Bárbara (Iscuandé),santa-barbara-iscuande,2.56207,-77.99028
+narino,Santa Cruz (Guachavés),santa-cruz-guachaves,1.28207,-77.73604
+narino,Sapuyes,sapuyes,1.04023,-77.70965
+narino,Taminango,taminango,1.59106,-77.32391
+narino,Tangua,tangua,1.07401,-77.36368
+narino,Tumaco,tumaco,1.53724,-78.60948
+narino,Tuquerres,tuquerres,1.09936,-77.63765
+narino,Yacuanquer,yacuanquer,1.11872,-77.4382
+norte-de-santander,Abrego,abrego,8.06488,-73.18881
+norte-de-santander,Arboledas,arboledas,7.60125,-72.91162
+norte-de-santander,Bochalema,bochalema,7.59818,-72.67314
+norte-de-santander,Bucarasica,bucarasica,8.07347,-72.92034
+norte-de-santander,Chinácota,chinacota,7.62096,-72.58856
+norte-de-santander,Chitagà,chitaga,7.02499,-72.46346
+norte-de-santander,Convención,convencion,8.94232,-73.19669
+norte-de-santander,Cucutilla,cucutilla,7.50165,-72.78666
+norte-de-santander,Cáchira,cachira,7.69788,-73.10875
+norte-de-santander,Cácota,cacota,7.27504,-72.64077
+norte-de-santander,Cúcuta,cucuta,8.10661,-72.45818
+norte-de-santander,Durania,durania,7.74291,-72.67622
+norte-de-santander,El Carmen,el-carmen,8.89307,-73.34149
+norte-de-santander,El Tarra,el-tarra,8.66959,-73.0188
+norte-de-santander,El Zulia,el-zulia,8.04096,-72.64916
+norte-de-santander,Gramalote,gramalote,7.88397,-72.80711
+norte-de-santander,Hacarí,hacari,8.35263,-73.07616
+norte-de-santander,Herrán,herran,7.51959,-72.50896
+norte-de-santander,La Esperanza,la-esperanza,7.68342,-73.34485
+norte-de-santander,La Playa,la-playa,8.25777,-73.20542
+norte-de-santander,Labateca,labateca,7.23423,-72.50906
+norte-de-santander,Los Patios,los-patios,7.71139,-72.54161
+norte-de-santander,Lourdes,lourdes,7.9628,-72.84134
+norte-de-santander,Mutiscua,mutiscua,7.31,-72.76698
+norte-de-santander,Ocaña,ocana,8.20838,-73.34396
+norte-de-santander,Pamplona,pamplona,7.36435,-72.66399
+norte-de-santander,Pamplonita,pamplonita,7.48246,-72.6362
+norte-de-santander,Puerto Santander,puerto-santander,8.33505,-72.41436
+norte-de-santander,Ragonvalia,ragonvalia,7.59588,-72.50759
+norte-de-santander,Salazar,salazar,7.77232,-72.89216
+norte-de-santander,San Calixto,san-calixto,8.48726,-73.16066
+norte-de-santander,San Cayetano,san-cayetano,7.86129,-72.61077
+norte-de-santander,Santiago,santiago,7.88823,-72.71345
+norte-de-santander,Sardinata,sardinata,8.26085,-72.85945
+norte-de-santander,Silos,silos,7.18671,-72.77718
+norte-de-santander,Teorama,teorama,8.76042,-73.16009
+norte-de-santander,Tibú,tibu,8.71834,-72.79883
+norte-de-santander,Toledo,toledo,7.23308,-72.30598
+norte-de-santander,Villa Caro,villa-caro,7.92292,-72.98018
+norte-de-santander,Villa del Rosario,villa-del-rosario,7.67062,-72.4956
+putumayo,Colón,colon,1.22595,-76.95875
+putumayo,Mocoa,mocoa,1.30476,-76.68837
+putumayo,Orito,orito,0.66987,-76.96546
+putumayo,Puerto Asís,puerto-asis,0.47382,-76.50297
+putumayo,Puerto Caicedo,puerto-caicedo,0.72712,-76.41836
+putumayo,Puerto Guzmán,puerto-guzman,0.81638,-76.03645
+putumayo,Puerto Leguízamo,puerto-leguizamo,0.21519,-75.33541
+putumayo,San Francisco,san-francisco,1.13294,-76.84921
+putumayo,San Miguel (La Dorada),san-miguel-la-dorada,0.30726,-76.89471
+putumayo,Santiago,santiago,1.13761,-77.03471
+putumayo,Sibundoy,sibundoy,1.20745,-76.90981
+putumayo,Valle del Guamuez,valle-del-guamuez,0.4076,-76.80465
+putumayo,Villagarzón,villagarzon,0.89922,-76.74574
+quindio,Armenia,armenia,4.51042,-75.71937
+quindio,Buenavista,buenavista,4.36293,-75.74002
+quindio,Calarcá,calarca,4.48239,-75.63779
+quindio,Circasia,circasia,4.6013,-75.66588
+quindio,Córdoba,cordoba,4.39156,-75.66019
+quindio,Filandia,filandia,4.67552,-75.67905
+quindio,Génova,genova,4.17439,-75.76056
+quindio,La Tebaida,la-tebaida,4.42868,-75.81624
+quindio,Montenegro,montenegro,4.52088,-75.82373
+quindio,Pijao,pijao,4.29912,-75.68134
+quindio,Quimbaya,quimbaya,4.61191,-75.79025
+quindio,Salento,salento,4.61665,-75.54168
+risaralda,Apía,apia,5.1385,-75.95213
+risaralda,Balboa,balboa,4.91658,-75.94279
+risaralda,Belén de Umbría,belen-de-umbria,5.20352,-75.86915
+risaralda,Dosquebradas,dosquebradas,4.84575,-75.669
+risaralda,Guática,guatica,5.31765,-75.81531
+risaralda,La Celia,la-celia,4.9928,-76.00819
+risaralda,La Virginia,la-virginia,4.90419,-75.85268
+risaralda,Marsella,marsella,4.94285,-75.7532
+risaralda,Mistrató,mistrato,5.42488,-75.95934
+risaralda,Pereira,pereira,4.80054,-75.78239
+risaralda,Pueblo Rico,pueblo-rico,5.27597,-76.0595
+risaralda,Quinchia,quinchia,5.32464,-75.71334
+risaralda,Santa Rosa de Cabal,santa-rosa-de-cabal,4.81612,-75.53262
+risaralda,Santuario,santuario,5.07645,-76.02712
+san-andres-y-providencia,Providencia,providencia,13.35124,-81.37436
+san-andres-y-providencia,San Andrés,san-andres,12.54964,-81.71715
+santander,Aguada,aguada,6.17768,-73.52143
+santander,Albania,albania,5.79318,-73.78892
+santander,Aratoca,aratoca,6.69415,-72.99644
+santander,Barbosa,barbosa,5.95605,-73.62354
+santander,Barichara,barichara,6.65183,-73.22558
+santander,Barrancabermeja,barrancabermeja,7.07568,-73.76343
+santander,Betulia,betulia,7.03703,-73.43896
+santander,Bolivar,bolivar,6.02764,-74.18692
+santander,Bucaramanga,bucaramanga,7.1539,-73.10535
+santander,Cabrera,cabrera,6.56002,-73.25356
+santander,California,california,7.37647,-72.90361
+santander,Capitanejo,capitanejo,6.48688,-72.6535
+santander,Carcasí,carcasi,6.66187,-72.56836
+santander,Cepitá,cepita,6.75701,-72.93288
+santander,Cerrito,cerrito,6.89677,-72.63655
+santander,Charala,charala,6.24852,-73.15593
+santander,Charta,charta,7.28155,-72.97036
+santander,Chima,chima,6.36041,-73.42027
+santander,Chipatá,chipata,6.06518,-73.63168
+santander,Cimitarra,cimitarra,6.4386,-74.17021
+santander,Concepción,concepcion,6.76116,-72.66241
+santander,Confines,confines,6.3452,-73.23531
+santander,Contratación,contratacion,6.30438,-73.50065
+santander,Coromoro,coromoro,6.2366,-72.98436
+santander,Curití,curiti,6.59952,-73.03101
+santander,El Carmen de Chucuri,el-carmen-de-chucuri,6.66268,-73.5614
+santander,El Guacamayo,el-guacamayo,6.23599,-73.49813
+santander,El Peñón,el-penon,6.07129,-73.85909
+santander,El Playón,el-playon,7.52658,-73.17879
+santander,Encino,encino,6.08058,-73.06402
+santander,Enciso,enciso,6.6634,-72.68106
+santander,Floridablanca,floridablanca,7.07703,-73.06702
+santander,Florián,florian,5.79148,-73.96588
+santander,Galán,galan,6.66427,-73.32475
+santander,Girón,giron,6.97157,-73.17538
+santander,Guaca,guaca,6.95659,-72.80515
+santander,Guadalupe,guadalupe,6.23935,-73.40387
+santander,Guapotá,guapota,6.32829,-73.33047
+santander,Guavatá,guavata,5.94743,-73.72268
+santander,Gámbita,gambita,5.93219,-73.3048
+santander,Güepsa,guepsa,6.04038,-73.5728
+santander,Hato,hato,6.56939,-73.36328
+santander,Jesús María,jesus-maria,5.88142,-73.78032
+santander,Jordán Sube,jordan-sube,6.71322,-73.11938
+santander,La Belleza,la-belleza,5.89267,-74.01819
+santander,La Paz,la-paz,6.20263,-73.62354
+santander,Landázuri,landazuri,6.27625,-73.81563
+santander,Lebríja,lebrija,7.20404,-73.31242
+santander,Los Santos,los-santos,6.80668,-73.10598
+santander,Macaravita,macaravita,6.51177,-72.58146
+santander,Matanza,matanza,7.33038,-73.05922
+santander,Mogotes,mogotes,6.46293,-72.9706
+santander,Molagavita,molagavita,6.64178,-72.81805
+santander,Málaga,malaga,6.72071,-72.7378
+santander,Ocamonte,ocamonte,6.35391,-73.12136
+santander,Oiba,oiba,6.22371,-73.27804
+santander,Onzaga,onzaga,6.3234,-72.82175
+santander,Palmar,palmar,6.5336,-73.28408
+santander,Palmas del Socorro,palmas-del-socorro,6.39618,-73.28682
+santander,Piedecuesta,piedecuesta,6.98351,-73.03359
+santander,Pinchote,pinchote,6.51707,-73.17503
+santander,Puente Nacional,puente-nacional,5.83099,-73.67959
+santander,Puerto Parra,puerto-parra,6.68705,-73.97532
+santander,Puerto Wilches,puerto-wilches,7.3235,-73.77162
+santander,Páramo,paramo,6.41699,-73.18
+santander,Rionegro,rionegro,7.49163,-73.39588
+santander,Sabana de Torres,sabana-de-torres,7.39542,-73.5507
+santander,San Andres,san-andres,6.78456,-72.81008
+santander,San Benito,san-benito,6.09523,-73.53277
+santander,San Gil,san-gil,6.52383,-73.09744
+santander,San Joaquín,san-joaquin,6.45608,-72.84621
+santander,San José de Miranda,san-jose-de-miranda,6.62612,-72.73714
+santander,San Miguel,san-miguel,6.562,-72.63393
+santander,San Vicente de Chucuri,san-vicente-de-chucuri,6.89849,-73.53596
+santander,Santa Barbara,santa-barbara,6.99443,-72.88881
+santander,Santa Helena del Opón,santa-helena-del-opon,6.41014,-73.57998
+santander,Simacota,simacota,6.79063,-73.83251
+santander,Socorro,socorro,6.46361,-73.24436
+santander,Suaita,suaita,6.103,-73.36825
+santander,Sucre,sucre,6.00786,-73.96216
+santander,Suratá,surata,7.47334,-72.97978
+santander,Tona,tona,7.16998,-72.93749
+santander,Valle de San Jose,valle-de-san-jose,6.43356,-73.11088
+santander,Vetas,vetas,7.32288,-72.8816
+santander,Villanueva,villanueva,6.66847,-73.15536
+santander,Vélez,velez,6.11929,-73.69321
+santander,Zapatoca,zapatoca,6.79357,-73.27758
+sucre,Buenavista,buenavista,9.31683,-74.9667
+sucre,Caimito,caimito,8.79615,-75.14042
+sucre,Chalán,chalan,9.56755,-75.32115
+sucre,Corozal,corozal,9.15558,-75.2133
+sucre,Coveñas,covenas,9.38303,-75.66512
+sucre,El Roble,el-roble,9.07101,-75.09772
+sucre,Galeras,galeras,9.13481,-74.98316
+sucre,Guaranda,guaranda,8.33738,-74.68666
+sucre,La Unión,la-union,8.80767,-75.28919
+sucre,Los Palmitos,los-palmitos,9.42067,-75.21454
+sucre,Majagual,majagual,8.5469,-74.69388
+sucre,Morroa,morroa,9.39479,-75.32613
+sucre,Ovejas,ovejas,9.5411,-75.18611
+sucre,Palmito,palmito,9.33449,-75.5556
+sucre,Ricaurte (Coloso),ricaurte-coloso,9.49551,-75.35404
+sucre,Sampués,sampues,9.17386,-75.3621
+sucre,San Benito Abad,san-benito-abad,8.91134,-74.98282
+sucre,San Juan de Betulia,san-juan-de-betulia,9.24826,-75.23109
+sucre,San Luis de Sincé,san-luis-de-since,9.26283,-75.08077
+sucre,San Marcos,san-marcos,8.59531,-75.17636
+sucre,San Onofre,san-onofre,9.78193,-75.49261
+sucre,San Pedro,san-pedro,9.39475,-75.03902
+sucre,Santiago de Tolú,santiago-de-tolu,9.53072,-75.53409
+sucre,Sincelejo,sincelejo,9.31031,-75.43002
+sucre,Sucre,sucre,8.86961,-74.73468
+sucre,Tolú Viejo,tolu-viejo,9.45209,-75.45733
+tolima,Alpujarra,alpujarra,3.3894,-74.9382
+tolima,Alvarado,alvarado,4.58339,-74.98471
+tolima,Ambalema,ambalema,4.79069,-74.81753
+tolima,Anzoátegui,anzoategui,4.62393,-75.20379
+tolima,Armero,armero,5.00025,-74.83225
+tolima,Ataco,ataco,3.39341,-75.5415
+tolima,Cajamarca,cajamarca,4.41773,-75.49919
+tolima,Carmen de Apicala,carmen-de-apicala,4.11743,-74.74075
+tolima,Casabianca,casabianca,5.01988,-75.17615
+tolima,Chaparral,chaparral,3.7358,-75.59488
+tolima,Coello,coello,4.30625,-74.93981
+tolima,Coyaima,coyaima,3.77803,-75.11812
+tolima,Cunday,cunday,4.0101,-74.69165
+tolima,Dolores,dolores,3.58099,-74.8221
+tolima,Espinal,espinal,4.16379,-74.90345
+tolima,Falán,falan,5.07765,-74.94032
+tolima,Flandes,flandes,4.24262,-74.83062
+tolima,Fresno,fresno,5.18623,-75.04571
+tolima,Guamo,guamo,4.06295,-74.97837
+tolima,Herveo,herveo,5.06262,-75.25084
+tolima,Honda,honda,5.16697,-74.78174
+tolima,Ibagué,ibague,4.45549,-75.27132
+tolima,Icononzo,icononzo,4.12733,-74.53228
+tolima,Lérida,lerida,4.85166,-74.9145
+tolima,Líbano,libano,4.87962,-75.04905
+tolima,Melgar,melgar,4.17671,-74.61475
+tolima,Murillo,murillo,4.8425,-75.20185
+tolima,Natagaima,natagaima,3.54411,-75.10669
+tolima,Ortega,ortega,3.93276,-75.29083
+tolima,Palocabildo,palocabildo,5.08847,-75.01766
+tolima,Piedras,piedras,4.43494,-74.9585
+tolima,Planadas,planadas,3.0868,-75.81177
+tolima,Prado,prado,3.72844,-74.88312
+tolima,Purificación,purificacion,3.87058,-74.89898
+tolima,Rioblanco,rioblanco,3.46367,-75.8508
+tolima,Roncesvalles,roncesvalles,4.09844,-75.5915
+tolima,Rovira,rovira,4.21526,-75.32647
+tolima,Saldaña,saldana,3.92279,-75.00227
+tolima,San Antonio,san-antonio,3.92591,-75.50925
+tolima,San Luis,san-luis,4.06315,-75.13838
+tolima,San Sebastián de Mariquita,san-sebastian-de-mariquita,5.23077,-74.90881
+tolima,Santa Isabel,santa-isabel,4.74414,-75.22274
+tolima,Suárez,suarez,4.00477,-74.82512
+tolima,Valle de San Juan,valle-de-san-juan,4.18154,-75.1715
+tolima,Venadillo,venadillo,4.73314,-74.93468
+tolima,Villahermosa,villahermosa,4.9565,-75.14303
+tolima,Villarrica,villarrica,3.85097,-74.61737
+valle-del-cauca,Alcalá,alcala,4.67882,-75.7842
+valle-del-cauca,Andalucía,andalucia,4.16345,-76.18112
+valle-del-cauca,Ansermanuevo,ansermanuevo,4.79165,-76.03144
+valle-del-cauca,Argelia,argelia,4.70439,-76.14163
+valle-del-cauca,Bolívar,bolivar,4.39289,-76.34711
+valle-del-cauca,Buenaventura,buenaventura,3.41979,-77.05678
+valle-del-cauca,Buga,buga,3.8243,-76.02024
+valle-del-cauca,Bugalagrande,bugalagrande,4.18056,-76.06607
+valle-del-cauca,Caicedonia,caicedonia,4.2983,-75.83773
+valle-del-cauca,Cali,cali,3.40454,-76.57406
+valle-del-cauca,Calima,calima,3.91844,-76.63152
+valle-del-cauca,Candelaria,candelaria,3.37514,-76.39474
+valle-del-cauca,Cartago,cartago,4.70346,-75.91941
+valle-del-cauca,Dagua,dagua,3.58424,-76.73087
+valle-del-cauca,El Cairo,el-cairo,4.7441,-76.2288
+valle-del-cauca,El Cerrito,el-cerrito,3.65581,-76.15381
+valle-del-cauca,El Dovio,el-dovio,4.54033,-76.29763
+valle-del-cauca,El Águila,el-aguila,4.90906,-76.0585
+valle-del-cauca,Florida,florida,3.30445,-76.12829
+valle-del-cauca,Ginebra,ginebra,3.74134,-76.18265
+valle-del-cauca,Guacarí,guacari,3.80019,-76.24825
+valle-del-cauca,Jamundí,jamundi,3.21172,-76.62445
+valle-del-cauca,La Cumbre,la-cumbre,3.6887,-76.58268
+valle-del-cauca,La Unión,la-union,4.53787,-76.10339
+valle-del-cauca,La Victoria,la-victoria,4.47698,-75.95921
+valle-del-cauca,Obando,obando,4.59874,-75.94915
+valle-del-cauca,Palmira,palmira,3.54909,-76.22395
+valle-del-cauca,Pradera,pradera,3.41599,-76.19649
+valle-del-cauca,Restrepo,restrepo,3.8067,-76.53487
+valle-del-cauca,Riofrío,riofrio,4.10836,-76.37297
+valle-del-cauca,Roldanillo,roldanillo,4.43326,-76.177
+valle-del-cauca,San Pedro,san-pedro,3.98313,-76.20985
+valle-del-cauca,Sevilla,sevilla,4.22861,-75.91318
+valle-del-cauca,Toro,toro,4.63813,-76.07994
+valle-del-cauca,Trujillo,trujillo,4.2425,-76.35276
+valle-del-cauca,Tuluá,tulua,4.00552,-75.99138
+valle-del-cauca,Ulloa,ulloa,4.70878,-75.77945
+valle-del-cauca,Versalles,versalles,4.63713,-76.21797
+valle-del-cauca,Vijes,vijes,3.73305,-76.47729
+valle-del-cauca,Yotoco,yotoco,3.91087,-76.3923
+valle-del-cauca,Yumbo,yumbo,3.59763,-76.51226
+valle-del-cauca,Zarzal,zarzal,4.35867,-76.05277
+vaupes,Carurú,caruru,1.01875,-71.25727
+vaupes,Mitú,mitu,1.0145,-70.54726
+vaupes,Pacoa (Cor. Departamental),pacoa-cor-departamental,0.03676,-70.59054
+vaupes,Papunaua(cor. Departamental),papunaua-cor-departamental,1.70556,-70.81159
+vaupes,Taraira,taraira,-0.63997,-69.95251
+vaupes,Yavaraté  (Cor. Departamental),yavarate-cor-departamental,0.8727,-69.66074
+vichada,Cumaribo,cumaribo,4.30406,-69.54597
+vichada,La Primavera,la-primavera,5.58293,-69.60881
+vichada,Puerto Carreño,puerto-carreno,5.82402,-68.14117
+vichada,Santa Rosalía,santa-rosalia,5.0296,-70.64497
