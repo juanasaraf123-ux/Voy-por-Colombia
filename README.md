@@ -6,7 +6,7 @@ Plataforma turística interactiva para descubrir la diversidad turística, gastr
 - Un mapa con límites geográficos reales de los 33 departamentos y los 1.122 municipios.
 - Un panel administrativo privado para gestionar todo el contenido sin tocar el código.
 
-> **¿Solo quieres verlo en XAMPP?** Copia la carpeta en `htdocs`, importa `database/voy_por_colombia.sql` en phpMyAdmin y abre <http://localhost/voy-por-colombia>. Las instrucciones paso a paso están en [`INSTALAR.txt`](INSTALAR.txt).
+> **¿Solo quieres verlo en XAMPP?** Copia la carpeta en `htdocs`, enciende **solo Apache** y abre <http://localhost/voy-por-colombia>. Trae su propia base de datos (SQLite), así que no necesita MySQL. Paso a paso: [`INSTALAR.txt`](INSTALAR.txt).
 
 ![Portada](docs/capturas/portada.jpg)
 
@@ -132,16 +132,19 @@ El contenido se clasifica por sección y su estructura base es la misma. Así el
 - MySQL 5.7+ o MariaDB 10.3+ (o SQLite para desarrollo).
 - Apache con `mod_rewrite`, o cualquier servidor que envíe las peticiones a `public/index.php`.
 
-### Opción A — XAMPP en 3 pasos (sin consola y sin configurar nada)
+### Opción A — XAMPP en 2 pasos (sin MySQL, sin consola, sin configurar nada)
 
-1. Copia la carpeta del proyecto a `C:\xampp\htdocs\voy-por-colombia`. En el panel de XAMPP enciende **Apache** y **MySQL** con **Start**.
-2. Abre <http://localhost/phpmyadmin>, entra en la pestaña **Importar**, elige `database/voy_por_colombia.sql` y pulsa **Importar**. Se crea sola la base `voy_por_colombia` con departamentos, municipios y el contenido de demostración.
-3. Abre <http://localhost/voy-por-colombia>. Para el panel, abre <http://localhost/voy-por-colombia/admin>. La primera vez te pide crear la cuenta de administración.
+1. Copia la carpeta del proyecto a `htdocs` (por ejemplo `C:\xampp\htdocs\voy-por-colombia`). En el panel de XAMPP pulsa **Start** solo en **Apache**.
+2. Abre <http://localhost/voy-por-colombia>. El panel está en <http://localhost/voy-por-colombia/admin> y la primera vez pide crear la cuenta de administración.
 
-No hace falta `.env` ni tocar `php.ini`. Sin `.env`, el sitio usa la configuración estándar de XAMPP: MySQL en `127.0.0.1`, usuario `root` sin contraseña. La subcarpeta se detecta sola. Si algo falta (MySQL apagado, base sin importar), la página lo explica.
+Sin `.env`, el sitio usa **SQLite**. La primera vez copia `database/voy_por_colombia.sqlite` (departamentos, municipios y contenido de demostración) a `storage/database.sqlite`, y desde ahí guarda todo. No usa MySQL, así que no interfiere con otros MySQL o PostgreSQL instalados en el equipo. La subcarpeta se detecta sola.
 
-> Importar de nuevo el `.sql` **reemplaza** todas las tablas, incluido el contenido y las cuentas creadas después.
 > El formulario web de la primera cuenta solo responde a peticiones desde el mismo computador (`localhost`) y solo mientras no exista ninguna cuenta.
+
+### Opción A2 — XAMPP con MySQL/MariaDB
+
+1. En phpMyAdmin → **Importar** → `database/voy_por_colombia.sql`. Crea la base `voy_por_colombia`. Volver a importarlo **reemplaza** todas las tablas.
+2. Crea un `.env` con `DB_DRIVER=mysql` y, si hace falta, `DB_PORT`, `DB_USER` y `DB_PASS`.
 
 ### Opción B — Con consola (MySQL/MariaDB o SQLite)
 
@@ -156,7 +159,11 @@ Abre <http://localhost:8000> y el panel en <http://localhost:8000/admin>. Para n
 
 El `.htaccess` de la raíz envía todo a `public/` y bloquea `app/`, `storage/`, `database/`, `.env`, etc.
 
-**Regenerar `database/voy_por_colombia.sql`** (solo si cambian las migraciones o los datos de demostración): en una base MySQL vacía ejecuta `php bin/install.php --demo` y luego `mysqldump --no-tablespaces --skip-dump-date voy_por_colombia`. Antepón las líneas `CREATE DATABASE`/`USE` del archivo actual y sube también `public/uploads/demo/` y `public/uploads/marca/`, porque el `.sql` apunta a esos archivos.
+**Regenerar las bases incluidas** (solo si cambian las migraciones o los datos de demostración):
+1. En una base MySQL vacía ejecuta `php bin/install.php --demo`.
+2. Ejecuta `mysqldump --no-tablespaces --skip-dump-date voy_por_colombia` y antepón las líneas `CREATE DATABASE`/`USE` del archivo actual.
+3. Ejecuta `php tools/db/build_sqlite.php`, que copia esos datos a `database/voy_por_colombia.sqlite`.
+4. Sube también `public/uploads/demo/` y `public/uploads/marca/`, porque las dos bases apuntan a esos archivos.
 
 ### Producción
 
@@ -175,9 +182,9 @@ El `.htaccess` de la raíz envía todo a `public/` y bloquea `app/`, `storage/`,
 | `APP_NAME`, `APP_URL`, `APP_BASE_PATH` | Nombre, URL pública y subcarpeta (si aplica) |
 | `APP_DEBUG` | `true` solo en desarrollo (muestra detalles de errores) |
 | `APP_TIMEZONE` | Por defecto `America/Bogota` |
-| `DB_DRIVER` | `mysql` (por defecto) o `sqlite` |
+| `DB_DRIVER` | `sqlite` (por defecto) o `mysql` |
 | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` | Conexión MySQL/MariaDB |
-| `DB_PATH` | Archivo SQLite (por defecto `storage/database.sqlite`) |
+| `DB_PATH` | Archivo SQLite (por defecto `storage/database.sqlite`, creado desde la base incluida) |
 | `SESSION_LIFETIME_MINUTES` | Inactividad máxima antes de cerrar la sesión (120) |
 | `SESSION_SECURE`, `TRUST_PROXY` | Cookies solo por HTTPS / confiar en `X-Forwarded-*` detrás de un proxy |
 | `UPLOAD_MAX_IMAGE_MB`, `UPLOAD_MAX_VIDEO_MB`, `UPLOAD_MAX_AUDIO_MB`, `UPLOAD_MAX_DOC_MB`, `IMAGE_QUALITY` | Límites de carga y calidad WebP |

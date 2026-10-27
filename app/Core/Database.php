@@ -24,8 +24,8 @@ final class Database
 
     public static function driver(): string
     {
-        // Por defecto, la configuración estándar de XAMPP (MySQL/MariaDB, usuario root sin contraseña).
-        return strtolower((string) env('DB_DRIVER', 'mysql'));
+        // Sin configuración se usa SQLite: el sitio funciona sin instalar ni tocar ningún MySQL.
+        return strtolower((string) env('DB_DRIVER', 'sqlite')) ?: 'sqlite';
     }
 
     private static function connect(): PDO
@@ -46,8 +46,18 @@ final class Database
             $pdo->exec("SET time_zone = '" . date('P') . "'");
             return $pdo;
         }
-        $path = (string) env('DB_PATH', 'storage/database.sqlite');
-        if (!str_starts_with($path, '/')) {
+        if (!extension_loaded('pdo_sqlite')) {
+            throw new \RuntimeException('La extensión pdo_sqlite de PHP no está activa.');
+        }
+        $path = (string) env('DB_PATH', '');
+        if ($path === '') {
+            // Primera vez: se copia la base incluida (departamentos, municipios y contenido de demostración).
+            $path = BASE_PATH . '/storage/database.sqlite';
+            $bundled = BASE_PATH . '/database/voy_por_colombia.sqlite';
+            if (!is_file($path) && is_file($bundled) && !copy($bundled, $path)) {
+                throw new \RuntimeException('No se pudo crear storage/database.sqlite. Revisa que la carpeta storage tenga permiso de escritura.');
+            }
+        } elseif (!preg_match('~^(/|[A-Za-z]:[\\\\/])~', $path)) {
             $path = BASE_PATH . '/' . $path;
         }
         $pdo = new PDO('sqlite:' . $path, null, null, $options);

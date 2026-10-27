@@ -1,32 +1,33 @@
-VOY POR COLOMBIA · INSTALACIÓN EN XAMPP (3 PASOS)
+VOY POR COLOMBIA · INSTALACIÓN EN XAMPP (2 PASOS)
 =================================================
 
+El sitio trae su propia base de datos dentro de la carpeta (SQLite).
+NO necesita MySQL: no toca tus otras bases de datos ni sus puertos.
+
 1) COPIAR
-   Copia esta carpeta completa a:
-       C:\xampp\htdocs\voy-por-colombia
-   Abre el panel de XAMPP (C:\xampp\xampp-control.exe) y pulsa «Start»
-   en Apache y en MySQL.
+   Copia esta carpeta completa a la carpeta htdocs de tu XAMPP 8, por ejemplo:
+       C:\xampp8.2\htdocs\voy-por-colombia
+   En el panel de XAMPP pulsa «Start» SOLO en Apache.
 
-2) IMPORTAR LA BASE DE DATOS
-   Abre en el navegador:  http://localhost/phpmyadmin
-   Pestaña «Importar» → «Seleccionar archivo» → elige
-       database\voy_por_colombia.sql
-   → botón «Importar» (abajo). La base se crea sola.
-
-3) ABRIR
+2) ABRIR
    Sitio:   http://localhost/voy-por-colombia
    Panel:   http://localhost/voy-por-colombia/admin
    La primera vez que abras el panel te pedirá crear tu cuenta de
    administración (nombre, correo, usuario y contraseña).
 
-No hace falta consola, ni archivo .env, ni tocar php.ini.
+Todo lo que crees en el panel se guarda en storage\database.sqlite.
+Para hacer una copia de seguridad, copia ese archivo y la carpeta public\uploads.
 
-Si algo falla, la página te dice qué falta:
- · «MySQL no está encendido» → pulsa Start en MySQL en el panel de XAMPP.
- · «Falta importar la base de datos» → repite el paso 2.
- · Si tu MySQL tiene contraseña para root, copia .env.example como .env
-   y escribe la contraseña en DB_PASS=.
+El contenido incluido es de DEMOSTRACIÓN y se puede quitar desde el panel
+(Configuración).
 
-Ojo: volver a importar el .sql borra lo que hayas creado después
-(contenido y cuentas). El contenido incluido es de DEMOSTRACIÓN y se
-puede quitar desde el panel.
+------------------------------------------------------------------
+OPCIONAL: usar MySQL en lugar de SQLite (por ejemplo en un hosting)
+------------------------------------------------------------------
+1. Importa database\voy_por_colombia.sql en phpMyAdmin.
+2. Crea en esta carpeta un archivo llamado .env (Bloc de notas →
+   Guardar como → Tipo «Todos los archivos») con, por ejemplo:
+       DB_DRIVER=mysql
+       DB_PORT=3306
+       DB_USER=root
+       DB_PASS=
