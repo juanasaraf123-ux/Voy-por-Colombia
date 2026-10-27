@@ -289,7 +289,7 @@ try {
     proc_terminate($server);
     // Limpieza de archivos subidos durante la prueba.
     $pdo = test_pdo();
-    foreach ($pdo->query("SELECT path, variants FROM media WHERE original_name LIKE 'foto-prueba%' OR is_demo = 1")->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    foreach ($pdo->query("SELECT path, variants FROM media WHERE original_name LIKE 'foto-prueba%' OR original_name = 'portada-paisaje.webp' OR is_demo = 1")->fetchAll(PDO::FETCH_ASSOC) as $row) {
         foreach (array_merge([$row['path']], array_values(json_decode((string) $row['variants'], true) ?: [])) as $p) {
             @unlink("$root/public/uploads/$p");
         }
