@@ -67,5 +67,8 @@ set_exception_handler(static function (Throwable $e) use ($debug): void {
         echo json_encode(['error' => 'Error interno del servidor.'] + ($debug ? ['detalle' => $e->getMessage()] : []));
         return;
     }
-    App\Core\View::errorPage(500, 'Algo salió mal', 'Tuvimos un problema al procesar tu solicitud. Inténtalo de nuevo en unos minutos.', $debug ? (string) $e : null);
+    // En el propio computador (localhost) se muestra el detalle técnico para poder corregirlo; en internet nunca.
+    $local = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)
+        && !isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !isset($_SERVER['HTTP_X_REAL_IP']) && !isset($_SERVER['HTTP_FORWARDED']);
+    App\Core\View::errorPage(500, 'Algo salió mal', 'Tuvimos un problema al procesar tu solicitud. Inténtalo de nuevo en unos minutos.', $debug || $local ? (string) $e : null);
 });
