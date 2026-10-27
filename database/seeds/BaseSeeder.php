@@ -62,6 +62,7 @@ final class BaseSeeder
             ['Naturaleza', 'leaf', '#2bb673'], ['Aventura', 'mountain', '#ff7a1a'], ['Playas', 'wave', '#12b5b0'],
             ['Patrimonio', 'columns', '#a8622f'], ['Turismo rural', 'farm', '#8fbf3a'], ['Gastronomía', 'fork', '#ff5a5f'],
             ['Cultura', 'mask', '#ff3f8e'], ['Avistamiento de fauna', 'bird', '#1d6fe0'], ['Ciudades', 'city', '#7b3fe4'],
+            ['Experiencias comunitarias', 'users', '#ff7a1a'],
         ],
         'gastronomy' => [
             ['Platos típicos', 'fork', '#ff6b2c'], ['Bebidas', 'cup', '#12b5b0'], ['Postres y dulces', 'star', '#ff3f8e'],
@@ -172,5 +173,27 @@ final class BaseSeeder
             }
             $log('Roles, regiones, categorías, secciones y colecciones listos.');
         });
+        self::brandMedia($log);
+    }
+
+    /** Imagen de portada de la marca (no es contenido de demostración). */
+    private static function brandMedia(callable $log): void
+    {
+        $file = BASE_PATH . '/database/seeds/brand/portada-paisaje.webp';
+        if (!is_file($file) || DB::value("SELECT id FROM media WHERE original_name = 'portada-paisaje.webp'")) {
+            return;
+        }
+        $data = \App\Core\MediaProcessor::importLocal($file, 'portada-paisaje.webp');
+        $id = DB::insert('media', $data + [
+            'title' => 'Paisajes de Colombia',
+            'alt_text' => 'Costa con aguas turquesa, selva, montañas y una cascada al atardecer',
+            'credit' => 'Imagen de portada · Voy por Colombia',
+            'in_gallery' => 0, 'gallery_featured' => 0, 'is_demo' => 0,
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
+        if (!\App\Models\Setting::json('hero_media_ids')) {
+            \App\Models\Setting::set('hero_media_ids', json_encode([$id]));
+        }
+        $log('Imagen de portada importada.');
     }
 }

@@ -9,7 +9,7 @@ $socials = array_filter([
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a class="brand" href="<?= e(url('/')) ?>" style="color:#fff"><?= App\Core\View::partial('logo') ?><span class="brand-text"><span class="brand-name"><?= e(setting('site_name')) ?></span><span class="brand-tag">Tierra de Infinitos</span></span></a>
+        <div style="color:#fff"><?= App\Core\View::partial('brand') ?></div>
         <p><?= e(setting('footer_text')) ?></p>
         <?php if ($socials): ?>
           <div class="socials">

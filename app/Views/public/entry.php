@@ -80,7 +80,7 @@ $lines = static fn ($k) => array_values(array_filter(array_map('trim', (array) (
       <?php endif; ?>
 
       <?php if ($text('how_to_get')): ?>
-        <section class="block"><h2><?= icon('route') ?> Cómo llegar</h2><div class="prose"><?= md($text('how_to_get')) ?></div></section>
+        <section class="block" id="como-llegar"><h2><?= icon('route') ?> Cómo llegar</h2><div class="prose"><?= md($text('how_to_get')) ?></div></section>
       <?php endif; ?>
 
       <?php if ($items = $lines('recommendations')): ?>
@@ -92,7 +92,7 @@ $lines = static fn ($k) => array_values(array_filter(array_map('trim', (array) (
       <?php endif; ?>
 
       <?php if ($images): ?>
-        <section class="block">
+        <section class="block" id="galeria">
           <h2><?= icon('camera') ?> Galería</h2>
           <div class="entry-gallery count-<?= min(4, count($images)) ?>" data-gallery-group>
             <?php foreach ($images as $m): ?>
@@ -106,7 +106,7 @@ $lines = static fn ($k) => array_values(array_filter(array_map('trim', (array) (
       <?php endif; ?>
 
       <?php if ($videos): ?>
-        <section class="block">
+        <section class="block" id="videos">
           <h2><?= icon('video') ?> Videos</h2>
           <div class="grid" style="gap:18px">
             <?php foreach ($videos as $v): ?>
@@ -126,7 +126,7 @@ $lines = static fn ($k) => array_values(array_filter(array_map('trim', (array) (
       <?php endif; ?>
 
       <?php if ($audios): ?>
-        <section class="block">
+        <section class="block" id="audio">
           <h2><?= icon('volume') ?> Escucha</h2>
           <div class="grid" style="gap:12px">
             <?php foreach ($audios as $a): ?>

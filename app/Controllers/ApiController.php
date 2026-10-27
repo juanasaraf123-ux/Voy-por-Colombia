@@ -80,6 +80,45 @@ final class ApiController
         json_response(['items' => array_values(array_filter(array_map(static fn ($id) => $byId[$id] ?? null, $ids)))]);
     }
 
+    /** Multimedia de una publicación visible, para el visor dentro del mapa. */
+    public function entryMedia(string $id): void
+    {
+        $entry = Entry::query(['ids' => [(int) $id], 'limit' => 1])[0] ?? abort(404);
+        $items = array_map(static fn ($m) => Media::toJson($m) + ['credit' => $m['credit']], Entry::media((int) $id));
+        $images = array_values(array_filter($items, static fn ($m) => $m['kind'] === 'image'));
+        if (!$images && $entry['cover']) {
+            $cover = Media::find((int) $entry['cover']['id']);
+            if ($cover) {
+                $images[] = Media::toJson($cover);
+            }
+        }
+        json_response([
+            'title' => $entry['title'],
+            'images' => $images,
+            'videos' => array_values(array_filter($items, static fn ($m) => in_array($m['kind'], ['video', 'embed'], true))),
+            'audios' => array_values(array_filter($items, static fn ($m) => $m['kind'] === 'audio')),
+        ]);
+    }
+
+    /** Rutas publicadas con las coordenadas de sus paradas (líneas animadas del mapa). */
+    public function routes(): void
+    {
+        $out = [];
+        foreach (\App\Models\Route::list(true, 50) as $r) {
+            $stops = array_values(array_filter(\App\Models\Route::stops((int) $r['id']), static fn ($s) => $s['lat'] !== null));
+            if (count($stops) < 2) {
+                continue;
+            }
+            $out[] = [
+                'id' => (int) $r['id'], 'title' => $r['title'], 'summary' => $r['summary'], 'duration' => $r['duration'], 'url' => $r['url'],
+                'image' => $r['cover'] ? media_url($r['cover'], 'medium') : null,
+                'stops' => array_map(static fn ($s) => ['id' => (int) $s['id'], 'title' => trim((string) ($s['meta']['short_name'] ?? '')) ?: $s['title'], 'lat' => (float) $s['lat'], 'lng' => (float) $s['lng'], 'url' => $s['url']], $stops),
+            ];
+        }
+        header('Cache-Control: public, max-age=60');
+        json_response(['routes' => $out]);
+    }
+
     public function department(string $slug): void
     {
         $dep = Geo::departmentBySlug($slug) ?? abort(404);
@@ -96,6 +135,7 @@ final class ApiController
             'url' => url('/departamentos/' . $dep['slug']),
             'image' => $cover ? media_url($cover, 'medium') : null,
             'municipalityCounts' => array_column($counts, 'total', 'slug'),
+            'photos' => array_map([Media::class, 'toJson'], Media::list(['kind' => 'image', 'department_id' => $dep['id'], 'limit' => 8])),
             'total' => Entry::count(['department_id' => $dep['id']]),
         ]);
     }

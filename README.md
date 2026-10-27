@@ -8,13 +8,27 @@ Plataforma turística interactiva para descubrir la diversidad turística, gastr
 
 ![Portada](docs/capturas/portada.jpg)
 
-| Mapa y categorías | Explorador de Turismo |
+| Mapa con rutas animadas | Visor multimedia dentro del mapa |
 |---|---|
-| ![Mapa](docs/capturas/mapa-y-categorias.jpg) | ![Explorador](docs/capturas/explorador-turismo.jpg) |
-| **Ficha de destino** | **Panel administrativo** |
-| ![Ficha](docs/capturas/ficha-destino.jpg) | ![Panel](docs/capturas/panel.jpg) |
+| ![Rutas](docs/capturas/mapa-rutas.jpg) | ![Visor](docs/capturas/visor-multimedia.jpg) |
+| **Explorador de Turismo («Modo exploración»)** | **Panel administrativo** |
+| ![Explorador](docs/capturas/explorador-turismo.jpg) | ![Panel](docs/capturas/panel.jpg) |
+
+![Ficha de destino](docs/capturas/ficha-destino.jpg)
 
 ![Versión móvil](docs/capturas/movil.jpg)
+
+### El mapa como protagonista
+
+La portada sigue el diseño «Colombia te espera» e integra el mapa interactivo en la primera pantalla:
+
+- **Estilo cartográfico ilustrado.** Cada departamento tiene su propio color y el relieve muestra las tres cordilleras, la Sierra Nevada y las serranías, con líneas de contorno tipo grabado. La textura la genera `tools/geo/build_relief.py` y se ajusta a los límites geográficos reales.
+- **Niveles:** Colombia → departamento (cambia la vista, muestra su contenido y sus fotos) → municipio (lista de sus lugares) → destino.
+- **Puntos vivos.** Los marcadores están animados y tienen un ícono según el tipo de lugar: cascada, mirador, sendero, playa, restaurante, festividad, finca, mercado, experiencia comunitaria, etc. El tipo se elige al editar cada publicación.
+- **Ventanas multimedia.** La tarjeta del lugar abre la galería, el video y el audio en un visor **sin salir del mapa**, e incluye «Cómo llegar» y «Ver más».
+- **Modo descubrimiento.** Filtros por naturaleza, aventura, patrimonio, gastronomía, playas, turismo rural y experiencias comunitarias.
+- **Rutas visuales.** Las rutas curadas se dibujan como líneas animadas que conectan sus paradas, en la portada y en el explorador.
+- **Modo claro y oscuro** con el selector lateral.
 
 ---
 
@@ -24,7 +38,7 @@ Plataforma turística interactiva para descubrir la diversidad turística, gastr
 
 | Página | Ruta | Funcionalidad |
 |---|---|---|
-| Inicio | `/` | Portada cinematográfica con imágenes rotativas o video, mapa interactivo con panel de lugar, mosaico de 7 categorías, destinos destacados, joyas poco conocidas, experiencias, próximas festividades, rutas, noticias, galería y cierre |
+| Inicio | `/` | Portada «Colombia te espera» con el mapa ilustrado integrado (filtros, tarjeta multimedia, rutas animadas), destinos destacados, beneficios, mosaico de 7 categorías, joyas poco conocidas, experiencias, próximas festividades, rutas, noticias, galería y cierre |
 | Turismo | `/turismo` | Explorador **Colombia → departamento → municipio → destino**: zoom, marcadores con foto agrupados, filtros por categoría y por capa (destinos, café, sabores, cultura, emprendimientos), búsqueda, «cerca de mí», panel multimedia, favoritos y ruta personal dibujada en el mapa |
 | Ficha | `/turismo/{slug}` (y equivalentes por sección) | Foto principal, galería con visor, videos (archivo o YouTube/Vimeo), audios, PDF, datos clave, mapa de ubicación, lugares cercanos (distancia real) y botón de compartir |
 | Gastronomía | `/gastronomia` | Mosaico de platos; filtros por región, departamento, municipio, tipo y búsqueda; fichas con ingredientes, preparación paso a paso e historia |
@@ -86,7 +100,7 @@ voy-por-colombia/
 │   └── uploads/               Archivos subidos (PHP deshabilitado por .htaccess)
 ├── storage/                   Base SQLite, sesiones y registros (no accesible por web)
 ├── bin/                       install.php, migrate.php, create-admin.php, remove-demo.php
-├── tests/run.php              Pruebas de extremo a extremo (73 verificaciones)
+├── tests/run.php              Pruebas de extremo a extremo (76 verificaciones)
 └── tools/                     Scripts para regenerar los datos geográficos y las ilustraciones
 ```
 
@@ -237,7 +251,7 @@ Los permisos se verifican **en el servidor** en cada acción (`Auth::require` / 
 php tests/run.php
 ```
 
-Las pruebas crean una base de datos temporal, levantan el servidor embebido y verifican **73 escenarios**. No tocan la base de datos del proyecto. Cubren:
+Las pruebas crean una base de datos temporal, levantan el servidor embebido y verifican **76 escenarios**. No tocan la base de datos del proyecto. Cubren:
 
 - Todas las páginas públicas.
 - Visibilidad de borradores, contenido programado y archivado.
@@ -262,7 +276,9 @@ TEST_DB_DRIVER=mysql TEST_DB_NAME=vpc_test TEST_DB_USER=usuario TEST_DB_PASS=cla
 
 - **Límites de departamentos y municipios:** [geoBoundaries](https://www.geoboundaries.org) (gbOpen, COL ADM1/ADM2), derivados de **OpenStreetMap** bajo licencia **ODbL 1.0**. La atribución aparece en el mapa y en el pie de página. Se simplificaron para la web y cada municipio se asoció a su departamento por relación espacial. Para regenerarlos se usa `tools/geo/build_geo.py` (instrucciones en el encabezado del script).
 - **Biblioteca cartográfica:** Leaflet 1.9.4 y Leaflet.markercluster 1.5.3, servidas localmente (licencias BSD-2 y MIT incluidas).
-- **Fuentes:** Fraunces y Plus Jakarta Sans, servidas localmente (licencia OFL, incluida).
+- **Fuentes:** Fraunces, Plus Jakarta Sans, Kaushan Script y Caveat, servidas localmente (licencia OFL, incluida).
+- **Imagen de portada:** `database/seeds/brand/portada-paisaje.webp`, proporcionada por el equipo de Voy por Colombia. Se importa en la instalación base (no es contenido de demostración) y se puede cambiar en **Panel › Página de inicio**.
+- **Relieve ilustrado:** `public/assets/img/relief/colombia-relief.webp`, generado con `python3 tools/geo/build_relief.py` (requiere numpy y Pillow). Es una ilustración y no un modelo de elevación exacto.
 - **No se requiere ninguna clave ni API externa.** El mapa funciona solo con los polígonos.
 - **Capa opcional de calles y relieve:** define `MAP_TILE_URL` y `MAP_TILE_ATTRIBUTION` en `.env`. Aparece entonces el botón «Relieve y calles» y la política de seguridad permite ese dominio. Los servidores públicos de OpenStreetMap tienen una [política de uso](https://operations.osmfoundation.org/policies/tiles/) que no admite tráfico alto. Para producción conviene un proveedor de teselas (MapTiler, Stadia, Thunderforest, etc.) con su propia clave en la URL.
 - **Videos de YouTube y Vimeo:** se incrustan con `youtube-nocookie.com` y `player.vimeo.com`. No requieren clave.
@@ -274,6 +290,7 @@ TEST_DB_DRIVER=mysql TEST_DB_NAME=vpc_test TEST_DB_USER=usuario TEST_DB_PASS=cla
 `php bin/install.php --demo` carga contenido **claramente identificado** como demostración (`is_demo = 1`):
 
 - **51 ilustraciones originales** generadas por código (`tools/demo-art/`). No son fotografías ni obras de terceros, y llevan el crédito «Ilustración de demostración».
+- **Un video corto y un audio de demostración**, generados con ffmpeg a partir de las ilustraciones. Sirven para probar el visor multimedia y el botón «Ver video» de la portada.
 - **Destinos, platos y festividades reales** descritos de forma general, con una nota que invita a verificar condiciones y fechas. Las fechas de eventos son de referencia.
 - **Emprendimientos, la finca y las noticias son ficticios.** En el sitio se muestran con la etiqueta «Demostración» y sus datos de contacto usan `example.com`.
 
@@ -285,10 +302,12 @@ Para retirarlo: **Panel › Configuración › Eliminar demostración**, o `php 
 
 **Verificado en este entorno:**
 
-- Instalación limpia con SQLite y con MariaDB 10.11 (modo `ONLY_FULL_GROUP_BY`). Las 73 pruebas pasan en ambos motores.
+- Instalación limpia con SQLite y con MariaDB 10.11 (modo `ONLY_FULL_GROUP_BY`). Las 76 pruebas pasan en ambos motores.
 - Apache 2.4 con `mod_rewrite` en subcarpeta (como XAMPP): rutas, recursos, sesión, bloqueo de carpetas internas y de PHP en `uploads`.
 - Revisión visual en escritorio (1440 px) y móvil (390 px) con Chromium.
 - Pruebas en navegador del explorador (departamento → municipio → destino), el selector multimedia, el selector de coordenadas y la publicación desde el panel. No hubo errores de JavaScript.
+
+**Decisión de diseño a confirmar:** el menú del diseño de referencia tiene 5 opciones (Inicio, Explora, Rutas, Experiencias, Sobre Colombia). Se mantuvieron las **8 secciones** del requerimiento (Inicio, Turismo, Gastronomía, Café, Emprendimiento, Cultura, Galería, Noticias), con el estilo visual del diseño: íconos, subrayado activo, buscador en píldora y acceso de usuario. Rutas, favoritos y la ruta personal siguen accesibles desde los íconos del encabezado.
 
 **Requiere acción de tu parte:**
 

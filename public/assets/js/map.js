@@ -89,122 +89,6 @@
   }
 
   // =====================================================================
-  // Mapa de la portada
-  // =====================================================================
-  async function initHomeMap(el) {
-    const panel = $('[data-place-panel]');
-    const legend = $('[data-map-legend]', el);
-    const { VPC } = window;
-    const map = baseMap(el, { scrollWheelZoom: false });
-    islandsControl(map);
-    const [deps, data] = await Promise.all([
-      getJSON(geoUrl('departamentos.geojson')),
-      getJSON(apiUrl('/mapa?secciones=tourism,culture,coffee,gastronomy')),
-    ]);
-    const depInfo = JSON.parse(el.dataset.regions || '{}');
-    Object.assign(REGION_COLORS, depInfo);
-
-    const counts = data.counts || {};
-    let selectedLayer = null;
-    let munLayer = null;
-    const depLayer = L.geoJSON(deps, {
-      style: (f) => departmentStyle(f, counts),
-      onEachFeature: (f, layer) => {
-        const n = counts[f.properties.slug] || 0;
-        layer.bindTooltip(`${VPC.esc(f.properties.name)}<small>${n ? n + (n === 1 ? ' lugar' : ' lugares') : 'Por descubrir'}</small>`, { className: 'dep-tooltip', sticky: true, direction: 'top' });
-        layer.on({
-          mouseover: () => { if (layer !== selectedLayer) layer.setStyle({ fillOpacity: 0.85, weight: 2.4 }); },
-          mouseout: () => { if (layer !== selectedLayer) depLayer.resetStyle(layer); },
-          click: () => selectDepartment(f, layer),
-        });
-      },
-    }).addTo(map);
-
-    const markers = clusterGroup();
-    data.markers.forEach((m) => {
-      const mk = L.marker([m.lat, m.lng], { icon: photoIcon(m), title: m.title, riseOnHover: true });
-      mk.on('click', () => showPlace(m));
-      markers.addLayer(mk);
-    });
-    map.addLayer(markers);
-
-    function showPlace(m) {
-      if (!panel) return;
-      panel.innerHTML = `
-        <div class="place-panel-media">${m.image ? `<img src="${VPC.esc(m.image)}" alt="${VPC.esc(m.title)}">` : ''}
-          <div class="badges"><span class="badge badge-section" style="--c:${m.color}">${VPC.esc(m.sectionLabel)}</span>${m.hiddenGem ? `<span class="badge badge-gem">${VPC.icon('sparkle')} Joya escondida</span>` : ''}</div></div>
-        <div class="place-panel-body">
-          <span class="place-loc">${VPC.icon('pin')} ${VPC.esc([m.municipality, m.department].filter(Boolean).join(', '))}</span>
-          <h3>${VPC.esc(m.title)}</h3>
-          <p>${VPC.esc(m.summary)}</p>
-          ${m.activities.length ? `<div class="drawer-acts">${m.activities.map((a) => `<span>${VPC.esc(a)}</span>`).join('')}</div>` : ''}
-          <div class="place-panel-actions">
-            <a class="btn btn-primary" href="${VPC.esc(m.url)}">Descubrir ${VPC.icon('arrow-right', 'icon icon-arrow')}</a>
-            <button class="btn btn-outline btn-icon fav-btn" type="button" data-fav="${m.id}" aria-label="Guardar en favoritos"><span class="off">${VPC.icon('heart')}</span><span class="on">${VPC.icon('heart-fill')}</span></button>
-            <button class="btn btn-outline" type="button" data-route-toggle="${m.id}">${VPC.icon('plus')} <span data-label>Agregar a mi ruta</span></button>
-          </div>
-        </div>`;
-      VPC.Favs.paint();
-      VPC.MyRoute.paint();
-    }
-
-    async function selectDepartment(f, layer) {
-      if (selectedLayer) depLayer.resetStyle(selectedLayer);
-      selectedLayer = layer;
-      layer.setStyle({ fillOpacity: 0.15, weight: 3, color: '#14231f' });
-      map.flyToBounds(layer.getBounds(), { padding: [30, 30], duration: 1 });
-      if (munLayer) map.removeLayer(munLayer);
-      try {
-        const mun = await getJSON(geoUrl('municipios/' + f.properties.slug + '.geojson'));
-        munLayer = L.geoJSON(mun, {
-          style: { color: '#14231f', weight: 0.7, opacity: 0.5, fillOpacity: 0 },
-          onEachFeature: (mf, ml) => ml.bindTooltip(VPC.esc(mf.properties.name), { className: 'dep-tooltip', sticky: true }),
-          interactive: true,
-        }).addTo(map);
-        markers.bringToFront?.();
-      } catch (e) { /* sin municipios */ }
-      try {
-        const info = await getJSON(apiUrl('/departamentos/' + f.properties.slug));
-        const places = data.markers.filter((m) => m.departmentSlug === f.properties.slug);
-        panel.innerHTML = `
-          <div class="place-panel-media">${info.image ? `<img src="${VPC.esc(info.image)}" alt="${VPC.esc(info.name)}">` : ''}<div class="badges"><span class="badge" style="background:${info.regionColor};color:#fff">Región ${VPC.esc(info.region || '')}</span></div></div>
-          <div class="place-panel-body">
-            <span class="place-loc">${VPC.icon('map')} Capital: ${VPC.esc(info.capital || '—')}</span>
-            <h3>${VPC.esc(info.name)}</h3>
-            <p>${VPC.esc(info.summary || '')}</p>
-            <div class="place-list">${places.slice(0, 4).map((m) => `<button class="place-mini" type="button" data-place="${m.id}"><img src="${VPC.esc(m.thumb || '')}" alt=""><span><strong>${VPC.esc(m.title)}</strong><small>${VPC.esc(m.sectionLabel)}${m.municipality ? ' · ' + VPC.esc(m.municipality) : ''}</small></span></button>`).join('') || '<p class="muted">Aún no hay lugares publicados aquí. ¡Pronto!</p>'}</div>
-            <div class="place-panel-actions">
-              <a class="btn btn-primary" href="${VPC.esc(info.url)}">Ver ${VPC.esc(info.name)} ${VPC.icon('arrow-right', 'icon icon-arrow')}</a>
-              <a class="btn btn-outline" href="${VPC.esc(cfg().base.replace(/\/$/, '') + '/turismo?departamento=' + info.slug)}">${VPC.icon('compass')} Explorar</a>
-            </div>
-          </div>`;
-        $$('[data-place]', panel).forEach((b) => b.addEventListener('click', () => {
-          const m = data.markers.find((x) => x.id === Number(b.dataset.place));
-          if (m) { map.flyTo([m.lat, m.lng], 10, { duration: 1 }); showPlace(m); }
-        }));
-      } catch (e) { /* sin información */ }
-    }
-
-    // Leyenda de regiones
-    if (legend && el.dataset.regionList) {
-      const regionsList = JSON.parse(el.dataset.regionList);
-      legend.innerHTML = regionsList.map((r) => `<button type="button" style="--c:${r.color}" data-region="${r.slug}"><i></i>${window.VPC.esc(r.name)}</button>`).join('')
-        + `<button type="button" data-region="" style="--c:#14231f"><i></i>Todo el país</button>`;
-      legend.addEventListener('click', (e) => {
-        const b = e.target.closest('[data-region]');
-        if (!b) return;
-        if (selectedLayer) { depLayer.resetStyle(selectedLayer); selectedLayer = null; }
-        if (munLayer) { map.removeLayer(munLayer); munLayer = null; }
-        if (!b.dataset.region) { map.flyToBounds(BOUNDS_MAINLAND, { duration: 1 }); return; }
-        if (b.dataset.region === 'insular') { map.flyTo(SAN_ANDRES, 9, { duration: 1.2 }); return; }
-        const slugs = regionsList.find((r) => r.slug === b.dataset.region)?.departments || [];
-        const layers = depLayer.getLayers().filter((l) => slugs.includes(l.feature.properties.slug));
-        if (layers.length) map.flyToBounds(L.featureGroup(layers).getBounds(), { padding: [20, 20], duration: 1 });
-      });
-    }
-  }
-
-  // =====================================================================
   // Explorador de Turismo
   // =====================================================================
   async function initExplorer(root) {
@@ -232,20 +116,39 @@
     const cluster = clusterGroup();
     map.addLayer(cluster);
 
+    const reliefStyle = () => ({ color: 'rgba(255,255,255,0.8)', weight: 1, fillColor: 'url(#vpc-relief)', fillOpacity: 1, opacity: 1 });
     const depLayer = L.geoJSON(deps, {
-      style: (f) => departmentStyle(f, data.counts),
+      style: reliefStyle,
       onEachFeature: (f, layer) => {
         layer.bindTooltip(() => {
           const n = data.counts[f.properties.slug] || 0;
           return `${VPC.esc(f.properties.name)}<small>${n ? n + (n === 1 ? ' lugar' : ' lugares') : 'Por descubrir'}</small>`;
         }, { className: 'dep-tooltip', sticky: true, direction: 'top' });
         layer.on({
-          mouseover: () => { if (layer !== selectedDepLayer) layer.setStyle({ fillOpacity: 0.85, weight: 2.4 }); },
+          mouseover: () => { if (layer !== selectedDepLayer) layer.setStyle({ fillOpacity: 0.86, weight: 2.5, color: '#fff' }); },
           mouseout: () => { if (layer !== selectedDepLayer) depLayer.resetStyle(layer); },
           click: () => selectDep(f.properties.slug),
         });
       },
     }).addTo(map);
+    applyRelief(map, el);
+    addMapNotes(map);
+
+    // Rutas animadas
+    let routes = null;
+    const routesBtn = $('[data-explorer-routes]', root);
+    routesBtn?.addEventListener('click', async () => {
+      const on = routesBtn.getAttribute('aria-pressed') !== 'true';
+      routesBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (!routes) {
+        routes = await routesLayer(map, (r) => {
+          drawer.innerHTML = `<div class="drawer-body"><button class="icon-btn drawer-close" type="button" data-drawer-close aria-label="Cerrar" style="justify-self:end">${VPC.icon('close')}</button>${routeCardHtml(r)}</div>`;
+          drawer.classList.add('is-open');
+          drawer.setAttribute('aria-hidden', 'false');
+        });
+      }
+      if (on) { routes.addTo(map); map.flyToBounds(routes.getBounds(), { padding: [40, 40], duration: 0.9 }); } else map.removeLayer(routes);
+    });
 
     // Capa base opcional
     const tilesBtn = $('[data-tiles-toggle]', root);
@@ -263,15 +166,16 @@
       cluster.clearLayers();
       markerById.clear();
       data.markers.forEach((m) => {
-        const mk = L.marker([m.lat, m.lng], { icon: photoIcon(m), title: m.title, riseOnHover: true });
+        const mk = L.marker([m.lat, m.lng], { icon: pinIcon(m), title: m.title, riseOnHover: true });
+        mk.bindTooltip(`${VPC.esc(m.shortName)}<small>${VPC.esc(m.pointType || m.catName)}</small>`, { className: 'dep-tooltip', direction: 'top', offset: [0, -40] });
         mk.on('click', () => openPlace(m.id, true));
         markerById.set(m.id, { m, mk });
       });
-      depLayer.setStyle((f) => (selectedDepLayer && selectedDepLayer.feature === f ? selectedStyle() : departmentStyle(f, data.counts)));
+      depLayer.setStyle((f) => (selectedDepLayer && selectedDepLayer.feature === f ? selectedStyle() : reliefStyle()));
       render();
     }
 
-    function selectedStyle() { return { fillOpacity: 0.08, weight: 3, color: '#14231f' }; }
+    function selectedStyle() { return { fillOpacity: 1, weight: 3, color: '#ffd447' }; }
 
     function matches(m) {
       if (state.dep && m.departmentSlug !== state.dep.slug) return false;
@@ -347,7 +251,7 @@
         state.dep.info = info;
         const counts = info.municipalityCounts || {};
         munLayer = L.geoJSON(mun, {
-          style: (f) => ({ color: '#14231f', weight: 0.8, opacity: 0.55, fillColor: '#ffc531', fillOpacity: counts[f.properties.slug] ? 0.35 : 0.04 }),
+          style: (f) => ({ color: 'rgba(255,255,255,0.9)', weight: 0.8, opacity: 1, fillColor: '#ffd447', fillOpacity: counts[f.properties.slug] ? 0.3 : 0 }),
           onEachFeature: (f, ml) => {
             const n = counts[f.properties.slug] || 0;
             ml.bindTooltip(`${VPC.esc(f.properties.name)}${n ? `<small>${n} ${n === 1 ? 'lugar' : 'lugares'}</small>` : ''}`, { className: 'dep-tooltip', sticky: true });
@@ -404,6 +308,7 @@
           <span class="place-loc">${VPC.icon('pin')} ${VPC.esc([m.municipality, m.department].filter(Boolean).join(', '))}</span>
           <h2>${VPC.esc(m.title)}</h2>
           <p>${VPC.esc(m.summary)}</p>
+          <div class="spot-actions drawer-media-actions">${mediaButtons(m)}<a href="https://www.openstreetmap.org/directions?to=${m.lat},${m.lng}" target="_blank" rel="noopener"><span>${VPC.icon('route')}</span>Cómo llegar</a></div>
           ${m.activities.length ? `<div><strong style="font-size:.85rem">Actividades</strong><div class="drawer-acts" style="margin-top:8px">${m.activities.map((a) => `<span>${VPC.esc(a)}</span>`).join('')}</div></div>` : ''}
           <div class="drawer-actions">
             <a class="btn btn-primary" href="${VPC.esc(m.url)}">Ver ficha completa ${VPC.icon('arrow-right', 'icon icon-arrow')}</a>
@@ -547,12 +452,334 @@
     return { draw, map };
   }
 
+  // =====================================================================
+  // Mapa en relieve de la portada (diseño «Colombia te espera»)
+  // =====================================================================
+  const RELIEF_BOUNDS = [[12.7, -79.2], [-4.4, -66.7]]; // Debe coincidir con tools/geo/build_relief.py
+  const SECTION_ALIAS = { gastronomia: 'gastronomy', cultura: 'culture', cafe: 'coffee' };
+
+  /** Textura de relieve ilustrada como patrón SVG anclado a los límites geográficos. */
+  function applyRelief(map, el) {
+    const svg = el.querySelector('.leaflet-overlay-pane svg');
+    if (!svg || svg.querySelector('#vpc-relief')) return;
+    const ns = 'http://www.w3.org/2000/svg';
+    const defs = document.createElementNS(ns, 'defs');
+    const pattern = document.createElementNS(ns, 'pattern');
+    pattern.setAttribute('id', 'vpc-relief');
+    pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+    const image = document.createElementNS(ns, 'image');
+    image.setAttribute('href', cfg().base.replace(/\/$/, '') + '/assets/img/relief/colombia-relief.webp');
+    image.setAttribute('preserveAspectRatio', 'none');
+    pattern.appendChild(image);
+    defs.appendChild(pattern);
+    svg.insertBefore(defs, svg.firstChild);
+    const place = () => {
+      const nw = map.latLngToLayerPoint(RELIEF_BOUNDS[0]);
+      const se = map.latLngToLayerPoint(RELIEF_BOUNDS[1]);
+      for (const [k, v] of [['x', nw.x], ['y', nw.y], ['width', se.x - nw.x], ['height', se.y - nw.y]]) pattern.setAttribute(k, v);
+      image.setAttribute('width', se.x - nw.x);
+      image.setAttribute('height', se.y - nw.y);
+    };
+    place();
+    map.on('zoomend viewreset', place);
+  }
+
+  /** Rótulos manuscritos de mares y países vecinos. */
+  function addMapNotes(map) {
+    const arrow = (d) => `<svg viewBox="0 0 34 20"><path d="${d}"/></svg>`;
+    [
+      [[10.6, -77.7], 'Mar Caribe', 'sea', arrow('M4 10 q6 -6 12 0 t12 0')],
+      [[5.4, -78.5], 'Océano<br>Pacífico', 'sea', arrow('M4 10 q6 -6 12 0 t12 0')],
+      [[8.8, -68.3], 'Venezuela', '', arrow('M30 4 C 22 6, 12 10, 6 16 M6 16 l1 -7 M6 16 l7 -1')],
+      [[-0.2, -69.0], 'Brasil', '', arrow('M24 2 C 22 8, 18 12, 12 17 M12 17 l1 -7 M12 17 l7 -2')],
+      [[-0.9, -78.0], 'Ecuador', '', arrow('M28 4 C 20 8, 14 12, 6 16 M6 16 l2 -7 M6 16 l7 0')],
+      [[-3.3, -73.6], 'Perú', '', arrow('M4 4 C 12 8, 20 12, 28 16 M28 16 l-7 0 M28 16 l-2 -7')],
+    ].forEach(([ll, text, cls, svgArrow]) => {
+      L.marker(ll, { interactive: false, keyboard: false, icon: L.divIcon({ className: '', iconSize: [120, 50], iconAnchor: [60, 25], html: `<div class="map-note ${cls}">${text}${svgArrow}</div>` }) }).addTo(map);
+    });
+  }
+
+  function pinIcon(m, selected = false) {
+    const { icon } = window.VPC;
+    if (m.featured && m.thumb && m.section === 'tourism') {
+      return L.divIcon({ className: '', iconSize: [62, 72], iconAnchor: [31, 72], html: `<div class="photo-bubble ${selected ? 'is-selected' : ''}"><img src="${window.VPC.esc(m.thumb)}" alt=""></div>` });
+    }
+    const c = m.catColor || m.color;
+    return L.divIcon({
+      className: '', iconSize: [34, 44], iconAnchor: [17, 44],
+      html: `<div class="pin-marker ${selected ? 'is-selected' : ''}" style="--pc:${c};--d:${(m.id % 7) * 0.35}s"><svg class="pin-bg" viewBox="0 0 34 44"><path d="M17 43 C 17 43, 2 27, 2 16 A 15 15 0 0 1 32 16 C 32 27, 17 43, 17 43 Z" fill="${c}" stroke="#fff" stroke-width="2"/></svg>${icon(m.pointIcon || m.icon || 'pin')}</div>`,
+    });
+  }
+
+  /** Botones de multimedia que abren el visor sin salir del mapa. */
+  function mediaButtons(m) {
+    const { icon } = window.VPC;
+    const btn = (kind, ic, label, n) => `<button type="button" data-media-open="${kind}" data-entry="${m.id}" class="${n ? '' : 'is-off'}" ${n ? '' : 'disabled'}><span>${icon(ic)}</span>${label}</button>`;
+    return btn('image', 'camera', 'Galería', 1) + btn('video', 'play', 'Video', m.media?.video) + btn('audio', 'volume', 'Audio', m.media?.audio);
+  }
+
+  function spotCardHtml(m) {
+    const { esc, icon } = window.VPC;
+    const loc = m.municipality && m.municipality !== m.department ? `${m.municipality}, ${m.department}` : (m.department || '');
+    const dir = m.lat !== null ? `https://www.openstreetmap.org/directions?to=${m.lat},${m.lng}` : m.url;
+    return `<article class="spot-card" style="--c:${m.catColor}">
+      <div class="spot-media">${m.large ? `<img src="${esc(m.large)}" alt="${esc(m.shortName)}">` : ''}
+        <span class="spot-chip">${icon(m.icon)} ${esc(m.catName)}</span>
+        <button class="spot-fav fav-btn" type="button" data-fav="${m.id}" aria-label="Guardar en favoritos"><span class="off">${icon('heart')}</span><span class="on">${icon('heart-fill')}</span></button>
+        ${m.media.video ? `<button class="spot-play" type="button" data-media-open="video" data-entry="${m.id}" aria-label="Ver video">${icon('play')}</button>` : ''}
+        <div class="spot-title"><h3>${esc(m.shortName)}</h3>${loc ? `<span>${icon('pin')} ${esc(loc)}</span>` : ''}</div>
+      </div>
+      <div class="spot-body">
+        ${m.tagline ? `<h4>${esc(m.tagline)}</h4>` : ''}
+        <p>${esc(m.summary)}</p>
+        <div class="spot-actions">
+          ${mediaButtons(m)}
+          <a href="${esc(dir)}" target="_blank" rel="noopener"><span>${icon('route')}</span>Cómo llegar</a>
+        </div>
+        <a class="btn-yellow" href="${esc(m.url)}">Ver más ${icon('chevron-right')}</a>
+      </div></article>`;
+  }
+
+  function placesListHtml(places) {
+    const { esc } = window.VPC;
+    return `<div class="spot-places">${places.map((p) => `<button type="button" data-place="${p.id}"><img src="${esc(p.thumb || '')}" alt=""><span><strong>${esc(p.shortName)}</strong><small>${esc(p.pointType || p.catName)}${p.municipality ? ' · ' + esc(p.municipality) : ''}</small></span></button>`).join('')}</div>`;
+  }
+
+  function depCardHtml(info, places) {
+    const { esc, icon } = window.VPC;
+    const photos = (info.photos || []).slice(0, 4);
+    return `<article class="spot-card" style="--c:${info.regionColor || '#2bb673'}">
+      <div class="spot-media">${info.image ? `<img src="${esc(info.image)}" alt="${esc(info.name)}">` : ''}
+        <span class="spot-chip">${icon('map')} Región ${esc(info.region || '')}</span>
+        <div class="spot-title"><h3>${esc(info.name)}</h3><span>${icon('pin')} Capital: ${esc(info.capital || '—')}</span></div>
+      </div>
+      <div class="spot-body">
+        <button type="button" class="spot-back" data-spot-back>${icon('arrow-left')} Todo el país</button>
+        <p>${esc(info.summary || '')}</p>
+        ${photos.length ? `<div class="spot-thumbs" data-gallery-group>${photos.map((ph) => `<button type="button" data-lightbox-item='${esc(JSON.stringify(ph))}' aria-label="Ampliar ${esc(ph.title || '')}"><img src="${esc(ph.thumb)}" alt=""></button>`).join('')}</div>` : ''}
+        ${places.length ? placesListHtml(places) : '<p><strong>Muy pronto agregaremos lugares aquí.</strong></p>'}
+        <p style="font-size:.8rem;opacity:.75">Toca un municipio en el mapa para acercarte.</p>
+        <a class="btn-yellow" href="${esc(info.url)}">Descubrir ${esc(info.name)} ${icon('chevron-right')}</a>
+      </div></article>`;
+  }
+
+  function munCardHtml(name, depName, places) {
+    const { esc, icon } = window.VPC;
+    return `<article class="spot-card" style="--c:#ff7a1a">
+      <div class="spot-body">
+        <button type="button" class="spot-back" data-spot-dep>${icon('arrow-left')} ${esc(depName)}</button>
+        <span class="spot-chip" style="position:static;width:max-content">${icon('pin')} Municipio</span>
+        <h4 style="font-size:1.6rem">${esc(name)}</h4>
+        ${places.length ? placesListHtml(places) : '<p>Aún no hay lugares publicados en este municipio. ¡Pronto!</p>'}
+      </div></article>`;
+  }
+
+  function routeCardHtml(r) {
+    const { esc, icon } = window.VPC;
+    return `<article class="spot-card" style="--c:#ff3f8e">
+      <div class="spot-media">${r.image ? `<img src="${esc(r.image)}" alt="${esc(r.title)}">` : ''}
+        <span class="spot-chip">${icon('route')} Ruta${r.duration ? ' · ' + esc(r.duration) : ''}</span>
+        <div class="spot-title"><h3>${esc(r.title)}</h3></div>
+      </div>
+      <div class="spot-body">
+        <p>${esc(r.summary || '')}</p>
+        <ol class="spot-stops">${r.stops.map((st) => `<li>${esc(st.title)}</li>`).join('')}</ol>
+        <a class="btn-yellow" href="${esc(r.url)}">Ver la ruta ${icon('chevron-right')}</a>
+      </div></article>`;
+  }
+
+  const ROUTE_COLORS = ['#ff3f8e', '#ffd447', '#12b5b0', '#ff7a1a', '#7b3fe4'];
+
+  /** Dibuja las rutas curadas como líneas animadas. Devuelve la capa. */
+  async function routesLayer(map, onPick) {
+    const data = await getJSON(apiUrl('/rutas'));
+    const group = L.featureGroup();
+    data.routes.forEach((r, i) => {
+      const c = ROUTE_COLORS[i % ROUTE_COLORS.length];
+      const pts = r.stops.map((st) => [st.lat, st.lng]);
+      L.polyline(pts, { color: '#05202c', weight: 8, opacity: 0.35, interactive: false }).addTo(group);
+      const line = L.polyline(pts, { color: c, weight: 4, opacity: 0.95, className: 'route-anim' }).addTo(group);
+      line.bindTooltip(window.VPC.esc(r.title), { className: 'dep-tooltip', sticky: true });
+      line.on('click', () => onPick && onPick(r));
+      r.stops.forEach((st) => L.marker([st.lat, st.lng], { interactive: false, icon: L.divIcon({ className: '', iconSize: [14, 14], iconAnchor: [7, 7], html: `<div class="route-stop-dot" style="--rc:${c}"></div>` }) }).addTo(group));
+    });
+    group._routes = data.routes;
+    return group;
+  }
+
+  async function initHeroMap(el) {
+    const { VPC } = window;
+    const spot = document.querySelector('[data-spot]');
+    Object.assign(REGION_COLORS, JSON.parse(el.dataset.regions || '{}'));
+    const map = L.map(el, {
+      zoomControl: false, attributionControl: true, scrollWheelZoom: false, zoomSnap: 0.1, minZoom: 4, maxZoom: 12,
+      maxBounds: [[-9, -86], [17, -62]], maxBoundsViscosity: 0.8, tap: true,
+    });
+    map.attributionControl.setPrefix(false);
+    map.attributionControl.addAttribution('Límites: <a href="https://www.geoboundaries.org" target="_blank" rel="noopener">geoBoundaries</a> · © OpenStreetMap');
+    const fit = () => map.fitBounds(BOUNDS_MAINLAND, { paddingTopLeft: [24, 70], paddingBottomRight: [24, 24] });
+    fit();
+
+    const [deps, data] = await Promise.all([
+      getJSON(geoUrl('departamentos.geojson')),
+      getJSON(apiUrl('/mapa?secciones=tourism,culture,gastronomy,coffee')),
+    ]);
+    const counts = data.counts || {};
+    let selectedDep = null;
+    const baseStyle = () => ({ color: 'rgba(255,255,255,0.75)', weight: 1, fillColor: 'url(#vpc-relief)', fillOpacity: 1, opacity: 1 });
+    const depLayer = L.geoJSON(deps, {
+      style: baseStyle,
+      onEachFeature: (f, layer) => {
+        const n = counts[f.properties.slug] || 0;
+        layer.bindTooltip(`${VPC.esc(f.properties.name)}<small>${n ? n + (n === 1 ? ' lugar' : ' lugares') : 'Por descubrir'}</small>`, { className: 'dep-tooltip', sticky: true, direction: 'top' });
+        layer.on({
+          mouseover: () => { if (layer !== selectedDep) layer.setStyle({ weight: 2.5, color: '#ffffff', fillOpacity: 0.86 }); },
+          mouseout: () => { if (layer !== selectedDep) layer.setStyle(baseStyle()); },
+          click: () => selectDep(f, layer),
+        });
+      },
+    }).addTo(map);
+
+    applyRelief(map, el);
+    addMapNotes(map);
+
+    // Marcadores
+    const markers = new Map();
+    const layer = L.layerGroup().addTo(map);
+    let selected = null;
+    data.markers.forEach((m) => {
+      const mk = L.marker([m.lat, m.lng], { icon: pinIcon(m), title: m.shortName, riseOnHover: true, zIndexOffset: m.featured ? 500 : 0 });
+      mk.bindTooltip(`${VPC.esc(m.shortName)}<small>${VPC.esc(m.pointType || m.catName)}</small>`, { className: 'dep-tooltip', direction: 'top', offset: [0, -40] });
+      mk.on('click', () => showPlace(m.id, true));
+      markers.set(m.id, { m, mk });
+    });
+
+    let chip = '';
+    const visible = (m) => !chip || m.categories.some((c) => c.slug === chip) || (SECTION_ALIAS[chip] && m.section === SECTION_ALIAS[chip]);
+    function draw() {
+      layer.clearLayers();
+      markers.forEach(({ m, mk }) => { if (visible(m)) layer.addLayer(mk); });
+    }
+    draw();
+
+    function showPlace(id, fromMap = false) {
+      const rec = markers.get(id);
+      if (!rec || !spot) return;
+      if (selected && markers.get(selected)) markers.get(selected).mk.setIcon(pinIcon(markers.get(selected).m));
+      selected = id;
+      rec.mk.setIcon(pinIcon(rec.m, true));
+      spot.innerHTML = spotCardHtml(rec.m);
+      VPC.Favs.paint();
+      if (!fromMap && map.getZoom() < 7) map.panTo([rec.m.lat, rec.m.lng]);
+    }
+
+    let munLayer = null;
+    let depInfo = null;
+    async function selectDep(f, lyr) {
+      if (selectedDep) selectedDep.setStyle(baseStyle());
+      selectedDep = lyr;
+      lyr.setStyle({ weight: 3, color: '#ffd447', fillOpacity: 1 });
+      map.flyToBounds(lyr.getBounds(), { padding: [40, 40], duration: 0.9, maxZoom: 8 });
+      resetBtn.hidden = false;
+      if (munLayer) { map.removeLayer(munLayer); munLayer = null; }
+      const slug = f.properties.slug;
+      try {
+        const [info, mun] = await Promise.all([getJSON(apiUrl('/departamentos/' + slug)), getJSON(geoUrl('municipios/' + slug + '.geojson'))]);
+        depInfo = { info, f, lyr };
+        const places = data.markers.filter((m) => m.departmentSlug === slug);
+        if (spot) spot.innerHTML = depCardHtml(info, places);
+        const counts = info.municipalityCounts || {};
+        munLayer = L.geoJSON(mun, {
+          style: (mf) => ({ color: 'rgba(255,255,255,0.9)', weight: 0.8, fillColor: '#ffd447', fillOpacity: counts[mf.properties.slug] ? 0.28 : 0 }),
+          onEachFeature: (mf, ml) => {
+            const n = counts[mf.properties.slug] || 0;
+            ml.bindTooltip(`${VPC.esc(mf.properties.name)}${n ? `<small>${n} ${n === 1 ? 'lugar' : 'lugares'}</small>` : ''}`, { className: 'dep-tooltip', sticky: true });
+            ml.on('click', (ev) => {
+              L.DomEvent.stopPropagation(ev);
+              munLayer.eachLayer((x) => munLayer.resetStyle(x));
+              ml.setStyle({ weight: 3, color: '#ff3f8e', fillOpacity: 0.15 });
+              map.flyToBounds(ml.getBounds(), { padding: [60, 60], duration: 0.8, maxZoom: 11 });
+              const mp = data.markers.filter((m) => m.departmentSlug === slug && m.municipalitySlug === mf.properties.slug);
+              if (spot) spot.innerHTML = munCardHtml(mf.properties.name, info.name, mp);
+            });
+          },
+        }).addTo(map);
+        layer.eachLayer((mk) => mk.bringToFront && mk.bringToFront());
+      } catch (e) { /* sin información */ }
+    }
+
+    function backToCountry() {
+      if (selectedDep) selectedDep.setStyle(baseStyle());
+      selectedDep = null;
+      if (munLayer) { map.removeLayer(munLayer); munLayer = null; }
+      fit();
+      resetBtn.hidden = true;
+      if (selected) showPlace(selected, true);
+    }
+
+    spot?.addEventListener('click', (e) => {
+      const p = e.target.closest('[data-place]');
+      if (p) { const rec = markers.get(Number(p.dataset.place)); if (rec) { map.flyTo([rec.m.lat, rec.m.lng], Math.max(map.getZoom(), 9), { duration: 0.8 }); showPlace(rec.m.id, true); } }
+      if (e.target.closest('[data-spot-back]')) backToCountry();
+      if (e.target.closest('[data-spot-dep]') && depInfo) selectDep(depInfo.f, depInfo.lyr);
+    });
+
+    // Rutas animadas
+    let routes = null;
+    const routesBtn = document.querySelector('[data-hroutes]');
+    routesBtn?.addEventListener('click', async () => {
+      const on = routesBtn.getAttribute('aria-pressed') !== 'true';
+      routesBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (!routes) routes = await routesLayer(map, (r) => { if (spot) spot.innerHTML = routeCardHtml(r); });
+      if (on) {
+        routes.addTo(map);
+        map.flyToBounds(routes.getBounds(), { paddingTopLeft: [24, 70], paddingBottomRight: [24, 24], duration: 0.9 });
+        resetBtn.hidden = false;
+        if (routes._routes[0] && spot) spot.innerHTML = routeCardHtml(routes._routes[0]);
+      } else map.removeLayer(routes);
+    });
+
+    // Botón para volver a ver todo el país
+    const Reset = L.Control.extend({
+      options: { position: 'bottomright' },
+      onAdd() {
+        const b = L.DomUtil.create('button', 'mchip');
+        b.type = 'button';
+        b.innerHTML = VPC.icon('map') + ' Todo el país';
+        b.style.minWidth = '0';
+        L.DomEvent.disableClickPropagation(b);
+        b.addEventListener('click', () => backToCountry());
+        return b;
+      },
+    });
+    const resetBtn = new Reset().addTo(map).getContainer();
+    resetBtn.hidden = true;
+    map.on('zoomend', () => { if (map.getZoom() > 5.6) resetBtn.hidden = false; });
+
+    // Filtros
+    document.querySelectorAll('[data-hchip]').forEach((b) => b.addEventListener('click', () => {
+      chip = b.dataset.hchip;
+      document.querySelectorAll('[data-hchip]').forEach((x) => { x.classList.toggle('is-active', x === b); x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      draw();
+      const first = [...markers.values()].find(({ m }) => visible(m) && m.featured) || [...markers.values()].find(({ m }) => visible(m));
+      if (chip && first) showPlace(first.m.id);
+    }));
+
+    const spotId = Number(el.dataset.spotlight);
+    if (spotId && markers.has(spotId)) {
+      selected = spotId;
+      markers.get(spotId).mk.setIcon(pinIcon(markers.get(spotId).m, true));
+    }
+    window.addEventListener('resize', () => { map.invalidateSize(); });
+    setTimeout(() => { map.invalidateSize(); fit(); }, 250);
+  }
+
   window.VPCMap = { initRouteMap };
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!window.L || !window.VPC) return;
-    const home = $('[data-home-map]');
-    if (home) initHomeMap(home).catch((e) => console.error(e));
+    const heroMap = $('[data-hero-map]');
+    if (heroMap) initHeroMap(heroMap).catch((e) => console.error(e));
     const explorer = $('[data-explorer]');
     if (explorer) initExplorer(explorer).catch((e) => console.error(e));
     $$('[data-mini-map]').forEach((el) => initMiniMap(el).catch((e) => console.error(e)));

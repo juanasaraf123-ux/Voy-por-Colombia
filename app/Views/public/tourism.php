@@ -11,8 +11,9 @@ $meta = App\Models\Geo::mapMeta();
   <aside class="explorer-side" aria-label="Explorar destinos">
     <div class="explorer-head">
       <div>
-        <span class="eyebrow"><?= icon('compass') ?> <?= e($info['title']) ?></span>
-        <h1><?= e($info['tagline'] ?: 'Explora Colombia') ?></h1>
+        <span class="eyebrow"><?= icon('compass') ?> Colombia · Modo exploración</span>
+        <h1>¿A dónde te lleva la curiosidad?</h1>
+        <p class="muted" style="margin:4px 0 0">Explora el mapa. Encuentra tu próximo destino.</p>
       </div>
       <div class="field">
         <?= icon('search') ?>
@@ -36,6 +37,9 @@ $meta = App\Models\Geo::mapMeta();
         <?php foreach (['tourism' => 'Destinos', 'coffee' => 'Café', 'gastronomy' => 'Sabores', 'culture' => 'Cultura', 'entrepreneurship' => 'Emprendimientos'] as $k => $label): ?>
           <button class="chip" type="button" style="--chip: <?= e(Sections::ALL[$k]['color']) ?>; min-height:32px; font-size:.8rem; padding:0 12px" data-sec="<?= e($k) ?>" aria-pressed="<?= $k === 'tourism' ? 'true' : 'false' ?>"><?= icon(Sections::ALL[$k]['icon']) ?> <?= e($label) ?></button>
         <?php endforeach; ?>
+      </div>
+      <div class="flex gap-2 wrap">
+        <button class="chip" type="button" style="--chip: #ff3f8e; min-height:32px; font-size:.8rem; padding:0 12px" data-explorer-routes aria-pressed="false"><?= icon('route') ?> Rutas sugeridas</button>
       </div>
       <nav class="crumbs" aria-label="Nivel del mapa" data-crumbs></nav>
     </div>

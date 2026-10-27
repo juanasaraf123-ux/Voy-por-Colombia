@@ -305,13 +305,42 @@ final class Entry
     public static function markers(array $f = []): array
     {
         $rows = self::query($f + ['geo' => 1, 'limit' => 500, 'order' => 'featured']);
-        return array_map(static fn ($r) => self::toCard($r), $rows);
+        $kinds = self::mediaKinds(array_map(static fn ($r) => (int) $r['id'], $rows));
+        return array_map(static fn ($r) => self::toCard($r, $kinds[(int) $r['id']] ?? []), $rows);
+    }
+
+    /** Cantidad de imágenes, videos y audios asociados a cada publicación: [id => [tipo => n]]. */
+    public static function mediaKinds(array $ids): array
+    {
+        if (!$ids) {
+            return [];
+        }
+        $out = [];
+        $rows = DB::all('SELECT em.entry_id, m.kind, COUNT(*) AS n FROM entry_media em JOIN media m ON m.id = em.media_id
+            WHERE em.entry_id IN (' . DB::placeholders($ids) . ') GROUP BY em.entry_id, m.kind', $ids);
+        foreach ($rows as $r) {
+            $kind = $r['kind'] === 'embed' ? 'video' : $r['kind'];
+            $out[(int) $r['entry_id']][$kind] = ($out[(int) $r['entry_id']][$kind] ?? 0) + (int) $r['n'];
+        }
+        return $out;
     }
 
     /** Representación compacta (JSON) para mapa, favoritos y rutas. */
-    public static function toCard(array $r): array
+    public static function toCard(array $r, array $kinds = []): array
     {
+        $cat = $r['categories'][0] ?? null;
+        $def = Sections::ALL[$r['section']] ?? ['label' => '', 'color' => '#0f9d77', 'icon' => 'compass'];
+        $point = (string) ($r['meta']['point_type'] ?? '');
         return [
+            'pointType' => $point,
+            'pointIcon' => Sections::POINT_TYPES[$point] ?? null,
+            'shortName' => trim((string) ($r['meta']['short_name'] ?? '')) ?: $r['title'],
+            'tagline' => trim((string) ($r['meta']['tagline'] ?? '')),
+            'icon' => $cat['icon'] ?? $def['icon'],
+            'catName' => $cat['name'] ?? $def['label'],
+            'catColor' => $cat['color'] ?? $def['color'],
+            'media' => ['image' => $kinds['image'] ?? 0, 'video' => $kinds['video'] ?? 0, 'audio' => $kinds['audio'] ?? 0],
+            'large' => $r['cover'] ? media_url($r['cover'], 'large') : null,
             'id' => (int) $r['id'],
             'section' => $r['section'],
             'sectionLabel' => Sections::ALL[$r['section']]['label'] ?? '',

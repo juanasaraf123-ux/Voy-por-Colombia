@@ -126,7 +126,7 @@ try {
     }
     check('Página inexistente responde 404', $guest->get('/no-existe/de-verdad')['status'] === 404);
     $home = $guest->get('/')['body'];
-    check('Portada muestra el mensaje principal', str_contains($home, '<em>conoces</em>'));
+    check('Portada muestra el mensaje principal', str_contains($home, 'te espera') && str_contains($home, 'data-hero-map'));
     check('Cabeceras de seguridad (CSP, nosniff)', str_contains($guest->get('/')['headers'], 'Content-Security-Policy') && str_contains($guest->get('/')['headers'], 'nosniff'));
     $api = json_decode($guest->get('/api/mapa')['body'], true);
     check('API del mapa devuelve marcadores con coordenadas', count($api['markers'] ?? []) > 10 && isset($api['markers'][0]['lat']));
@@ -139,6 +139,12 @@ try {
     check('Borradores no son públicos', $guest->get('/noticias/borrador-guia-de-mercados-campesinos')['status'] === 404);
     check('Publicaciones programadas no son públicas', $guest->get('/noticias/nueva-ruta-por-el-eje-cafetero-programada')['status'] === 404);
     check('Archivadas no son públicas', $guest->get('/noticias/archivo-temporada-de-fin-de-ano-anterior')['status'] === 404);
+    $media = json_decode($guest->get('/api/publicaciones/3/multimedia')['body'], true);
+    check('Multimedia de un lugar disponible para el visor del mapa', isset($media['images'], $media['videos'], $media['audios']));
+    $rutas = json_decode($guest->get('/api/rutas')['body'], true);
+    check('Rutas con coordenadas para las líneas animadas', !empty($rutas['routes'][0]['stops'][1]['lat']));
+    $mk = json_decode($guest->get('/api/mapa?secciones=tourism,gastronomy')['body'], true);
+    check('Marcadores con tipo de punto (puntos vivos)', (bool) array_filter($mk['markers'], static fn ($m) => $m['pointType'] === 'Restaurante o sabor típico'));
     check('GeoJSON de departamentos disponible', str_contains($guest->get('/data/geo/departamentos.geojson')['body'], 'FeatureCollection'));
 
     echo "\nProtección del panel\n";

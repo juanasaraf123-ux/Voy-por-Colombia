@@ -5,15 +5,23 @@
     <div>
       <section class="card">
         <h2><?= icon('star') ?> Portada cinematográfica</h2>
-        <?php foreach (['hero_kicker', 'hero_title', 'hero_subtitle', 'hero_cta', 'hero_words'] as $k): [$max, $label] = $texts[$k]; ?>
+        <?php foreach (['hero_kicker', 'hero_title', 'hero_subtitle', 'hero_cta', 'hero_note'] as $k): [$max, $label] = $texts[$k]; ?>
           <div class="field"><label class="field-label" for="<?= $k ?>"><?= e($label) ?></label>
             <?php if ($max > 150): ?><textarea class="textarea" id="<?= $k ?>" name="<?= $k ?>" maxlength="<?= $max ?>" rows="2" data-counter="<?= $max ?>"><?= e(val($k, setting($k))) ?></textarea>
             <?php else: ?><input class="input<?= has_error($k) ? ' is-invalid' : '' ?>" id="<?= $k ?>" name="<?= $k ?>" maxlength="<?= $max ?>" value="<?= e(val($k, setting($k))) ?>"><?php endif; ?>
             <?= field_error($k) ?></div>
         <?php endforeach; ?>
-        <p class="field-help">La última palabra del título se destaca en amarillo y cursiva.</p>
+        <p class="field-help">En el título, la primera palabra va en blanco y el resto en amarillo, con letra manuscrita.</p>
         <?= View::partial('admin-gallery', ['name' => 'hero_media_ids', 'label' => 'Imágenes de fondo (se alternan con efecto cinematográfico)', 'items' => $heroMedia, 'kinds' => 'image', 'help' => 'Usa entre 3 y 6 imágenes horizontales de alta calidad.']) ?>
-        <?= View::partial('admin-cover', ['name' => 'hero_video_id', 'label' => 'Video de fondo (opcional, reemplaza las imágenes)', 'media' => $heroVideo, 'kind' => 'video', 'help' => 'Archivo MP4 o WebM corto (10–30 s), sin sonido y liviano (idealmente menos de 15 MB).']) ?>
+        <?= View::partial('admin-cover', ['name' => 'hero_video_id', 'label' => 'Video del botón «Ver video»', 'media' => $heroVideo, 'kind' => 'video', 'help' => 'Archivo MP4/WebM o video de YouTube/Vimeo de la biblioteca.']) ?>
+        <label class="check"><input type="checkbox" name="hero_video_background" value="1" <?= setting('hero_video_background') === '1' ? 'checked' : '' ?>> Usar además como fondo animado (solo archivos MP4/WebM cortos, sin sonido y livianos)</label>
+        <div class="field mt" data-entry-search>
+          <label class="field-label" for="spot-search">Lugar destacado en la tarjeta del mapa</label>
+          <input class="input" id="spot-search" type="search" placeholder="Busca una publicación…" data-entry-search-input autocomplete="off">
+          <input type="hidden" name="hero_spotlight_id" value="<?= e(setting('hero_spotlight_id')) ?>" data-entry-search-value>
+          <div class="search-results" data-entry-search-results hidden></div>
+          <p class="hint" data-entry-search-picked><?= $spotlight ? 'Actual: ' . e($spotlight['title']) : 'Si no eliges uno, se usa el primer destino destacado.' ?></p>
+        </div>
       </section>
       <section class="card">
         <h2><?= icon('layers') ?> Bloques de categorías</h2>
@@ -50,7 +58,7 @@
       </section>
       <section class="card">
         <h2><?= icon('sparkle') ?> Textos de secciones</h2>
-        <?php foreach (['map_title', 'map_subtitle', 'home_featured_title', 'home_gems_title', 'closing_title', 'closing_text'] as $k): [$max, $label] = $texts[$k]; ?>
+        <?php foreach (['home_gems_title', 'closing_title', 'closing_text'] as $k): [$max, $label] = $texts[$k]; ?>
           <div class="field"><label class="field-label" for="<?= $k ?>"><?= e($label) ?></label><input class="input" id="<?= $k ?>" name="<?= $k ?>" maxlength="<?= $max ?>" value="<?= e(val($k, setting($k))) ?>"><?= field_error($k) ?></div>
         <?php endforeach; ?>
       </section>

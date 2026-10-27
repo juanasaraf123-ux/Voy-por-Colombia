@@ -20,9 +20,14 @@ final class Markdown
         $html = '';
         foreach ($blocks as $block) {
             $lines = explode("\n", $block);
-            if (preg_match('/^(#{2,4})\s+(.+)$/', $lines[0], $m) && count($lines) === 1) {
+            if (preg_match('/^(#{2,4})\s+(.+)$/', $lines[0], $m)) {
+                // Un subtítulo puede ir seguido de texto sin línea en blanco.
                 $level = strlen($m[1]);
                 $html .= "<h$level>" . self::inline($m[2]) . "</h$level>\n";
+                array_shift($lines);
+                if ($lines) {
+                    $html .= self::render(implode("\n", $lines));
+                }
             } elseif (self::allMatch($lines, '/^\s*[-*]\s+/')) {
                 $html .= '<ul>' . implode('', array_map(static fn ($l) => '<li>' . self::inline((string) preg_replace('/^\s*[-*]\s+/', '', $l)) . '</li>', $lines)) . "</ul>\n";
             } elseif (self::allMatch($lines, '/^\s*\d+[.)]\s+/')) {

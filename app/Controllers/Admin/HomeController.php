@@ -19,9 +19,7 @@ final class HomeController extends AdminController
         'hero_title' => [120, 'Título principal'],
         'hero_subtitle' => [300, 'Texto de la portada'],
         'hero_cta' => [40, 'Botón principal'],
-        'hero_words' => [200, 'Palabras rotativas (separadas por comas)'],
-        'map_title' => [120, 'Título del mapa'],
-        'map_subtitle' => [250, 'Texto del mapa'],
+        'hero_note' => [80, 'Frase manuscrita junto a la tarjeta'],
         'home_featured_title' => [120, 'Título de destinos destacados'],
         'home_gems_title' => [120, 'Título de joyas poco conocidas'],
         'closing_title' => [120, 'Título del cierre'],
@@ -41,6 +39,7 @@ final class HomeController extends AdminController
             'texts' => self::TEXTS,
             'heroMedia' => Media::findMany($heroIds),
             'heroVideo' => (int) Setting::get('hero_video_id') ? Media::find((int) Setting::get('hero_video_id')) : null,
+            'spotlight' => (int) Setting::get('hero_spotlight_id') ? \App\Models\Entry::find((int) Setting::get('hero_spotlight_id')) : null,
             'sections' => DB::all('SELECT s.*, m.path, m.variants FROM sections s LEFT JOIN media m ON m.id = s.cover_media_id ORDER BY s.sort_order, s.id'),
             'featured' => Entry::query(['featured' => 1, 'order' => 'featured', 'limit' => 60], false),
         ]);
@@ -69,8 +68,8 @@ final class HomeController extends AdminController
             $errors['hero_media_ids'] = 'Usa máximo 8 imágenes en la portada.';
         }
         $video = Request::int('hero_video_id');
-        if ($video && (Media::find($video)['kind'] ?? null) !== 'video') {
-            $errors['hero_video_id'] = 'El video de portada debe ser un archivo MP4 o WebM cargado en la biblioteca.';
+        if ($video && !in_array(Media::find($video)['kind'] ?? null, ['video', 'embed'], true)) {
+            $errors['hero_video_id'] = 'Elige un video de la biblioteca (archivo MP4/WebM o enlace de YouTube/Vimeo).';
         }
         if ($errors) {
             $this->fail($errors, url('/admin/inicio'));
@@ -81,6 +80,11 @@ final class HomeController extends AdminController
             }
             Setting::set('hero_media_ids', json_encode(array_values($heroIds)));
             Setting::set('hero_video_id', $video ? (string) $video : '');
+            Setting::set('hero_video_background', Request::bool('hero_video_background') ? '1' : '0');
+            $spot = Request::int('hero_spotlight_id');
+            if ($spot !== null) {
+                Setting::set('hero_spotlight_id', $spot ? (string) $spot : '');
+            }
 
             // Bloques de categorías
             foreach ((array) ($_POST['sections'] ?? []) as $id => $s) {

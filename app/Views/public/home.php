@@ -1,115 +1,108 @@
 <?php
 use App\Core\View;
+use App\Models\Media;
 use App\Sections;
 
 View::share('transparentHeader', true);
-$words = array_filter(array_map('trim', explode(',', (string) setting('hero_words'))));
 $titleWords = preg_split('/\s+/', trim((string) setting('hero_title'))) ?: [];
-$lastWord = array_pop($titleWords);
+$firstWord = array_shift($titleWords);
+$meta = App\Models\Geo::mapMeta();
+$heroVideoJson = $heroVideo ? json_encode(Media::toJson($heroVideo), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null;
 ?>
-<!-- A. Portada cinematográfica -->
-<section class="hero" aria-label="Portada" data-hero>
-  <div class="hero-slides">
-    <?php if ($heroVideo): ?>
-      <div class="hero-slide is-active">
-        <video src="<?= e(media_url($heroVideo, 'original')) ?>" autoplay muted loop playsinline preload="metadata" <?= $heroMedia ? 'poster="' . e(media_url($heroMedia[0], 'large')) . '"' : '' ?>></video>
-      </div>
+<!-- A + B. Portada con mapa interactivo -->
+<section class="hero2" aria-label="Portada" data-hero>
+  <div class="hero-slides" aria-hidden="true">
+    <?php if ($heroVideo && $heroVideo['kind'] === 'video' && setting('hero_video_background') === '1'): ?>
+      <div class="hero-slide is-active"><video src="<?= e(media_url($heroVideo, 'original')) ?>" autoplay muted loop playsinline preload="metadata"></video></div>
     <?php else: ?>
       <?php foreach ($heroMedia as $i => $m): ?>
-        <div class="hero-slide <?= $i === 0 ? 'is-active' : '' ?>" data-credit="<?= e(trim(($m['title'] ?? '') . ($m['credit'] ? ' · ' . $m['credit'] : ''), ' ·')) ?>">
-          <?= img($m, 'large', '', '100vw', $i > 0, $m['alt_text'] ?? '') ?>
-        </div>
+        <div class="hero-slide <?= $i === 0 ? 'is-active' : '' ?>"><?= img($m, 'large', '', '100vw', $i > 0) ?></div>
       <?php endforeach; ?>
     <?php endif; ?>
   </div>
 
-  <div class="hero-inner">
-    <div>
-      <span class="hero-kicker"><span class="pulse"><?= icon('infinity') ?></span><?= e(setting('hero_kicker')) ?></span>
-      <h1>
-        <?php foreach ($titleWords as $i => $w): ?><span class="word" style="animation-delay: <?= 120 + $i * 90 ?>ms"><?= e($w) ?></span> <?php endforeach; ?>
-        <span class="word" style="animation-delay: <?= 120 + count($titleWords) * 90 ?>ms"><em><?= e($lastWord) ?></em></span>
+  <div class="hero2-grid">
+    <div class="hero2-copy">
+      <p class="hero2-kicker"><?= e(setting('hero_kicker')) ?></p>
+      <h1 class="hero2-title">
+        <span class="t1"><?= e($firstWord) ?><svg class="brush brush-a" viewBox="0 0 60 30" aria-hidden="true"><path d="M8 24 C 20 12, 34 6, 52 4" /><path d="M24 28 C 34 22, 44 20, 56 20"/></svg></span>
+        <span class="t2"><?= e(implode(' ', $titleWords)) ?><svg class="heart-doodle" viewBox="0 0 40 36" aria-hidden="true"><path d="M20 32 C 6 22, 2 14, 6 8 C 10 2, 18 4, 20 11 C 22 4, 30 2, 34 8 C 38 14, 34 22, 20 32 Z"/></svg></span>
       </h1>
-      <p class="hero-sub"><?= e(setting('hero_subtitle')) ?></p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#mapa"><?= icon('compass') ?> <?= e(setting('hero_cta')) ?></a>
-        <a class="btn btn-glass" href="<?= e(url('/turismo')) ?>"><?= icon('map') ?> Abrir el mapa completo</a>
+      <p class="hero2-sub"><?= e(setting('hero_subtitle')) ?></p>
+      <div class="hero2-actions">
+        <a class="btn-explore" href="<?= e(url('/turismo')) ?>"><span class="ico"><?= icon('compass') ?></span><?= e(setting('hero_cta')) ?><?= icon('chevron-right') ?></a>
+        <?php if ($heroVideoJson): ?>
+          <button class="btn-video" type="button" data-lightbox-item='<?= e($heroVideoJson) ?>'><span class="ico"><?= icon('play') ?></span><span>Ver video<small><?= e($heroVideo['title'] ?? '') ?></small></span></button>
+        <?php endif; ?>
       </div>
-      <?php if ($words): ?>
-        <div class="hero-rotator" aria-hidden="true">Hoy me provoca
-          <span class="rot" data-rotator><?php foreach ($words as $i => $w): ?><span class="<?= $i === 0 ? 'is-in' : '' ?>"><?= e($w) ?></span><?php endforeach; ?></span>
-        </div>
-      <?php endif; ?>
     </div>
-    <div class="hero-cards" aria-label="Destinos destacados">
-      <?php foreach ($heroCards as $c): ?>
-        <a class="postcard" href="<?= e($c['url']) ?>">
-          <?= img($c['cover'], 'thumb', '', '230px', false, $c['title']) ?>
-          <strong><?= e($c['title']) ?></strong>
-          <small><?= icon('pin') ?> <?= e($c['department_name']) ?></small>
-        </a>
+
+    <div class="hero2-map" data-hero-map
+      data-regions="<?= e(json_encode($meta['colors'])) ?>"
+      data-spotlight="<?= (int) ($spotlight['id'] ?? 0) ?>"
+      data-explore="<?= e(url('/turismo')) ?>"
+      role="application" aria-label="Mapa interactivo de Colombia con destinos destacados">
+      <a class="islands-inset" href="<?= e(url('/turismo', ['departamento' => 'san-andres-y-providencia'])) ?>" data-islands>
+        <span>San Andrés, Providencia y Santa Catalina</span>
+        <svg viewBox="0 0 60 70" aria-hidden="true"><path d="M14 58 C 10 48, 14 36, 20 30 C 24 38, 22 50, 14 58 Z"/><path d="M40 22 C 38 16, 42 8, 46 6 C 48 12, 46 18, 40 22 Z"/></svg>
+      </a>
+      <div class="compass" aria-hidden="true"><span>N</span><?= icon('compass') ?></div>
+      <noscript><p class="hero2-noscript">Activa JavaScript para usar el mapa interactivo.</p></noscript>
+    </div>
+
+    <div class="hero2-side">
+      <div class="hero2-chips" role="group" aria-label="Filtrar el mapa">
+        <button class="mchip is-active" type="button" data-hchip="" aria-pressed="true"><?= icon('grid') ?> Todos</button>
+        <?php foreach ($heroChips as $c): ?>
+          <button class="mchip" type="button" style="--c: <?= e($c['color']) ?>" data-hchip="<?= e($c['slug']) ?>" aria-pressed="false" title="<?= e($c['name']) ?>"><?= icon($c['icon'] ?: 'tag') ?> <span><?= e($c['name'] === 'Experiencias comunitarias' ? 'Comunitario' : $c['name']) ?></span></button>
+        <?php endforeach; ?>
+        <button class="mchip mchip-routes" type="button" style="--c: #ff3f8e" data-hroutes aria-pressed="false"><?= icon('route') ?> Rutas</button>
+      </div>
+      <div class="spot-wrap" data-spot aria-live="polite">
+        <?php if ($spotlight): ?><?= View::partial('spot-card', ['c' => $spotlight]) ?><?php endif; ?>
+      </div>
+      <p class="hand-note"><?= e(setting('hero_note')) ?> <svg viewBox="0 0 30 26" aria-hidden="true"><path d="M15 23 C 5 16, 2 10, 5 6 C 8 2, 13 3, 15 8 C 17 3, 22 2, 25 6 C 28 10, 25 16, 15 23 Z"/></svg></p>
+    </div>
+  </div>
+  <svg class="hero2-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 C 200 30, 380 20, 560 46 S 920 100, 1100 70 S 1340 30, 1440 52 V120 H0 Z"/></svg>
+</section>
+
+<!-- D. Destinos destacados -->
+<?php if ($strip): ?>
+<section class="featured-strip" aria-labelledby="strip-title">
+  <div class="strip-inner">
+    <div class="strip-label">
+      <svg class="strip-arrow" viewBox="0 0 70 30" aria-hidden="true"><path d="M4 26 C 20 6, 44 2, 62 10"/><path d="M54 4 L 63 10 L 54 17"/></svg>
+      <h2 id="strip-title">Destinos destacados</h2>
+      <div class="strip-pager"><span class="dots" data-strip-dots></span><button type="button" data-strip-next aria-label="Ver más destinos"><?= icon('arrow-right') ?></button></div>
+      <small data-strip-count>1 / <?= count($strip) ?></small>
+    </div>
+    <div class="strip-rail" data-strip>
+      <?php foreach ($strip as $c): ?>
+        <article class="strip-card">
+          <?= img($c['_cover'], 'medium', '', '260px', true, $c['shortName']) ?>
+          <button class="fav-btn" type="button" data-fav="<?= (int) $c['id'] ?>" aria-label="Guardar «<?= e($c['shortName']) ?>» en favoritos"><span class="off"><?= icon('heart') ?></span><span class="on"><?= icon('heart-fill') ?></span></button>
+          <a href="<?= e($c['url']) ?>"><strong><span class="ic"><?= icon($c['icon']) ?></span><?= e($c['shortName']) ?></strong><small><?= icon('pin') ?> <?= e($c['department'] ?? '') ?></small></a>
+        </article>
       <?php endforeach; ?>
     </div>
   </div>
-
-  <?php if (count($heroMedia) > 1 && !$heroVideo): ?>
-    <div class="hero-dots" role="tablist" aria-label="Imágenes de portada">
-      <?php foreach ($heroMedia as $i => $m): ?><button type="button" class="<?= $i === 0 ? 'is-active' : '' ?>" data-hero-dot="<?= $i ?>" aria-label="Imagen <?= $i + 1 ?>"></button><?php endforeach; ?>
-    </div>
-    <p class="hero-credit" data-hero-credit></p>
-  <?php endif; ?>
-
-  <div class="hero-stats">
-    <div class="hero-stat"><b data-count="<?= (int) $stats['departamentos'] ?>"><?= (int) $stats['departamentos'] ?></b><span>departamentos</span></div>
-    <div class="hero-stat"><b data-count="<?= (int) $stats['municipios'] ?>"><?= (int) $stats['municipios'] ?></b><span>municipios</span></div>
-    <div class="hero-stat"><b data-count="<?= (int) $stats['destinos'] ?>"><?= (int) $stats['destinos'] ?></b><span>destinos</span></div>
-    <div class="hero-stat"><b data-count="<?= (int) $stats['experiencias'] ?>"><?= (int) $stats['experiencias'] ?></b><span>experiencias</span></div>
-  </div>
-  <div class="hero-bottom"><?= View::partial('wave', ['class' => 'hero-wave']) ?></div>
 </section>
+<?php endif; ?>
 
-<!-- Cinta de regiones -->
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track">
-    <?php for ($k = 0; $k < 2; $k++): foreach ($regions as $r): ?>
-      <span class="marquee-item" style="--c: <?= e($r['color']) ?>"><i></i><?= e($r['name']) ?> · <span class="muted" style="font-size:.55em;font-style:normal;font-family:var(--font-body)"><?= e($r['summary']) ?></span></span>
-    <?php endforeach; endfor; ?>
-  </div>
-</div>
-
-<!-- B. Mapa interactivo -->
-<section class="section" id="mapa" aria-labelledby="map-title">
-  <div class="container container-wide">
-    <div class="section-head reveal">
-      <div>
-        <span class="eyebrow" style="--c: var(--naranja)">Mapa interactivo</span>
-        <h2 class="title-xl" id="map-title"><?= e(setting('map_title')) ?></h2>
-        <p class="lead"><?= e(setting('map_subtitle')) ?></p>
-      </div>
-      <a class="btn btn-outline" href="<?= e(url('/turismo')) ?>">Explorador completo <?= icon('arrow-right', 'icon icon-arrow') ?></a>
-    </div>
-    <div class="home-map reveal-scale">
-      <?php $meta = App\Models\Geo::mapMeta(); ?>
-      <div class="map-card" data-home-map data-regions="<?= e(json_encode($meta['colors'])) ?>" data-region-list="<?= e(json_encode($meta['regions'], JSON_UNESCAPED_UNICODE)) ?>">
-        <div class="map-hint"><?= icon('sparkle') ?> Toca un departamento o un marcador</div>
-        <div class="map-legend" data-map-legend></div>
-        <noscript><p style="padding:30px">Activa JavaScript para usar el mapa interactivo.</p></noscript>
-      </div>
-      <aside class="place-panel" data-place-panel aria-live="polite">
-        <?php $first = $featured[0] ?? null; if ($first): ?>
-          <div class="place-panel-media"><?= img($first['cover'], 'medium', '', '420px', true, $first['title']) ?><div class="badges"><span class="badge">Destacado</span></div></div>
-          <div class="place-panel-body">
-            <span class="place-loc"><?= icon('pin') ?> <?= e(trim(($first['municipality_name'] ?? '') . ', ' . ($first['department_name'] ?? ''), ', ')) ?></span>
-            <h3><?= e($first['title']) ?></h3>
-            <p><?= e($first['summary']) ?></p>
-            <div class="place-panel-actions"><a class="btn btn-primary" href="<?= e($first['url']) ?>">Descubrir <?= icon('arrow-right', 'icon icon-arrow') ?></a></div>
-          </div>
-        <?php endif; ?>
-      </aside>
+<section class="benefits" aria-label="Lo que puedes hacer">
+  <div class="benefits-inner">
+    <a href="<?= e(url('/cultura')) ?>"><?= icon('palm') ?><span>Más que un destino, <b>una experiencia</b></span></a>
+    <a href="<?= e(url('/turismo')) ?>"><?= icon('compass') ?><span>Explora por <b>departamentos</b></span></a>
+    <a href="<?= e(url('/mi-ruta')) ?>"><?= icon('star') ?><span>Crea tu <b>ruta personalizada</b></span></a>
+    <a href="<?= e(url('/emprendimiento')) ?>"><?= icon('users') ?><span>Conoce a las <b>comunidades locales</b></span></a>
+    <a href="<?= e(url('/noticias')) ?>"><?= icon('leaf2') ?><span>Viaja responsable, <b>viaja Colombia</b></span></a>
+    <div class="es-vida" aria-hidden="true">
+      <svg viewBox="0 0 200 110"><path d="M8 52 C 50 30, 110 24, 150 22 L 146 44 C 104 46, 56 54, 12 72 Z" fill="#ffc531"/><path d="M14 74 C 60 56, 108 50, 148 48 L 144 64 C 104 66, 62 74, 18 92 Z" fill="#1d4fd6"/><path d="M20 94 C 64 78, 110 72, 142 70 L 138 84 C 104 86, 66 92, 26 106 Z" fill="#e5233b"/></svg>
+      <span><?= e(setting('logo_title')) ?><br>es vida</span>
     </div>
   </div>
 </section>
-
 <!-- C. Exploración por categorías -->
 <section class="section bg-arena" aria-labelledby="cat-title" style="padding-top: clamp(64px, 8vw, 110px)">
   <div class="container">
@@ -134,27 +127,6 @@ $lastWord = array_pop($titleWords);
     </div>
   </div>
 </section>
-
-<!-- D. Destinos destacados -->
-<?php if ($featured): ?>
-<section class="section" aria-labelledby="feat-title">
-  <div class="container">
-    <div class="section-head reveal">
-      <div>
-        <span class="eyebrow" style="--c: var(--verde)">Destinos destacados</span>
-        <h2 class="title-xl" id="feat-title"><?= e(setting('home_featured_title')) ?></h2>
-      </div>
-      <div class="rail-controls">
-        <button class="btn btn-icon" type="button" data-rail-prev="feat" aria-label="Anterior"><?= icon('arrow-left') ?></button>
-        <button class="btn btn-icon" type="button" data-rail-next="feat" aria-label="Siguiente"><?= icon('arrow-right') ?></button>
-      </div>
-    </div>
-    <div class="rail" data-rail="feat">
-      <?php foreach ($featured as $e): ?><?= View::partial('dest-card', ['e' => $e]) ?><?php endforeach; ?>
-    </div>
-  </div>
-</section>
-<?php endif; ?>
 
 <?php if ($gems): ?>
 <section class="section gems" aria-labelledby="gems-title">

@@ -23,7 +23,10 @@ $needsMap = $needsMap ?? true;
     <link rel="stylesheet" href="<?= e(asset('vendor/leaflet/leaflet.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('vendor/markercluster/MarkerCluster.css')) ?>">
   <?php endif; ?>
+  <link rel="preload" href="<?= e(url('/assets/fonts/kaushan-script-latin-400-normal.woff2')) ?>" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
+  <link rel="stylesheet" href="<?= e(asset('css/design.css')) ?>">
+  <script src="<?= e(asset('js/theme.js')) ?>"></script>
   <script type="application/json" id="app-config"><?= json_encode([
       'base' => url('/'),
       'api' => url('/api'),

@@ -61,8 +61,8 @@
   function mdRender(text) {
     return text.replace(/\r/g, '').trim().split(/\n{2,}/).map((block) => {
       const lines = block.split('\n');
-      const h = lines.length === 1 && lines[0].match(/^(#{2,4})\s+(.+)$/);
-      if (h) return `<h${h[1].length}>${mdInline(h[2])}</h${h[1].length}>`;
+      const h = lines[0].match(/^(#{2,4})\s+(.+)$/);
+      if (h) return `<h${h[1].length}>${mdInline(h[2])}</h${h[1].length}>` + (lines.length > 1 ? mdRender(lines.slice(1).join('\n')) : '');
       if (lines.every((l) => /^\s*[-*]\s+/.test(l))) return '<ul>' + lines.map((l) => `<li>${mdInline(l.replace(/^\s*[-*]\s+/, ''))}</li>`).join('') + '</ul>';
       if (lines.every((l) => /^\s*\d+[.)]\s+/.test(l))) return '<ol>' + lines.map((l) => `<li>${mdInline(l.replace(/^\s*\d+[.)]\s+/, ''))}</li>`).join('') + '</ol>';
       if (lines.every((l) => /^>\s?/.test(l))) return '<blockquote><p>' + lines.map((l) => mdInline(l.replace(/^>\s?/, ''))).join('<br>') + '</p></blockquote>';

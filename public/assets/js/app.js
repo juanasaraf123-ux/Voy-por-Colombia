@@ -302,7 +302,9 @@
     function render() {
       const it = items[i];
       if (!it) return;
-      if (it.kind === 'embed' && it.embed) {
+      if (it.kind === 'audio' && it.src) {
+        stage.innerHTML = `<div class="audio-stage">${icon('volume', 'icon audio-ico')}<audio src="${esc(it.src)}" controls autoplay></audio></div>`;
+      } else if (it.kind === 'embed' && it.embed) {
         stage.innerHTML = `<div class="video-frame"><iframe src="${esc(it.embed)}" title="${esc(it.title || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
       } else if (it.kind === 'video' && it.src) {
         stage.innerHTML = `<div class="video-frame"><video src="${esc(it.src)}" controls autoplay playsinline></video></div>`;
@@ -353,6 +355,26 @@
     Lightbox.open(items, Math.max(0, els.indexOf(el)));
   });
 
+  // ---------- Multimedia de un lugar en el visor (sin salir del mapa) ----------
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-media-open]');
+    if (!b) return;
+    e.preventDefault();
+    const kind = b.dataset.mediaOpen;
+    try {
+      const r = await fetch(CONFIG.api + '/publicaciones/' + encodeURIComponent(b.dataset.entry) + '/multimedia', { headers: { Accept: 'application/json' } });
+      const data = await r.json();
+      const list = kind === 'video' ? data.videos : kind === 'audio' ? data.audios : data.images;
+      if (!list || !list.length) {
+        toast(kind === 'video' ? 'Este lugar aún no tiene videos' : kind === 'audio' ? 'Este lugar aún no tiene audios' : 'Este lugar aún no tiene fotos', 'info');
+        return;
+      }
+      Lightbox.open(list, 0);
+    } catch (er) {
+      toast('No fue posible cargar la multimedia', 'alert');
+    }
+  });
+
   // ---------- Compartir ----------
   document.addEventListener('click', async (e) => {
     const b = e.target.closest('[data-share]');
@@ -365,6 +387,43 @@
       try { await navigator.clipboard.writeText(url); toast('Enlace copiado'); } catch (er) { window.prompt('Copia este enlace:', url); }
     }
   });
+
+  // ---------- Tema claro / oscuro ----------
+  const paintTheme = () => {
+    const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    $$('[data-theme-set]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.themeSet === cur ? 'true' : 'false'));
+  };
+  $$('[data-theme-set]').forEach((b) => b.addEventListener('click', () => {
+    document.documentElement.setAttribute('data-theme', b.dataset.themeSet);
+    store.set('vpc:tema', b.dataset.themeSet);
+    paintTheme();
+  }));
+  paintTheme();
+
+  // ---------- Tira de destinos destacados ----------
+  const strip = $('[data-strip]');
+  if (strip) {
+    const dots = $('[data-strip-dots]');
+    const count = $('[data-strip-count]');
+    const cards = strip.children.length;
+    const pages = () => Math.max(1, Math.ceil(strip.scrollWidth / strip.clientWidth - 0.05));
+    const update = () => {
+      const p = pages();
+      const cur = Math.min(p, Math.round(strip.scrollLeft / Math.max(1, strip.scrollWidth - strip.clientWidth) * (p - 1)) + 1);
+      if (dots) dots.innerHTML = Array.from({ length: Math.min(p, 6) }, (_, i) => `<i class="${i + 1 === cur ? 'on' : ''}"></i>`).join('');
+      if (count) {
+        const first = Math.round(strip.scrollLeft / ((strip.firstElementChild?.getBoundingClientRect().width || 200) + 14)) + 1;
+        count.textContent = `${Math.min(first, cards)} / ${cards}`;
+      }
+    };
+    strip.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+    window.addEventListener('resize', update);
+    $('[data-strip-next]')?.addEventListener('click', () => {
+      const end = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4;
+      strip.scrollTo({ left: end ? 0 : strip.scrollLeft + strip.clientWidth * 0.8, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+    update();
+  }
 
   Favs.paint();
   MyRoute.paint();

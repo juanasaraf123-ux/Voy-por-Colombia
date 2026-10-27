@@ -99,9 +99,29 @@ final class Sections
         return url($slug ? "$path/$slug" : $path);
     }
 
+    /** Tipos de punto del mapa («puntos vivos») y su ícono. */
+    public const POINT_TYPES = [
+        'Cascada' => 'waterfall', 'Mirador' => 'binoculars', 'Sendero' => 'footprints', 'Playa' => 'wave',
+        'Río o laguna' => 'wave', 'Montaña o páramo' => 'mountain', 'Parque natural' => 'leaf', 'Desierto' => 'sun',
+        'Pueblo patrimonial' => 'columns', 'Ciudad' => 'city', 'Museo o sitio arqueológico' => 'columns',
+        'Restaurante o sabor típico' => 'fork', 'Finca o cafetal' => 'coffee', 'Mercado o artesanías' => 'store',
+        'Festividad' => 'party', 'Música y danza' => 'music', 'Experiencia comunitaria' => 'users',
+        'Avistamiento de fauna' => 'bird', 'Hospedaje o camping' => 'tent',
+    ];
+
+    /** Campos de presentación comunes (tarjetas del mapa y destacados). Las noticias no los usan. */
+    public const COMMON_FIELDS = [
+        ['key' => 'short_name', 'label' => 'Nombre corto', 'type' => 'text', 'help' => 'Para tarjetas y el mapa. Ej.: «Caño Cristales».'],
+        ['key' => 'tagline', 'label' => 'Frase destacada', 'type' => 'text', 'help' => 'Una frase breve y evocadora. Ej.: «Un río de colores».'],
+        ['key' => 'point_type', 'label' => 'Tipo de punto en el mapa', 'type' => 'select', 'options' => self::POINT_TYPE_LABELS, 'help' => 'Define el ícono animado del marcador.'],
+    ];
+    public const POINT_TYPE_LABELS = ['Cascada', 'Mirador', 'Sendero', 'Playa', 'Río o laguna', 'Montaña o páramo', 'Parque natural', 'Desierto',
+        'Pueblo patrimonial', 'Ciudad', 'Museo o sitio arqueológico', 'Restaurante o sabor típico', 'Finca o cafetal', 'Mercado o artesanías',
+        'Festividad', 'Música y danza', 'Experiencia comunitaria', 'Avistamiento de fauna', 'Hospedaje o camping'];
+
     public static function fields(string $key): array
     {
-        return self::FIELDS[$key] ?? [];
+        return $key === 'news' ? (self::FIELDS[$key] ?? []) : array_merge(self::COMMON_FIELDS, self::FIELDS[$key] ?? []);
     }
 
     /** Secciones con eventos de calendario (fecha de inicio y fin). */

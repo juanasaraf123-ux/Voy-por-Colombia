@@ -95,6 +95,12 @@ final class DemoSeeder
         $log('Publicaciones de demostración: ' . count($ids));
         self::routes($ids);
         self::sectionsAndHome();
+        if (isset($ids['cano-cristales'])) {
+            Setting::set('hero_spotlight_id', (string) $ids['cano-cristales']);
+        }
+        if (isset(self::$mediaIds['video-demo-cano-cristales'])) {
+            Setting::set('hero_video_id', (string) self::$mediaIds['video-demo-cano-cristales']);
+        }
         $log('Rutas, portada y secciones configuradas.');
     }
 
@@ -126,6 +132,22 @@ final class DemoSeeder
                 'updated_at' => now(),
             ]);
         }
+        // Video y audio de demostración (generados por código a partir de las ilustraciones).
+        foreach ([
+            ['video-demo-cano-cristales.mp4', 'Recorrido por Caño Cristales (demo)', 'meta', 'la-macarena'],
+            ['audio-demo-ambiente.mp3', 'Sonidos del río (audio de demostración)', 'meta', 'la-macarena'],
+        ] as [$file, $title, $dep, $mun]) {
+            $path = __DIR__ . "/demo-media/$file";
+            if (!is_file($path)) {
+                continue;
+            }
+            [$depId, $munId] = self::place($dep, $mun);
+            self::$mediaIds[pathinfo($file, PATHINFO_FILENAME)] = DB::insert('media', MediaProcessor::importLocal($path, $file) + [
+                'title' => $title, 'caption' => 'Pieza de demostración para probar el reproductor.', 'credit' => self::CREDIT, 'license' => self::LICENSE,
+                'department_id' => $depId, 'municipality_id' => $munId, 'in_gallery' => str_ends_with($file, '.mp4') ? 1 : 0,
+                'is_demo' => 1, 'created_at' => now(), 'updated_at' => now(),
+            ]);
+        }
         $log('Ilustraciones importadas: ' . count(self::$mediaIds));
     }
 
@@ -147,6 +169,15 @@ final class DemoSeeder
             }
         }
         $publishedAt = date('Y-m-d H:i:s', strtotime(($e['days'] ?? -random_int(2, 60)) . ' days'));
+        // Sin coordenadas propias se usa el centro del municipio (solo para contenidos que van en el mapa).
+        if (!isset($e['lat']) && $munId && $e['section'] !== 'news') {
+            $mun = DB::one('SELECT lat, lng FROM municipalities WHERE id = ?', [$munId]);
+            $e['lat'] = $mun ? (float) $mun['lat'] : null;
+            $e['lng'] = $mun ? (float) $mun['lng'] : null;
+        }
+        if ($e['section'] === 'gastronomy' && empty($e['meta']['point_type'])) {
+            $e['meta']['point_type'] = 'Restaurante o sabor típico';
+        }
         $data = [
             'section' => $e['section'],
             'title' => $e['title'],
@@ -208,8 +239,6 @@ final class DemoSeeder
         foreach ($covers as $key => $file) {
             DB::update('sections', ['cover_media_id' => self::$mediaIds[$file] ?? null], 'section_key = :k', ['k' => $key]);
         }
-        $hero = array_values(array_filter(array_map(static fn ($k) => self::$mediaIds[$k] ?? null, ['cano-cristales', 'caribe', 'cocora', 'cartagena', 'guajira'])));
-        Setting::set('hero_media_ids', json_encode($hero));
         foreach (['bolivar' => 'cartagena', 'quindio' => 'cocora', 'meta' => 'cano-cristales', 'la-guajira' => 'guajira', 'huila' => 'tatacoa', 'magdalena' => 'caribe', 'san-andres-y-providencia' => 'san-andres', 'antioquia' => 'guatape', 'boyaca' => 'villa-de-leyva', 'amazonas' => 'amazonas', 'choco' => 'pacifico', 'casanare' => 'llanos', 'putumayo' => 'cascada', 'santander' => 'barichara', 'caldas' => 'paisaje-cafetero', 'bogota-d-c' => 'andes-violeta', 'narino' => 'andes-amanecer'] as $dep => $file) {
             DB::update('departments', ['cover_media_id' => self::$mediaIds[$file] ?? null], 'slug = :s', ['s' => $dep]);
         }
@@ -224,112 +253,112 @@ final class DemoSeeder
                 'cats' => ['Patrimonio', 'Playas', 'Cultura', 'Ciudades'], 'cover' => 'cartagena', 'gallery' => ['cartagena', 'caribe-2', 'cazuela'], 'featured' => true, 'order' => 1,
                 'summary' => 'Balcones con flores, murallas centenarias y atardeceres sobre el Caribe en una ciudad declarada Patrimonio de la Humanidad.',
                 'body' => "Caminar por el centro histórico es recorrer siglos de historia entre plazas, iglesias y casas de colores. Al caer la tarde, las murallas se llenan de gente que espera el atardecer frente al mar.\n\n## Para no perderse\n- El centro histórico y el barrio Getsemaní.\n- Un paseo por las murallas al atardecer.\n- Las islas cercanas para un día de mar." . $demoNote,
-                'meta' => ['activities' => ['Recorrido por el centro histórico', 'Atardecer en las murallas', 'Paseo a islas cercanas', 'Gastronomía caribeña'], 'best_time' => 'Todo el año; de diciembre a abril hay menos lluvias.', 'altitude' => 'Nivel del mar · clima cálido']],
+                'meta' => ['point_type' => 'Pueblo patrimonial', 'short_name' => 'Cartagena', 'tagline' => 'Historia frente al mar', 'activities' => ['Recorrido por el centro histórico', 'Atardecer en las murallas', 'Paseo a islas cercanas', 'Gastronomía caribeña'], 'best_time' => 'Todo el año; de diciembre a abril hay menos lluvias.', 'altitude' => 'Nivel del mar · clima cálido']],
             ['key' => 'tayrona', 'section' => 'tourism', 'title' => 'Parque Nacional Natural Tayrona', 'dep' => 'magdalena', 'mun' => 'santa-marta', 'lat' => 11.3089, 'lng' => -74.0753,
                 'cats' => ['Naturaleza', 'Playas', 'Aventura'], 'cover' => 'caribe', 'gallery' => ['caribe', 'caribe-2'], 'featured' => true, 'order' => 2,
                 'summary' => 'Donde la selva de la Sierra Nevada se encuentra con playas de arena dorada y grandes rocas.',
                 'body' => "Senderos entre bosque seco y húmedo conducen a bahías de agua cristalina. Es territorio sagrado para los pueblos de la Sierra Nevada, por lo que el parque cierra algunos periodos del año para su descanso.\n\n## Viaja con respeto\nLleva tus residuos de regreso, respeta las indicaciones de los guardaparques y consulta las fechas de cierre antes de planear." . $demoNote,
-                'meta' => ['activities' => ['Senderismo', 'Playas', 'Avistamiento de aves', 'Camping'], 'best_time' => 'Consulta los cierres temporales anunciados por Parques Nacionales.', 'recommendations' => ['Usa calzado cómodo', 'Lleva agua y bloqueador biodegradable', 'No todas las playas son aptas para nadar']]],
+                'meta' => ['point_type' => 'Playa', 'short_name' => 'Parque Tayrona', 'tagline' => 'Donde la selva besa el mar', 'activities' => ['Senderismo', 'Playas', 'Avistamiento de aves', 'Camping'], 'best_time' => 'Consulta los cierres temporales anunciados por Parques Nacionales.', 'recommendations' => ['Usa calzado cómodo', 'Lleva agua y bloqueador biodegradable', 'No todas las playas son aptas para nadar']]],
             ['key' => 'cano-cristales', 'section' => 'tourism', 'title' => 'Caño Cristales, el río de los cinco colores', 'dep' => 'meta', 'mun' => 'la-macarena', 'lat' => 2.2647, 'lng' => -73.7928,
-                'cats' => ['Naturaleza', 'Aventura'], 'cover' => 'cano-cristales', 'gallery' => ['cano-cristales', 'cano-cristales-vertical'], 'featured' => true, 'order' => 3,
+                'cats' => ['Naturaleza', 'Aventura'], 'cover' => 'cano-cristales', 'gallery' => ['cano-cristales', 'cano-cristales-vertical', 'video-demo-cano-cristales', 'audio-demo-ambiente'], 'featured' => true, 'order' => 3,
                 'summary' => 'Una planta acuática tiñe el río de rojo, amarillo, verde y rosado durante algunos meses del año.',
                 'body' => "En la Serranía de La Macarena, el río se convierte en una paleta viva gracias a la *Macarenia clavigera*. La temporada de visita suele ir de junio a noviembre y el acceso es guiado y controlado para proteger el ecosistema.\n\n## Antes de ir\nEl ingreso requiere guías locales y charla de inducción. No se permite usar bloqueador ni repelente en el agua." . $demoNote,
-                'meta' => ['activities' => ['Caminatas guiadas', 'Baño en pozos autorizados', 'Fotografía de naturaleza'], 'best_time' => 'Temporada habitual: junio a noviembre.', 'how_to_get' => 'Vuelo a La Macarena y traslados con operadores locales autorizados.']],
+                'meta' => ['point_type' => 'Río o laguna', 'short_name' => 'Caño Cristales', 'tagline' => 'Un río de colores', 'activities' => ['Caminatas guiadas', 'Baño en pozos autorizados', 'Fotografía de naturaleza'], 'best_time' => 'Temporada habitual: junio a noviembre.', 'how_to_get' => 'Vuelo a La Macarena y traslados con operadores locales autorizados.']],
             ['key' => 'cocora', 'section' => 'tourism', 'title' => 'Valle de Cocora y las palmas de cera', 'dep' => 'quindio', 'mun' => 'salento', 'lat' => 4.6386, 'lng' => -75.4875,
                 'cats' => ['Naturaleza', 'Turismo rural', 'Aventura'], 'cover' => 'cocora', 'gallery' => ['cocora', 'cocora-vertical', 'cerezas-cafe'], 'featured' => true, 'order' => 4,
                 'summary' => 'Las palmas de cera, árbol nacional de Colombia, se elevan entre la niebla del valle.',
                 'body' => "La palma de cera del Quindío puede superar los 50 metros de altura y es una especie protegida. Caminos entre potreros, bosque de niebla y puentes colgantes conducen a miradores inolvidables.\n\nMuy cerca está Salento, con su calle Real y sus casas de bahareque de colores." . $demoNote,
-                'meta' => ['activities' => ['Caminata por el valle', 'Cabalgatas', 'Avistamiento de colibríes', 'Visita a Salento'], 'altitude' => 'Entre 1.800 y 2.400 m · clima frío', 'best_time' => 'Temprano en la mañana, antes de que llegue la niebla.']],
+                'meta' => ['point_type' => 'Sendero', 'short_name' => 'Valle de Cocora', 'tagline' => 'Las palmas más altas del mundo', 'activities' => ['Caminata por el valle', 'Cabalgatas', 'Avistamiento de colibríes', 'Visita a Salento'], 'altitude' => 'Entre 1.800 y 2.400 m · clima frío', 'best_time' => 'Temprano en la mañana, antes de que llegue la niebla.']],
             ['key' => 'tatacoa', 'section' => 'tourism', 'title' => 'Desierto de la Tatacoa', 'dep' => 'huila', 'mun' => 'villavieja', 'lat' => 3.2333, 'lng' => -75.1667,
                 'cats' => ['Naturaleza', 'Aventura'], 'cover' => 'tatacoa', 'gallery' => ['tatacoa', 'tatacoa-noche'], 'featured' => true, 'order' => 5,
                 'summary' => 'Laberintos de arcilla roja y gris de día; uno de los cielos más limpios del país de noche.',
                 'body' => "Este bosque seco tropical esconde cárcavas rojizas en la zona de El Cuzco y formaciones grises en Los Hoyos. Al anochecer, la observación astronómica es la gran protagonista." . $demoNote,
-                'meta' => ['activities' => ['Observación de estrellas', 'Caminatas por las cárcavas', 'Piscinas naturales', 'Fotografía'], 'best_time' => 'Temporadas secas para cielos despejados.', 'recommendations' => ['Lleva sombrero e hidratación', 'Evita caminar en las horas de más calor']]],
+                'meta' => ['point_type' => 'Desierto', 'short_name' => 'Desierto de la Tatacoa', 'tagline' => 'Un cielo lleno de estrellas', 'activities' => ['Observación de estrellas', 'Caminatas por las cárcavas', 'Piscinas naturales', 'Fotografía'], 'best_time' => 'Temporadas secas para cielos despejados.', 'recommendations' => ['Lleva sombrero e hidratación', 'Evita caminar en las horas de más calor']]],
             ['key' => 'cabo-de-la-vela', 'section' => 'tourism', 'title' => 'Cabo de la Vela', 'dep' => 'la-guajira', 'mun' => 'uribia', 'lat' => 12.2, 'lng' => -72.15,
-                'cats' => ['Playas', 'Cultura', 'Aventura'], 'cover' => 'guajira', 'gallery' => ['guajira', 'mochila-wayuu'], 'featured' => true, 'order' => 6,
+                'cats' => ['Experiencias comunitarias', 'Playas', 'Cultura', 'Aventura'], 'cover' => 'guajira', 'gallery' => ['guajira', 'mochila-wayuu'], 'featured' => true, 'order' => 6,
                 'summary' => 'Desierto, viento y mar en el territorio ancestral del pueblo wayuu.',
                 'body' => "El Cabo de la Vela, Jepirra para los wayuu, es un lugar sagrado. Aquí el desierto se encuentra con el mar y los atardeceres desde el Pilón de Azúcar son legendarios.\n\nLas rancherías ofrecen hospedaje en chinchorros y la oportunidad de conocer el tejido y la cocina wayuu." . $demoNote,
-                'meta' => ['activities' => ['Kitesurf', 'Atardecer en el Pilón de Azúcar', 'Hospedaje en ranchería', 'Encuentro con artesanas wayuu'], 'recommendations' => ['Viaja con operadores locales', 'Pide permiso antes de fotografiar personas']]],
+                'meta' => ['point_type' => 'Experiencia comunitaria', 'short_name' => 'Cabo de la Vela', 'tagline' => 'Donde el desierto abraza el mar', 'activities' => ['Kitesurf', 'Atardecer en el Pilón de Azúcar', 'Hospedaje en ranchería', 'Encuentro con artesanas wayuu'], 'recommendations' => ['Viaja con operadores locales', 'Pide permiso antes de fotografiar personas']]],
             ['key' => 'san-andres', 'section' => 'tourism', 'title' => 'San Andrés, el mar de siete colores', 'dep' => 'san-andres-y-providencia', 'mun' => 'san-andres', 'lat' => 12.5847, 'lng' => -81.7006,
                 'cats' => ['Playas', 'Naturaleza', 'Cultura'], 'cover' => 'san-andres', 'gallery' => ['san-andres', 'caribe-2'], 'featured' => true, 'order' => 7,
                 'summary' => 'Arrecifes, cayos y una cultura raizal con su propia lengua, música y cocina.',
                 'body' => "Las tonalidades del mar se deben a la profundidad y al fondo de arena blanca y corales. Más allá de las playas, la isla guarda la cultura raizal, el creole y platos como el *rondón*." . $demoNote,
-                'meta' => ['activities' => ['Buceo y careteo', 'Vuelta a la isla', 'Visita a cayos', 'Gastronomía raizal'], 'altitude' => 'Nivel del mar · clima cálido']],
+                'meta' => ['point_type' => 'Playa', 'short_name' => 'San Andrés', 'tagline' => 'El mar de siete colores', 'activities' => ['Buceo y careteo', 'Vuelta a la isla', 'Visita a cayos', 'Gastronomía raizal'], 'altitude' => 'Nivel del mar · clima cálido']],
             ['key' => 'villa-de-leyva', 'section' => 'tourism', 'title' => 'Villa de Leyva', 'dep' => 'boyaca', 'mun' => 'villa-de-leyva', 'lat' => 5.6333, 'lng' => -73.5236,
                 'cats' => ['Patrimonio', 'Cultura', 'Turismo rural'], 'cover' => 'villa-de-leyva', 'gallery' => ['villa-de-leyva', 'mercado'], 'featured' => false,
                 'summary' => 'Casas blancas, calles empedradas y una de las plazas más grandes del país.',
                 'body' => "Un pueblo colonial rodeado de paisajes semidesérticos, fósiles, viñedos y pozos de agua azul. Ideal para recorrer sin prisa." . $demoNote,
-                'meta' => ['activities' => ['Recorrido por la plaza mayor', 'Museo paleontológico', 'Ciclismo', 'Mercado campesino'], 'altitude' => '2.150 m · clima templado frío']],
+                'meta' => ['point_type' => 'Pueblo patrimonial', 'short_name' => 'Villa de Leyva', 'tagline' => 'Un pueblo detenido en el tiempo', 'activities' => ['Recorrido por la plaza mayor', 'Museo paleontológico', 'Ciclismo', 'Mercado campesino'], 'altitude' => '2.150 m · clima templado frío']],
             ['key' => 'barichara', 'section' => 'tourism', 'title' => 'Barichara y el Camino Real', 'dep' => 'santander', 'mun' => 'barichara', 'lat' => 6.6347, 'lng' => -73.2231,
                 'cats' => ['Patrimonio', 'Turismo rural', 'Aventura'], 'cover' => 'barichara', 'gallery' => ['barichara', 'miel'], 'gem' => true,
                 'summary' => 'Un pueblo de piedra y tapia pisada desde donde parte un antiguo camino hacia Guane.',
                 'body' => "Barichara conserva su arquitectura en piedra y tierra. El Camino Real, empedrado, atraviesa el cañón hasta el pequeño pueblo de Guane en una caminata de pocas horas." . $demoNote,
-                'meta' => ['activities' => ['Caminata del Camino Real', 'Talleres de papel artesanal', 'Miradores del cañón'], 'best_time' => 'Temprano en la mañana para caminar con fresco.']],
+                'meta' => ['point_type' => 'Sendero', 'short_name' => 'Barichara', 'tagline' => 'El pueblo más lindo de piedra', 'activities' => ['Caminata del Camino Real', 'Talleres de papel artesanal', 'Miradores del cañón'], 'best_time' => 'Temprano en la mañana para caminar con fresco.']],
             ['key' => 'guatape', 'section' => 'tourism', 'title' => 'Guatapé y la Piedra del Peñol', 'dep' => 'antioquia', 'mun' => 'guatape', 'lat' => 6.2208, 'lng' => -75.1781,
                 'cats' => ['Aventura', 'Cultura', 'Naturaleza'], 'cover' => 'guatape', 'gallery' => ['guatape'], 'featured' => true, 'order' => 8,
                 'summary' => 'Zócalos de colores que cuentan historias y una roca gigante con vista a un mar de islas.',
                 'body' => "Los zócalos, relieves pintados en la base de las casas, convierten a Guatapé en una galería al aire libre. Muy cerca, más de 700 escalones llevan a la cima de la Piedra del Peñol." . $demoNote,
-                'meta' => ['activities' => ['Subir la Piedra del Peñol', 'Paseo en lancha por el embalse', 'Recorrer la calle de los zócalos']]],
+                'meta' => ['point_type' => 'Mirador', 'short_name' => 'Guatapé', 'tagline' => 'Un pueblo pintado de colores', 'activities' => ['Subir la Piedra del Peñol', 'Paseo en lancha por el embalse', 'Recorrer la calle de los zócalos']]],
             ['key' => 'san-agustin', 'section' => 'tourism', 'title' => 'Parque Arqueológico de San Agustín', 'dep' => 'huila', 'mun' => 'san-agustin', 'lat' => 1.8858, 'lng' => -76.2969,
                 'cats' => ['Patrimonio', 'Cultura', 'Naturaleza'], 'cover' => 'san-agustin', 'gallery' => ['san-agustin'],
                 'summary' => 'Cientos de esculturas monolíticas talladas por una cultura ancestral, en medio de montañas verdes.',
                 'body' => "Declarado Patrimonio de la Humanidad, el parque reúne estatuas, tumbas y montículos funerarios. Los alrededores guardan el estrecho del Magdalena y otros sitios arqueológicos." . $demoNote,
-                'meta' => ['activities' => ['Recorrido arqueológico', 'Estrecho del Magdalena', 'Cabalgatas a sitios cercanos']]],
+                'meta' => ['point_type' => 'Museo o sitio arqueológico', 'short_name' => 'San Agustín', 'tagline' => 'Guardianes de piedra', 'activities' => ['Recorrido arqueológico', 'Estrecho del Magdalena', 'Cabalgatas a sitios cercanos']]],
             ['key' => 'leticia', 'section' => 'tourism', 'title' => 'Leticia y el río Amazonas', 'dep' => 'amazonas', 'mun' => 'leticia', 'lat' => -4.2153, 'lng' => -69.9406,
-                'cats' => ['Naturaleza', 'Avistamiento de fauna', 'Cultura'], 'cover' => 'amazonas', 'gallery' => ['amazonas', 'amazonas-vertical'], 'featured' => true, 'order' => 9,
+                'cats' => ['Experiencias comunitarias', 'Naturaleza', 'Avistamiento de fauna', 'Cultura'], 'cover' => 'amazonas', 'gallery' => ['amazonas', 'amazonas-vertical'], 'featured' => true, 'order' => 9,
                 'summary' => 'La puerta a la selva amazónica, en la triple frontera con Brasil y Perú.',
                 'body' => "Desde Leticia se navega el Amazonas para conocer lagos con delfines rosados, comunidades indígenas y la reserva de selva. Al atardecer, miles de garzas llegan al Parque Santander." . $demoNote,
-                'meta' => ['activities' => ['Navegación por el Amazonas', 'Avistamiento de delfines', 'Caminatas nocturnas guiadas', 'Visita a comunidades con operadores locales']]],
+                'meta' => ['point_type' => 'Avistamiento de fauna', 'short_name' => 'Amazonas', 'tagline' => 'El corazón verde del planeta', 'activities' => ['Navegación por el Amazonas', 'Avistamiento de delfines', 'Caminatas nocturnas guiadas', 'Visita a comunidades con operadores locales']]],
             ['key' => 'puerto-narino', 'section' => 'tourism', 'title' => 'Puerto Nariño, el pesebre natural', 'dep' => 'amazonas', 'mun' => 'puerto-narino', 'lat' => -3.7703, 'lng' => -70.3831,
-                'cats' => ['Naturaleza', 'Avistamiento de fauna'], 'cover' => 'amazonas-vertical', 'gallery' => ['amazonas-vertical'], 'gem' => true,
+                'cats' => ['Experiencias comunitarias', 'Naturaleza', 'Avistamiento de fauna'], 'cover' => 'amazonas-vertical', 'gallery' => ['amazonas-vertical'], 'gem' => true,
                 'summary' => 'Un pueblo sin carros, con senderos peatonales y lagos donde nadan delfines rosados.',
                 'body' => "A orillas del río Loretoyacu, Puerto Nariño es un ejemplo de convivencia con la selva. Cerca están los lagos de Tarapoto." . $demoNote,
-                'meta' => ['activities' => ['Lagos de Tarapoto', 'Mirador del pueblo', 'Avistamiento de delfines']]],
+                'meta' => ['point_type' => 'Experiencia comunitaria', 'short_name' => 'Puerto Nariño', 'tagline' => 'Un pueblo sin carros', 'activities' => ['Lagos de Tarapoto', 'Mirador del pueblo', 'Avistamiento de delfines']]],
             ['key' => 'nuqui', 'section' => 'tourism', 'title' => 'Nuquí y las ballenas jorobadas', 'dep' => 'choco', 'mun' => 'nuqui', 'lat' => 5.7125, 'lng' => -77.27,
-                'cats' => ['Naturaleza', 'Avistamiento de fauna', 'Playas'], 'cover' => 'pacifico', 'gallery' => ['pacifico'], 'gem' => true,
+                'cats' => ['Experiencias comunitarias', 'Naturaleza', 'Avistamiento de fauna', 'Playas'], 'cover' => 'pacifico', 'gallery' => ['pacifico'], 'gem' => true,
                 'summary' => 'Selva que llega al mar, termales y la visita anual de las ballenas jorobadas.',
                 'body' => "Entre julio y octubre, las ballenas jorobadas llegan al Pacífico colombiano para aparearse y dar a luz. Nuquí combina playas solitarias, cascadas y aguas termales." . $demoNote,
-                'meta' => ['activities' => ['Avistamiento de ballenas', 'Termales', 'Surf', 'Caminatas a cascadas'], 'best_time' => 'Temporada de ballenas: julio a octubre.']],
+                'meta' => ['point_type' => 'Avistamiento de fauna', 'short_name' => 'Nuquí', 'tagline' => 'Donde cantan las ballenas', 'activities' => ['Avistamiento de ballenas', 'Termales', 'Surf', 'Caminatas a cascadas'], 'best_time' => 'Temporada de ballenas: julio a octubre.']],
             ['key' => 'mongui', 'section' => 'tourism', 'title' => 'Páramo de Ocetá, Monguí', 'dep' => 'boyaca', 'mun' => 'mongui', 'lat' => 5.7, 'lng' => -72.82,
                 'cats' => ['Naturaleza', 'Aventura', 'Turismo rural'], 'cover' => 'paramo', 'gallery' => ['paramo'], 'gem' => true, 'featured' => true, 'order' => 10,
                 'summary' => 'Un bosque de frailejones, lagunas y formaciones rocosas a más de 3.000 metros.',
                 'body' => "Muchos lo consideran uno de los páramos más bellos del mundo. La caminata parte de Monguí, un pueblo boyacense famoso por sus balones artesanales." . $demoNote,
-                'meta' => ['activities' => ['Caminata guiada al páramo', 'Lagunas de alta montaña', 'Taller de balones en Monguí'], 'altitude' => 'Más de 3.000 m · clima frío de páramo', 'recommendations' => ['Contrata guías locales', 'No pises ni arranques frailejones']]],
+                'meta' => ['point_type' => 'Montaña o páramo', 'short_name' => 'Páramo de Ocetá', 'tagline' => 'Un bosque de frailejones', 'activities' => ['Caminata guiada al páramo', 'Lagunas de alta montaña', 'Taller de balones en Monguí'], 'altitude' => 'Más de 3.000 m · clima frío de páramo', 'recommendations' => ['Contrata guías locales', 'No pises ni arranques frailejones']]],
             ['key' => 'el-cocuy', 'section' => 'tourism', 'title' => 'Sierra Nevada de El Cocuy', 'dep' => 'boyaca', 'mun' => 'el-cocuy', 'lat' => 6.41, 'lng' => -72.33,
                 'cats' => ['Naturaleza', 'Aventura'], 'cover' => 'nevado', 'gallery' => ['nevado'],
                 'summary' => 'Picos nevados, lagunas glaciares y caminatas de alta montaña.',
                 'body' => "El parque protege la mayor masa glaciar de Colombia. El ingreso está regulado y solo se permite por senderos autorizados para proteger el ecosistema y el territorio del pueblo U'wa." . $demoNote,
-                'meta' => ['activities' => ['Senderismo de alta montaña', 'Lagunas glaciares'], 'altitude' => 'Hasta más de 5.000 m']],
+                'meta' => ['point_type' => 'Montaña o páramo', 'short_name' => 'El Cocuy', 'tagline' => 'Nieves eternas', 'activities' => ['Senderismo de alta montaña', 'Lagunas glaciares'], 'altitude' => 'Hasta más de 5.000 m']],
             ['key' => 'medellin', 'section' => 'tourism', 'title' => 'Medellín, la ciudad de la eterna primavera', 'dep' => 'antioquia', 'mun' => 'medellin', 'lat' => 6.2476, 'lng' => -75.5658,
                 'cats' => ['Ciudades', 'Cultura', 'Gastronomía'], 'cover' => 'medellin', 'gallery' => ['medellin', 'silleta-flores', 'bandeja-paisa'],
                 'summary' => 'Metrocable, arte urbano, parques biblioteca y un clima amable todo el año.',
                 'body' => "La transformación de Medellín se recorre en sus barrios, en el arte de la Comuna 13 y en el metrocable que sube a las montañas." . $demoNote,
-                'meta' => ['activities' => ['Recorrido de arte urbano', 'Metrocable', 'Museos y parques', 'Feria de las Flores (agosto)']]],
+                'meta' => ['point_type' => 'Ciudad', 'short_name' => 'Medellín', 'tagline' => 'La eterna primavera', 'activities' => ['Recorrido de arte urbano', 'Metrocable', 'Museos y parques', 'Feria de las Flores (agosto)']]],
             ['key' => 'mompox', 'section' => 'tourism', 'title' => 'Santa Cruz de Mompox', 'dep' => 'bolivar', 'mun' => 'mompos', 'lat' => 9.2386, 'lng' => -74.4269,
                 'cats' => ['Patrimonio', 'Cultura'], 'cover' => 'barichara', 'gallery' => ['villa-de-leyva'], 'gem' => true,
                 'summary' => 'Una ciudad detenida en el tiempo a orillas del río Magdalena, famosa por su filigrana.',
                 'body' => "Mompox conserva su trazado colonial frente al río. Sus orfebres mantienen viva la filigrana en plata y su Semana Santa es una de las más tradicionales del país." . $demoNote,
-                'meta' => ['activities' => ['Recorrido por el centro histórico', 'Talleres de filigrana', 'Paseo por la ciénaga de Pijiño']]],
+                'meta' => ['point_type' => 'Pueblo patrimonial', 'short_name' => 'Mompox', 'tagline' => 'Filigrana junto al río', 'activities' => ['Recorrido por el centro histórico', 'Talleres de filigrana', 'Paseo por la ciénaga de Pijiño']]],
             ['key' => 'paz-de-ariporo', 'section' => 'tourism', 'title' => 'Llanos de Casanare', 'dep' => 'casanare', 'mun' => 'paz-de-ariporo', 'lat' => 5.88, 'lng' => -71.89,
                 'cats' => ['Turismo rural', 'Avistamiento de fauna', 'Naturaleza'], 'cover' => 'llanos', 'gallery' => ['llanos'], 'gem' => true,
                 'summary' => 'Hatos llaneros, chigüiros, garzas y atardeceres que parecen no terminar.',
                 'body' => "En los hatos de Casanare se vive la cultura llanera: trabajo de llano, coleo, joropo y una fauna que se deja ver en las sabanas inundables." . $demoNote,
-                'meta' => ['activities' => ['Safari llanero', 'Avistamiento de aves', 'Vida en el hato', 'Joropo']]],
+                'meta' => ['point_type' => 'Avistamiento de fauna', 'short_name' => 'Llanos de Casanare', 'tagline' => 'Atardeceres infinitos', 'activities' => ['Safari llanero', 'Avistamiento de aves', 'Vida en el hato', 'Joropo']]],
             ['key' => 'fin-del-mundo', 'section' => 'tourism', 'title' => 'Cascada Fin del Mundo', 'dep' => 'putumayo', 'mun' => 'mocoa', 'lat' => 1.1361, 'lng' => -76.6461,
                 'cats' => ['Naturaleza', 'Aventura'], 'cover' => 'cascada', 'gallery' => ['cascada'], 'gem' => true,
                 'summary' => 'Una caminata por la selva del piedemonte amazónico que termina en una caída de agua de unos 70 metros.',
                 'body' => "El sendero pasa por varios pozos de agua cristalina antes de llegar al borde de la cascada. Es una de las experiencias de naturaleza más populares de Mocoa." . $demoNote,
-                'meta' => ['activities' => ['Senderismo', 'Baño en pozos naturales'], 'recommendations' => ['Usa calzado con buen agarre', 'No te acerques al borde de la cascada']]],
+                'meta' => ['point_type' => 'Cascada', 'short_name' => 'Fin del Mundo', 'tagline' => 'Una cascada en la selva', 'activities' => ['Senderismo', 'Baño en pozos naturales'], 'recommendations' => ['Usa calzado con buen agarre', 'No te acerques al borde de la cascada']]],
             ['key' => 'la-cocha', 'section' => 'tourism', 'title' => 'Laguna de La Cocha', 'dep' => 'narino', 'mun' => 'pasto', 'lat' => 1.07, 'lng' => -77.15,
                 'cats' => ['Naturaleza', 'Gastronomía', 'Turismo rural'], 'cover' => 'andes-amanecer', 'gallery' => ['andes-amanecer'], 'gem' => true,
                 'summary' => 'Un gran lago andino con la isla de La Corota y casitas de colores en sus orillas.',
                 'body' => "A media hora de Pasto, la laguna sorprende por su tamaño y su neblina. En El Encano se puede probar trucha y visitar el santuario de flora de la isla La Corota." . $demoNote,
-                'meta' => ['activities' => ['Paseo en lancha', 'Isla La Corota', 'Gastronomía de trucha'], 'altitude' => '2.760 m · clima frío']],
+                'meta' => ['point_type' => 'Río o laguna', 'short_name' => 'Laguna de La Cocha', 'tagline' => 'Un lago entre la niebla', 'activities' => ['Paseo en lancha', 'Isla La Corota', 'Gastronomía de trucha'], 'altitude' => '2.760 m · clima frío']],
             ['key' => 'bogota', 'section' => 'tourism', 'title' => 'Bogotá y La Candelaria', 'dep' => 'bogota-d-c', 'mun' => 'bogota-d-c', 'lat' => 4.5981, 'lng' => -74.0758,
                 'cats' => ['Ciudades', 'Patrimonio', 'Cultura'], 'cover' => 'andes-violeta', 'gallery' => ['andes-violeta', 'ajiaco'],
                 'summary' => 'Museos, cerros, barrios coloniales y una de las escenas culturales más intensas de América Latina.',
                 'body' => "La Candelaria concentra museos, teatros y arte urbano. Desde los cerros orientales se observa la ciudad extendida sobre la sabana." . $demoNote,
-                'meta' => ['activities' => ['Museos del centro', 'Subir a un cerro tutelar', 'Ciclovía dominical', 'Ajiaco santafereño']]],
+                'meta' => ['point_type' => 'Ciudad', 'short_name' => 'Bogotá', 'tagline' => 'La capital a 2.600 metros', 'activities' => ['Museos del centro', 'Subir a un cerro tutelar', 'Ciclovía dominical', 'Ajiaco santafereño']]],
 
             // ---------------- GASTRONOMÍA ----------------
             ['section' => 'gastronomy', 'title' => 'Bandeja paisa', 'dep' => 'antioquia', 'mun' => 'medellin', 'cats' => ['Platos típicos'], 'cover' => 'bandeja-paisa', 'gallery' => ['bandeja-paisa'], 'featured' => true, 'order' => 1,
@@ -374,11 +403,11 @@ final class DemoSeeder
             ['key' => 'paisaje-cafetero', 'section' => 'coffee', 'title' => 'Paisaje Cultural Cafetero', 'dep' => 'caldas', 'mun' => 'chinchina', 'lat' => 4.98, 'lng' => -75.6, 'cats' => ['Rutas cafeteras'], 'cover' => 'paisaje-cafetero', 'gallery' => ['paisaje-cafetero', 'paisaje-cafetero-2', 'cerezas-cafe'], 'featured' => true, 'order' => 1,
                 'summary' => 'Patrimonio de la Humanidad desde 2011: montañas, pueblos de bahareque y la cultura del café.',
                 'body' => 'El paisaje abarca zonas de Caldas, Quindío, Risaralda y Valle del Cauca. Su valor está tanto en el territorio como en la tradición de las familias caficultoras.',
-                'meta' => ['altitude' => 'Entre 1.000 y 2.000 m', 'process' => 'Predomina el beneficio lavado']],
+                'meta' => ['point_type' => 'Finca o cafetal', 'altitude' => 'Entre 1.000 y 2.000 m', 'process' => 'Predomina el beneficio lavado']],
             ['section' => 'coffee', 'title' => 'Finca La Esperanza (demo)', 'dep' => 'quindio', 'mun' => 'filandia', 'lat' => 4.68, 'lng' => -75.66, 'cats' => ['Fincas', 'Catas'], 'cover' => 'cerezas-cafe', 'gallery' => ['cerezas-cafe', 'granos-cafe', 'taza-cafe'], 'featured' => true, 'order' => 2,
                 'summary' => 'Ficha de DEMOSTRACIÓN para mostrar cómo se ve una finca cafetera con recorrido y cata.',
                 'body' => "Esta finca no existe: es un ejemplo para que el equipo editorial vea cómo se presenta una ficha completa.\n\n## Experiencia\nRecorrido por el cultivo, recolección, beneficio y cata guiada.",
-                'meta' => ['altitude' => '1.850 m', 'varieties' => 'Castillo, Caturra', 'process' => 'Lavado', 'tasting_notes' => 'Panela, naranja, chocolate', 'contact_email' => 'finca@example.com', 'address' => 'Dirección de ejemplo']],
+                'meta' => ['point_type' => 'Finca o cafetal', 'altitude' => '1.850 m', 'varieties' => 'Castillo, Caturra', 'process' => 'Lavado', 'tasting_notes' => 'Panela, naranja, chocolate', 'contact_email' => 'finca@example.com', 'address' => 'Dirección de ejemplo']],
             ['section' => 'coffee', 'title' => 'El tinto de todos los días', 'cats' => ['Preparación'], 'cover' => 'taza-cafe', 'gallery' => ['taza-cafe', 'metodo-filtrado'],
                 'summary' => 'Así llamamos al café negro que se ofrece en casas, plazas y oficinas como gesto de bienvenida.',
                 'meta' => ['tasting_notes' => 'Depende del origen y la tostión']],
@@ -386,10 +415,10 @@ final class DemoSeeder
             // ---------------- EMPRENDIMIENTO (DEMO) ----------------
             ['section' => 'entrepreneurship', 'title' => 'Barro y Fuego (demo)', 'dep' => 'boyaca', 'mun' => 'raquira', 'lat' => 5.54, 'lng' => -73.63, 'cats' => ['Artesanías'], 'cover' => 'ceramica', 'gallery' => ['ceramica'], 'featured' => true,
                 'summary' => 'Emprendimiento de DEMOSTRACIÓN: taller ficticio de cerámica para mostrar la ficha de un emprendimiento.',
-                'meta' => ['products' => ['Vasijas utilitarias', 'Talleres de modelado', 'Piezas decorativas'], 'contact_name' => 'Nombre de ejemplo', 'contact_email' => 'contacto@example.com', 'website' => 'https://example.com']],
+                'meta' => ['point_type' => 'Mercado o artesanías', 'products' => ['Vasijas utilitarias', 'Talleres de modelado', 'Piezas decorativas'], 'contact_name' => 'Nombre de ejemplo', 'contact_email' => 'contacto@example.com', 'website' => 'https://example.com']],
             ['section' => 'entrepreneurship', 'title' => 'Hilos del Viento (demo)', 'dep' => 'cauca', 'mun' => 'silvia', 'lat' => 2.61, 'lng' => -76.38, 'cats' => ['Artesanías', 'Productos culturales'], 'cover' => 'tejidos', 'gallery' => ['tejidos'],
                 'summary' => 'Emprendimiento de DEMOSTRACIÓN: colectivo ficticio de tejido para ilustrar la sección.',
-                'meta' => ['products' => ['Ruanas', 'Mochilas', 'Tapices'], 'contact_email' => 'contacto@example.com']],
+                'meta' => ['point_type' => 'Mercado o artesanías', 'products' => ['Ruanas', 'Mochilas', 'Tapices'], 'contact_email' => 'contacto@example.com']],
             ['section' => 'entrepreneurship', 'title' => 'Mercado de la Vereda (demo)', 'dep' => 'boyaca', 'mun' => 'villa-de-leyva', 'cats' => ['Agroindustria', 'Gastronomía'], 'cover' => 'mercado', 'gallery' => ['mercado'],
                 'summary' => 'Emprendimiento de DEMOSTRACIÓN: mercado campesino ficticio para mostrar filtros y búsqueda.',
                 'meta' => ['products' => ['Frutas y verduras', 'Lácteos', 'Conservas']]],
@@ -405,32 +434,32 @@ final class DemoSeeder
                 'event_start' => '2027-02-06 09:00:00', 'event_end' => '2027-02-09 23:00:00',
                 'summary' => 'Obra Maestra del Patrimonio Oral e Inmaterial de la Humanidad: cuatro días de danza, disfraces y música.',
                 'body' => "Marimondas, congos, cumbia, mapalé y letanías llenan las calles durante los días previos al Miércoles de Ceniza.\n\n> Fechas de referencia: confirma la programación oficial.",
-                'meta' => ['venue' => 'Vía 40 y calles de Barranquilla', 'community' => 'Hacedores del Carnaval, comparsas y cumbiambas', 'schedule' => 'Sábado a martes antes del Miércoles de Ceniza']],
+                'meta' => ['point_type' => 'Festividad', 'venue' => 'Vía 40 y calles de Barranquilla', 'community' => 'Hacedores del Carnaval, comparsas y cumbiambas', 'schedule' => 'Sábado a martes antes del Miércoles de Ceniza']],
             ['section' => 'culture', 'title' => 'Carnaval de Negros y Blancos', 'dep' => 'narino', 'mun' => 'pasto', 'lat' => 1.2136, 'lng' => -77.2811, 'cats' => ['Festividades', 'Patrimonio'], 'cover' => 'carnaval', 'gallery' => ['carnaval', 'andes-amanecer'], 'featured' => true, 'order' => 2,
                 'event_start' => '2027-01-02 09:00:00', 'event_end' => '2027-01-07 23:00:00',
                 'summary' => 'Carrozas monumentales, juego con talco y un mensaje de convivencia en el sur andino.',
                 'body' => "Reconocido como Patrimonio Cultural Inmaterial de la Humanidad, el carnaval celebra la diversidad con desfiles y artesanos que trabajan todo el año.\n\n> Fechas de referencia: confirma la programación oficial.",
-                'meta' => ['venue' => 'Senda del Carnaval, Pasto', 'schedule' => 'Del 2 al 7 de enero']],
+                'meta' => ['point_type' => 'Festividad', 'venue' => 'Senda del Carnaval, Pasto', 'schedule' => 'Del 2 al 7 de enero']],
             ['section' => 'culture', 'title' => 'Feria de las Flores', 'dep' => 'antioquia', 'mun' => 'medellin', 'lat' => 6.2442, 'lng' => -75.5812, 'cats' => ['Festividades', 'Tradiciones'], 'cover' => 'silleta-flores', 'gallery' => ['silleta-flores'],
                 'event_start' => '2027-07-30 09:00:00', 'event_end' => '2027-08-08 23:00:00',
                 'summary' => 'El desfile de silleteros lleva sobre la espalda arreglos florales de hasta 70 kilos.',
                 'body' => "La tradición silletera nació en el corregimiento de Santa Elena y hoy es Patrimonio Cultural de la Nación.\n\n> Fechas de referencia: confirma la programación oficial.",
-                'meta' => ['community' => 'Silleteros de Santa Elena', 'schedule' => 'Primeras semanas de agosto']],
+                'meta' => ['point_type' => 'Festividad', 'community' => 'Silleteros de Santa Elena', 'schedule' => 'Primeras semanas de agosto']],
             ['section' => 'culture', 'title' => 'Festival de la Leyenda Vallenata', 'dep' => 'cesar', 'mun' => 'valledupar', 'lat' => 10.4631, 'lng' => -73.2532, 'cats' => ['Festividades', 'Música'], 'cover' => 'musica', 'gallery' => ['musica'], 'featured' => true, 'order' => 3,
                 'event_start' => '2027-04-28 09:00:00', 'event_end' => '2027-05-01 23:00:00',
                 'summary' => 'Acordeón, caja y guacharaca compiten por la corona de rey vallenato.',
                 'body' => "El vallenato tradicional fue inscrito por la UNESCO en la Lista de Salvaguardia Urgente. El festival reúne a juglares y nuevas generaciones.\n\n> Fechas de referencia: confirma la programación oficial.",
-                'meta' => ['venue' => 'Parque de la Leyenda Vallenata', 'schedule' => 'Finales de abril']],
+                'meta' => ['point_type' => 'Música y danza', 'venue' => 'Parque de la Leyenda Vallenata', 'schedule' => 'Finales de abril']],
             ['section' => 'culture', 'title' => 'Festival Petronio Álvarez', 'dep' => 'valle-del-cauca', 'mun' => 'cali', 'lat' => 3.4516, 'lng' => -76.532, 'cats' => ['Festividades', 'Música'], 'cover' => 'pacifico', 'gallery' => ['pacifico', 'musica'],
                 'event_start' => '2027-08-12 16:00:00', 'event_end' => '2027-08-17 23:00:00',
                 'summary' => 'Marimba, cantos y cocina del Pacífico se toman Cali en uno de los festivales afro más grandes de América.',
                 'body' => "> Fechas de referencia: confirma la programación oficial.",
-                'meta' => ['community' => 'Agrupaciones del litoral Pacífico', 'schedule' => 'Agosto']],
+                'meta' => ['point_type' => 'Música y danza', 'community' => 'Agrupaciones del litoral Pacífico', 'schedule' => 'Agosto']],
             ['section' => 'culture', 'title' => 'Fiestas de la Independencia de Cartagena', 'dep' => 'bolivar', 'mun' => 'cartagena-de-indias', 'lat' => 10.4236, 'lng' => -75.5503, 'cats' => ['Festividades', 'Danza'], 'cover' => 'cartagena', 'gallery' => ['cartagena'],
                 'event_start' => '2026-11-07 10:00:00', 'event_end' => '2026-11-11 23:00:00',
                 'summary' => 'Cabildos, desfiles y música conmemoran la independencia de Cartagena del 11 de noviembre de 1811.',
                 'body' => "> Fechas de referencia: confirma la programación oficial.",
-                'meta' => ['schedule' => 'Alrededor del 11 de noviembre']],
+                'meta' => ['point_type' => 'Festividad', 'schedule' => 'Alrededor del 11 de noviembre']],
             ['section' => 'culture', 'title' => 'Noche de las Velitas', 'cats' => ['Tradiciones', 'Festividades'], 'cover' => 'tatacoa-noche', 'gallery' => ['tatacoa-noche'],
                 'event_start' => '2026-12-07 18:00:00', 'event_end' => '2026-12-08 02:00:00',
                 'summary' => 'La víspera del 8 de diciembre, familias de todo el país encienden velas y faroles para abrir la Navidad.',
@@ -439,19 +468,19 @@ final class DemoSeeder
                 'event_start' => '2027-03-23 19:00:00', 'event_end' => '2027-03-27 23:00:00',
                 'summary' => 'Procesiones nocturnas centenarias recorren la ciudad blanca; Patrimonio Inmaterial de la Humanidad.',
                 'body' => "> Fechas de referencia: confirma la programación oficial.",
-                'meta' => ['respect_note' => 'Es una celebración religiosa: guarda silencio durante las procesiones y no uses flash.']],
+                'meta' => ['point_type' => 'Festividad', 'respect_note' => 'Es una celebración religiosa: guarda silencio durante las procesiones y no uses flash.']],
             ['section' => 'culture', 'title' => 'El sombrero vueltiao', 'dep' => 'cordoba', 'mun' => 'tuchin', 'lat' => 9.1856, 'lng' => -75.5531, 'cats' => ['Artesanías', 'Patrimonio'], 'cover' => 'sombrero-vueltiao', 'gallery' => ['sombrero-vueltiao'], 'featured' => true, 'order' => 4,
                 'summary' => 'Trenzado en caña flecha por el pueblo zenú, es símbolo cultural de la nación.',
                 'body' => 'El número de vueltas de trenza indica la finura del sombrero. Tuchín es uno de los centros artesanales más reconocidos.',
-                'meta' => ['community' => 'Pueblo zenú', 'respect_note' => 'Compra directamente a artesanas y artesanos y valora el tiempo de elaboración.']],
+                'meta' => ['point_type' => 'Mercado o artesanías', 'community' => 'Pueblo zenú', 'respect_note' => 'Compra directamente a artesanas y artesanos y valora el tiempo de elaboración.']],
             ['section' => 'culture', 'title' => 'Mochila wayuu', 'dep' => 'la-guajira', 'mun' => 'uribia', 'lat' => 11.7137, 'lng' => -72.2655, 'cats' => ['Artesanías', 'Tradiciones'], 'cover' => 'mochila-wayuu', 'gallery' => ['mochila-wayuu'],
                 'summary' => 'Cada kanaas, o dibujo tejido, guarda un significado de la cosmovisión wayuu.',
                 'body' => 'Según la tradición, el tejido fue enseñado por Wale\'kerü, la araña tejedora. Una mochila puede tardar semanas en terminarse.',
-                'meta' => ['community' => 'Pueblo wayuu', 'respect_note' => 'Pide permiso antes de fotografiar y prefiere el comercio justo.']],
+                'meta' => ['point_type' => 'Mercado o artesanías', 'community' => 'Pueblo wayuu', 'respect_note' => 'Pide permiso antes de fotografiar y prefiere el comercio justo.']],
             ['section' => 'culture', 'title' => 'La cumbia', 'dep' => 'magdalena', 'mun' => 'el-banco', 'lat' => 9.0, 'lng' => -73.97, 'cats' => ['Música', 'Danza'], 'cover' => 'pollera', 'gallery' => ['pollera', 'musica'],
                 'summary' => 'Tambores, gaitas y polleras que giran: un ritmo nacido del encuentro de culturas en el Caribe.',
                 'body' => 'El Banco, Magdalena, celebra cada año el Festival Nacional de la Cumbia.',
-                'meta' => ['schedule' => 'Festival Nacional de la Cumbia: mitad de año']],
+                'meta' => ['point_type' => 'Música y danza', 'schedule' => 'Festival Nacional de la Cumbia: mitad de año']],
             ['section' => 'culture', 'title' => 'Molas del pueblo guna dule', 'dep' => 'antioquia', 'mun' => 'necocli', 'cats' => ['Artesanías'], 'cover' => 'mola', 'gallery' => ['mola'], 'gem' => true,
                 'summary' => 'Telas superpuestas y recortadas a mano forman figuras que hablan de la naturaleza y el mundo espiritual.',
                 'meta' => ['community' => 'Pueblo guna dule', 'respect_note' => 'Las molas son parte de la indumentaria tradicional: valora su significado más allá de lo decorativo.']],

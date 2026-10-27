@@ -382,6 +382,41 @@ export const scenes = {
     return wrap(W, H, [s.def, water.def], body);
   },
 
+
+  // Fondo de portada: vista aérea nocturna-azulada con mar, nubes, cordillera, selva y playa.
+  aerial({ W, H, r }) {
+    const defsExtra = [];
+    const sea = radial([[0, '#14708a'], [0.45, '#0b4a63'], [1, '#05202c']], 0.42, 0.55, 0.75);
+    const skyG = linear([[0, '#1d3f5c'], [0.6, '#5f86a3'], [1, '#0b4a63', 0]]);
+    let body = `<rect width="${W}" height="${H}" fill="url(#${sea.id})"/>`;
+    body += `<rect width="${W}" height="${H * 0.3}" fill="url(#${skyG.id})"/>`;
+    body += `<path d="${ridge(W, H, H * 0.17, H * 0.07, r, { sharp: 1.2 })}" fill="#2c4a62" opacity="0.85"/>`;
+    body += `<path d="${ridge(W, H, H * 0.21, H * 0.05, r, { sharp: 0.8 })}" fill="#1f4a4a" opacity="0.9"/>`;
+    body += `<rect y="${H * 0.18}" width="${W}" height="${H * 0.14}" fill="#0b4a63" opacity="0.65" filter="url(#blur20)"/>`;
+    body += clouds(W, H * 0.12, 9, r, '#e8f1f6', 0.75);
+    // Arrecifes y aguas someras
+    for (let i = 0; i < 26; i++) {
+      const x = r() * W, y = H * (0.3 + r() * 0.7);
+      body += `<ellipse cx="${f(x)}" cy="${f(y)}" rx="${f(60 + r() * 200)}" ry="${f(20 + r() * 70)}" fill="#1fb3b0" opacity="${f(0.05 + r() * 0.1)}" filter="url(#blur20)"/>`;
+    }
+    // Costa con aguas someras y playa (abajo a la izquierda)
+    const shallow = radial([[0, '#3fd0c4', 0.7], [1, '#3fd0c4', 0]], 0.1, 0.95, 0.5);
+    body += `<rect width="${W}" height="${H}" fill="url(#${shallow.id})"/>`;
+    body += `<path d="M0 ${H * 0.7} C ${W * 0.1} ${H * 0.74}, ${W * 0.18} ${H * 0.86}, ${W * 0.22} ${H} L0 ${H} Z" fill="#f0dfb4" opacity="0.85" filter="url(#blur3)"/>`;
+    body += `<path d="M0 ${H * 0.75} C ${W * 0.08} ${H * 0.79}, ${W * 0.14} ${H * 0.88}, ${W * 0.18} ${H} L0 ${H} Z" fill="#1e4a2c"/>`;
+    // Líneas de oleaje
+    for (let i = 0; i < 40; i++) {
+      const x = r() * W, y = H * (0.3 + r() * 0.65), w = 40 + r() * 140;
+      body += `<path d="M${f(x)} ${f(y)} q${f(w / 2)} -6 ${f(w)} 0" stroke="#bfeff0" stroke-opacity="${f(0.06 + r() * 0.1)}" stroke-width="2" fill="none"/>`;
+    }
+    const glare = radial([[0, '#ffe7b0', 0.35], [1, '#ffe7b0', 0]], 0.55, 0.18, 0.35);
+    body += `<rect width="${W}" height="${H}" fill="url(#${glare.id})"/>`;
+    defsExtra.push(shallow.def, glare.def);
+    // Bruma general
+    body += `<rect y="${H * 0.82}" width="${W}" height="${H * 0.18}" fill="#05202c" opacity="0.5" filter="url(#blur20)"/>`;
+    return wrap(W, H, [sea.def, skyG.def, ...defsExtra], body, { vignette: 0.45, grain: 0.06 });
+  },
+
   // ---------- Gastronomía (vista cenital) ----------
   plate({ W, H, r, dish = 'bandeja', cloth = '#ff5a5f' }) {
     const cl = cloth;

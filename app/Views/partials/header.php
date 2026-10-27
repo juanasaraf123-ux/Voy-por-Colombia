@@ -1,31 +1,29 @@
 <?php
 use App\Sections;
-$nav = [['/', 'Inicio', 'home', '#14231f']];
+$nav = [['/', 'Inicio', 'home', '#ff5a5f']];
 foreach (['tourism', 'gastronomy', 'coffee', 'entrepreneurship', 'culture'] as $k) {
-    $nav[] = ['/' . Sections::ALL[$k]['path'], Sections::ALL[$k]['label'], $k, Sections::ALL[$k]['color']];
+    $nav[] = ['/' . Sections::ALL[$k]['path'], Sections::ALL[$k]['label'], $k === 'tourism' ? 'map' : Sections::ALL[$k]['icon'], Sections::ALL[$k]['color']];
 }
-$nav[] = ['/galeria', 'Galería', 'gallery', Sections::GALLERY['color']];
+$nav[] = ['/galeria', 'Galería', 'camera', Sections::GALLERY['color']];
 $nav[] = ['/noticias', 'Noticias', 'news', Sections::ALL['news']['color']];
 $current = App\Core\Request::path();
 $isActive = static fn (string $href) => $href === '/' ? $current === '/' : ($current === $href || str_starts_with($current, $href . '/'));
 ?>
 <header class="site-header <?= !empty($transparentHeader) ? 'is-transparent' : '' ?>" data-header>
   <div class="header-inner">
-    <a class="brand" href="<?= e(url('/')) ?>" aria-label="<?= e(setting('site_name')) ?>, ir al inicio">
-      <?= App\Core\View::partial('logo') ?>
-      <span class="brand-text"><span class="brand-name"><?= e(setting('site_name')) ?></span><span class="brand-tag">Tierra de Infinitos</span></span>
-    </a>
+    <?= App\Core\View::partial('brand') ?>
     <nav class="main-nav" aria-label="Navegación principal">
       <ul>
-        <?php foreach ($nav as [$href, $label]): ?>
-          <li><a href="<?= e(url($href)) ?>" <?= $isActive($href) ? 'aria-current="page"' : '' ?>><?= e($label) ?></a></li>
+        <?php foreach ($nav as [$href, $label, $ic, $color]): ?>
+          <li><a href="<?= e(url($href)) ?>" style="--c: <?= e($color) ?>" <?= $isActive($href) ? 'aria-current="page"' : '' ?>><?= icon($ic) ?><span><?= e($label) ?></span></a></li>
         <?php endforeach; ?>
       </ul>
     </nav>
     <div class="header-actions">
-      <button class="icon-btn" type="button" data-search-open aria-label="Buscar (atajo: /)"><?= icon('search') ?></button>
+      <button class="search-pill" type="button" data-search-open aria-label="Buscar (atajo: /)"><?= icon('search') ?><span>¿Qué lugar quieres descubrir?</span></button>
       <a class="icon-btn" href="<?= e(url('/favoritos')) ?>" aria-label="Mis favoritos"><?= icon('heart') ?><span class="count" data-fav-count>0</span></a>
       <a class="icon-btn" href="<?= e(url('/mi-ruta')) ?>" aria-label="Mi ruta"><?= icon('route') ?><span class="count" data-route-count>0</span></a>
+      <a class="avatar-btn" href="<?= e(url('/admin')) ?>" aria-label="Acceso para administradores" title="Acceso para administradores"><?= icon('user') ?></a>
       <button class="icon-btn menu-toggle" type="button" data-menu-open aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu"><?= icon('menu') ?></button>
     </div>
   </div>
@@ -33,7 +31,7 @@ $isActive = static fn (string $href) => $href === '/' ? $current === '/' : ($cur
 
 <div class="mobile-menu" id="mobile-menu" data-menu aria-hidden="true">
   <div class="mobile-menu-top">
-    <a class="brand" href="<?= e(url('/')) ?>"><?= App\Core\View::partial('logo') ?><span class="brand-text"><span class="brand-name"><?= e(setting('site_name')) ?></span><span class="brand-tag">Tierra de Infinitos</span></span></a>
+    <?= App\Core\View::partial('brand') ?>
     <button class="icon-btn" type="button" data-menu-close aria-label="Cerrar menú"><?= icon('close') ?></button>
   </div>
   <nav aria-label="Navegación móvil">
@@ -48,6 +46,11 @@ $isActive = static fn (string $href) => $href === '/' ? $current === '/' : ($cur
     <a class="btn btn-glass" href="<?= e(url('/mi-ruta')) ?>"><?= icon('route') ?> Mi ruta</a>
     <a class="btn btn-glass" href="<?= e(url('/favoritos')) ?>"><?= icon('heart') ?> Favoritos</a>
   </div>
+</div>
+
+<div class="theme-switch" role="group" aria-label="Tema de color">
+  <button type="button" data-theme-set="dark" aria-label="Modo oscuro" title="Modo oscuro"><?= icon('moon') ?></button>
+  <button type="button" data-theme-set="light" aria-label="Modo claro" title="Modo claro"><?= icon('sun') ?></button>
 </div>
 
 <div class="search-overlay" data-search aria-hidden="true">

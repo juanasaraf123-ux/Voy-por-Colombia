@@ -22,13 +22,21 @@ final class PublicController
     {
         $heroMedia = Media::findMany(array_map('intval', Setting::json('hero_media_ids')));
         $heroVideo = (int) Setting::get('hero_video_id') ? Media::find((int) Setting::get('hero_video_id')) : null;
+        $strip = Entry::query(['section' => 'tourism', 'featured' => 1, 'order' => 'featured', 'limit' => 12]);
+        $spotId = (int) Setting::get('hero_spotlight_id');
+        $spotRow = ($spotId ? Entry::query(['ids' => [$spotId], 'limit' => 1]) : []) ?: array_slice($strip, 0, 1);
+        $spotlight = $spotRow ? Entry::toCard($spotRow[0], Entry::mediaKinds([(int) $spotRow[0]['id']])[(int) $spotRow[0]['id']] ?? []) : null;
+        $preferred = ['naturaleza', 'aventura', 'patrimonio', 'gastronomia', 'playas', 'turismo-rural', 'experiencias-comunitarias'];
+        $cats = array_column(Category::forSection('tourism'), null, 'slug');
+        $heroChips = array_values(array_filter(array_map(static fn ($slug) => $cats[$slug] ?? null, $preferred))) ?: array_slice(array_values($cats), 0, 5);
         View::render('public/home', [
             'pageTitle' => null,
+            'strip' => array_map(static fn ($e) => Entry::toCard($e) + ['_cover' => $e['cover']], $strip),
+            'spotlight' => $spotlight,
+            'heroChips' => $heroChips,
             'heroMedia' => $heroMedia,
-            'heroVideo' => $heroVideo && in_array($heroVideo['kind'], ['video'], true) ? $heroVideo : null,
-            'heroCards' => Entry::query(['section' => 'tourism', 'featured' => 1, 'order' => 'featured', 'limit' => 3]),
+            'heroVideo' => $heroVideo && in_array($heroVideo['kind'], ['video', 'embed'], true) ? $heroVideo : null,
             'sections' => SectionInfo::forHome(),
-            'featured' => Entry::query(['section' => 'tourism', 'featured' => 1, 'order' => 'featured', 'limit' => 10]),
             'gems' => Entry::query(['hidden_gem' => 1, 'order' => 'random', 'limit' => 5]),
             'news' => Entry::query(['section' => 'news', 'limit' => 4]),
             'photos' => Media::list(['gallery' => 1, 'kind' => 'image', 'featured' => 1, 'limit' => 9]),
@@ -36,12 +44,6 @@ final class PublicController
             'experiences' => Entry::query(['sections' => ['gastronomy', 'coffee', 'culture', 'entrepreneurship'], 'featured' => 1, 'order' => 'recent', 'limit' => 6]),
             'routes' => Route::list(true, 3, true),
             'regions' => Geo::regions(),
-            'stats' => [
-                'destinos' => Entry::count(['section' => 'tourism']),
-                'departamentos' => count(Geo::departments()),
-                'municipios' => (int) \App\Core\Database::value('SELECT COUNT(*) FROM municipalities'),
-                'experiencias' => Entry::count(['sections' => ['gastronomy', 'coffee', 'culture', 'entrepreneurship']]),
-            ],
         ]);
     }
 

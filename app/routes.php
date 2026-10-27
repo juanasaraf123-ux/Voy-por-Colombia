@@ -28,6 +28,8 @@ $router->get('/api/mapa', [ApiController::class, 'markers']);
 $router->get('/api/buscar', [ApiController::class, 'search']);
 $router->get('/api/galeria', [ApiController::class, 'gallery']);
 $router->get('/api/publicaciones', [ApiController::class, 'entries']);
+$router->get('/api/publicaciones/{id}/multimedia', [ApiController::class, 'entryMedia']);
+$router->get('/api/rutas', [ApiController::class, 'routes']);
 $router->get('/api/departamentos/{slug}', [ApiController::class, 'department']);
 $router->get('/api/departamentos/{dep}/municipios/{slug}', [ApiController::class, 'municipality']);
 
