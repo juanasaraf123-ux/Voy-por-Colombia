@@ -1,0 +1,32 @@
+VOY POR COLOMBIA · INSTALACIÓN EN XAMPP (3 PASOS)
+=================================================
+
+1) COPIAR
+   Copia esta carpeta completa a:
+       C:\xampp\htdocs\voy-por-colombia
+   Abre el panel de XAMPP (C:\xampp\xampp-control.exe) y pulsa «Start»
+   en Apache y en MySQL.
+
+2) IMPORTAR LA BASE DE DATOS
+   Abre en el navegador:  http://localhost/phpmyadmin
+   Pestaña «Importar» → «Seleccionar archivo» → elige
+       database\voy_por_colombia.sql
+   → botón «Importar» (abajo). La base se crea sola.
+
+3) ABRIR
+   Sitio:   http://localhost/voy-por-colombia
+   Panel:   http://localhost/voy-por-colombia/admin
+   La primera vez que abras el panel te pedirá crear tu cuenta de
+   administración (nombre, correo, usuario y contraseña).
+
+No hace falta consola, ni archivo .env, ni tocar php.ini.
+
+Si algo falla, la página te dice qué falta:
+ · «MySQL no está encendido» → pulsa Start en MySQL en el panel de XAMPP.
+ · «Falta importar la base de datos» → repite el paso 2.
+ · Si tu MySQL tiene contraseña para root, copia .env.example como .env
+   y escribe la contraseña en DB_PASS=.
+
+Ojo: volver a importar el .sql borra lo que hayas creado después
+(contenido y cuentas). El contenido incluido es de DEMOSTRACIÓN y se
+puede quitar desde el panel.

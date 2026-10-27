@@ -24,7 +24,8 @@ final class Database
 
     public static function driver(): string
     {
-        return strtolower((string) env('DB_DRIVER', 'sqlite'));
+        // Por defecto, la configuración estándar de XAMPP (MySQL/MariaDB, usuario root sin contraseña).
+        return strtolower((string) env('DB_DRIVER', 'mysql'));
     }
 
     private static function connect(): PDO

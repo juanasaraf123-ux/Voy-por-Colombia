@@ -192,9 +192,12 @@ final class MediaProcessor
     }
 
     /** Carpeta por año/mes y nombre aleatorio. */
+    /** Carpeta fija para los archivos incluidos con el proyecto (demostración y marca). */
+    public static ?string $folder = null;
+
     private static function target(): array
     {
-        $dir = date('Y/m');
+        $dir = self::$folder ?? date('Y/m');
         $abs = PUBLIC_PATH . '/uploads/' . $dir;
         if (!is_dir($abs) && !mkdir($abs, 0755, true) && !is_dir($abs)) {
             throw new \RuntimeException('No se pudo crear la carpeta de cargas: ' . $abs);

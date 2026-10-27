@@ -9,6 +9,6 @@
   <button class="btn btn-primary btn-block" type="submit"><?= icon('arrow-right') ?> Ingresar</button>
 </form>
 <?php if ($noUsers): ?>
-  <p class="hint mt">Aún no hay cuentas. Crea la primera desde la consola con <code>php bin/create-admin.php</code> (ver README).</p>
+  <p class="hint mt">Aún no hay cuentas. Abre esta página desde el computador donde está instalado el sitio para crear la primera, o usa <code>php bin/create-admin.php</code> (ver README).</p>
 <?php endif; ?>
 <p class="hint mt"><a href="<?= e(url('/')) ?>">← Volver al sitio</a></p>

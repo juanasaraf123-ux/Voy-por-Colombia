@@ -13,7 +13,7 @@ final class Request
     public static function path(): string
     {
         $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-        $prefix = rtrim((string) env('APP_BASE_PATH', ''), '/');
+        $prefix = base_path();
         if ($prefix !== '' && str_starts_with($path, $prefix)) {
             $path = substr($path, strlen($prefix)) ?: '/';
         }

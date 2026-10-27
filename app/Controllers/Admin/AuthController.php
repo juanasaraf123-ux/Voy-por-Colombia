@@ -21,6 +21,9 @@ final class AuthController
             redirect(url('/admin'));
         }
         header('X-Robots-Tag: noindex, nofollow');
+        if ($this->setupAllowed()) {
+            redirect(url('/admin/instalar'));
+        }
         View::render('admin/login', ['pageTitle' => 'Ingresar al panel', 'noUsers' => !DB::value('SELECT COUNT(*) FROM users')], 'layouts/admin-auth');
     }
 
@@ -52,11 +55,21 @@ final class AuthController
         redirect(url('/admin/login'));
     }
 
+    /**
+     * El formulario de la primera cuenta solo está disponible mientras no exista ninguna cuenta y:
+     * - se abre desde el mismo computador (localhost, por ejemplo XAMPP), o
+     * - se envía el SETUP_TOKEN configurado en .env (para hostings sin consola).
+     */
     private function setupAllowed(): bool
     {
+        if (DB::value('SELECT COUNT(*) FROM users')) {
+            return false;
+        }
+        $local = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)
+            && !isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !isset($_SERVER['HTTP_X_REAL_IP']) && !isset($_SERVER['HTTP_FORWARDED']);
         $token = (string) env('SETUP_TOKEN', '');
         $sent = (string) ($_GET['token'] ?? $_POST['setup_token'] ?? '');
-        return strlen($token) >= 24 && hash_equals($token, $sent) && !DB::value('SELECT COUNT(*) FROM users');
+        return $local || (strlen($token) >= 24 && hash_equals($token, $sent));
     }
 
     public function setupForm(): void
@@ -64,7 +77,7 @@ final class AuthController
         if (!$this->setupAllowed()) {
             throw new HttpException(404);
         }
-        View::render('admin/setup', ['pageTitle' => 'Crear la primera cuenta', 'token' => (string) $_GET['token']], 'layouts/admin-auth');
+        View::render('admin/setup', ['pageTitle' => 'Crear la primera cuenta', 'token' => (string) ($_GET['token'] ?? '')], 'layouts/admin-auth');
     }
 
     public function setup(): void
@@ -83,7 +96,7 @@ final class AuthController
         if ($errors) {
             Session::flash('errors', $errors);
             Session::flash('old', ['name' => $data['name'], 'email' => $data['email'], 'username' => $data['username']]);
-            redirect(url('/admin/instalar', ['token' => $_POST['setup_token']]));
+            redirect(url('/admin/instalar', ['token' => $_POST['setup_token'] ?? null]));
         }
         $id = User::create($data['name'], $data['email'], $data['username'], $data['password'], 'admin');
         Audit::log('create', 'user', $id, 'Primera cuenta creada con el instalador web');

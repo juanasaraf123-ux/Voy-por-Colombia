@@ -17,13 +17,40 @@ function e(mixed $value): string
 
 function base_url(): string
 {
-    return rtrim((string) env('APP_URL', ''), '/');
+    $url = rtrim((string) env('APP_URL', ''), '/');
+    if ($url === '' && !empty($_SERVER['HTTP_HOST'])) {
+        $url = (App\Core\Request::isHttps() ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . base_path();
+    }
+    return $url;
 }
 
-/** Ruta relativa a la raíz del sitio (soporta instalación en subcarpeta mediante APP_BASE_PATH). */
+/**
+ * Subcarpeta donde vive el sitio (por ejemplo «/voy-por-colombia» en XAMPP).
+ * Se toma de APP_BASE_PATH o se detecta sola a partir de la ruta de public/index.php.
+ */
+function base_path(): string
+{
+    static $base = null;
+    if ($base !== null) {
+        return $base;
+    }
+    $configured = trim((string) env('APP_BASE_PATH', ''));
+    if ($configured !== '') {
+        return $base = rtrim($configured, '/');
+    }
+    $script = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+    $dir = rtrim(dirname($script), '/.');
+    // Con el .htaccess de la raíz las URL no muestran «/public».
+    if (str_ends_with($dir, '/public')) {
+        $dir = substr($dir, 0, -7);
+    }
+    return $base = (PHP_SAPI === 'cli' || PHP_SAPI === 'cli-server') ? '' : $dir;
+}
+
+/** Ruta relativa a la raíz del sitio (soporta instalación en subcarpeta). */
 function url(string $path = '/', array $query = []): string
 {
-    $prefix = rtrim((string) env('APP_BASE_PATH', ''), '/');
+    $prefix = base_path();
     $path = '/' . ltrim($path, '/');
     $qs = $query ? '?' . http_build_query(array_filter($query, static fn ($v) => $v !== null && $v !== '')) : '';
     return $prefix . $path . ($qs === '?' ? '' : $qs);

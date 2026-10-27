@@ -13,6 +13,9 @@ storage/cache/*
 public/uploads/*
 !public/uploads/.htaccess
 !public/uploads/.gitkeep
+# Imágenes de la marca y de demostración que acompañan a database/voy_por_colombia.sql
+!public/uploads/demo/
+!public/uploads/marca/
 
 node_modules/
 .DS_Store

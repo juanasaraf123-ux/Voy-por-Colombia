@@ -107,6 +107,8 @@ final class DemoSeeder
     private static function importMedia(callable $log): void
     {
         $collections = array_column(DB::all('SELECT id, slug FROM collections'), 'id', 'slug');
+        // Los archivos de demostración van a uploads/demo/ (incluidos en el repositorio).
+        MediaProcessor::$folder = 'demo';
         $sectionByCollection = ['paisajes' => 'tourism', 'sabores' => 'gastronomy', 'cultura-cafetera' => 'coffee', 'cultura-viva' => 'culture', 'hecho-en-colombia' => 'entrepreneurship'];
         foreach (self::MEDIA as $file => [$title, $alt, $dep, $mun, $col, $featured]) {
             $path = __DIR__ . "/demo-media/$file.webp";
@@ -148,6 +150,7 @@ final class DemoSeeder
                 'is_demo' => 1, 'created_at' => now(), 'updated_at' => now(),
             ]);
         }
+        MediaProcessor::$folder = null;
         $log('Ilustraciones importadas: ' . count(self::$mediaIds));
     }
 

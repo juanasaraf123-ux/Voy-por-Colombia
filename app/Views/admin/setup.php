@@ -1,5 +1,5 @@
 <h1>Crear la primera cuenta</h1>
-<p class="muted">Esta página solo funciona mientras no exista ninguna cuenta y el token de instalación sea correcto.</p>
+<p class="muted">Te damos la bienvenida. Crea la cuenta de administración para gestionar el contenido. Esta página desaparece en cuanto exista la primera cuenta.</p>
 <form method="post" action="<?= e(url('/admin/instalar')) ?>" class="stack" novalidate>
   <?= csrf_field() ?>
   <input type="hidden" name="setup_token" value="<?= e($token) ?>">

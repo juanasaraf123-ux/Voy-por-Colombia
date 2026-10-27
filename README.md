@@ -6,6 +6,8 @@ Plataforma turística interactiva para descubrir la diversidad turística, gastr
 - Un mapa con límites geográficos reales de los 33 departamentos y los 1.122 municipios.
 - Un panel administrativo privado para gestionar todo el contenido sin tocar el código.
 
+> **¿Solo quieres verlo en XAMPP?** Copia la carpeta en `htdocs`, importa `database/voy_por_colombia.sql` en phpMyAdmin y abre <http://localhost/voy-por-colombia>. Las instrucciones paso a paso están en [`INSTALAR.txt`](INSTALAR.txt).
+
 ![Portada](docs/capturas/portada.jpg)
 
 | Mapa con rutas animadas | Visor multimedia dentro del mapa |
@@ -130,38 +132,31 @@ El contenido se clasifica por sección y su estructura base es la misma. Así el
 - MySQL 5.7+ o MariaDB 10.3+ (o SQLite para desarrollo).
 - Apache con `mod_rewrite`, o cualquier servidor que envíe las peticiones a `public/index.php`.
 
-### Opción A — Prueba rápida local (SQLite, sin instalar base de datos)
+### Opción A — XAMPP en 3 pasos (sin consola y sin configurar nada)
+
+1. Copia la carpeta del proyecto a `C:\xampp\htdocs\voy-por-colombia`. En el panel de XAMPP enciende **Apache** y **MySQL** con **Start**.
+2. Abre <http://localhost/phpmyadmin>, entra en la pestaña **Importar**, elige `database/voy_por_colombia.sql` y pulsa **Importar**. Se crea sola la base `voy_por_colombia` con departamentos, municipios y el contenido de demostración.
+3. Abre <http://localhost/voy-por-colombia>. Para el panel, abre <http://localhost/voy-por-colombia/admin>. La primera vez te pide crear la cuenta de administración.
+
+No hace falta `.env` ni tocar `php.ini`. Sin `.env`, el sitio usa la configuración estándar de XAMPP: MySQL en `127.0.0.1`, usuario `root` sin contraseña. La subcarpeta se detecta sola. Si algo falta (MySQL apagado, base sin importar), la página lo explica.
+
+> Importar de nuevo el `.sql` **reemplaza** todas las tablas, incluido el contenido y las cuentas creadas después.
+> El formulario web de la primera cuenta solo responde a peticiones desde el mismo computador (`localhost`) y solo mientras no exista ninguna cuenta.
+
+### Opción B — Con consola (MySQL/MariaDB o SQLite)
 
 ```bash
-cp .env.example .env                 # DB_DRIVER=sqlite por defecto
+cp .env.example .env                 # opcional: ajusta la conexión (o DB_DRIVER=sqlite para probar sin MySQL)
 php bin/install.php --demo           # crea tablas, departamentos, municipios y contenido demo
 php bin/create-admin.php             # crea la primera cuenta (pide la contraseña de forma oculta)
 php -S localhost:8000 -t public public/index.php
 ```
 
-Abre <http://localhost:8000> y el panel en <http://localhost:8000/admin>.
+Abre <http://localhost:8000> y el panel en <http://localhost:8000/admin>. Para no cargar datos de demostración, ejecuta `php bin/install.php` sin `--demo`.
 
-### Opción B — XAMPP con MySQL/MariaDB
+El `.htaccess` de la raíz envía todo a `public/` y bloquea `app/`, `storage/`, `database/`, `.env`, etc.
 
-1. Copia la carpeta a `C:\xampp\htdocs\voy-por-colombia`.
-2. En phpMyAdmin crea la base `voy_por_colombia` con cotejamiento `utf8mb4_unicode_ci`.
-3. Copia `.env.example` como `.env` y ajusta:
-   ```ini
-   APP_URL=http://localhost/voy-por-colombia
-   APP_BASE_PATH=/voy-por-colombia
-   DB_DRIVER=mysql
-   DB_NAME=voy_por_colombia
-   DB_USER=root
-   DB_PASS=
-   ```
-4. En la consola de XAMPP («Shell»), dentro de la carpeta del proyecto:
-   ```bash
-   php bin/install.php --demo
-   php bin/create-admin.php
-   ```
-5. Abre <http://localhost/voy-por-colombia>. El `.htaccess` de la raíz envía todo a `public/` y bloquea `app/`, `storage/`, `database/`, `.env`, etc.
-
-> Para no cargar datos de demostración, ejecuta `php bin/install.php` sin `--demo`.
+**Regenerar `database/voy_por_colombia.sql`** (solo si cambian las migraciones o los datos de demostración): en una base MySQL vacía ejecuta `php bin/install.php --demo` y luego `mysqldump --no-tablespaces --skip-dump-date voy_por_colombia`. Antepón las líneas `CREATE DATABASE`/`USE` del archivo actual y sube también `public/uploads/demo/` y `public/uploads/marca/`, porque el `.sql` apunta a esos archivos.
 
 ### Producción
 
@@ -180,7 +175,7 @@ Abre <http://localhost:8000> y el panel en <http://localhost:8000/admin>.
 | `APP_NAME`, `APP_URL`, `APP_BASE_PATH` | Nombre, URL pública y subcarpeta (si aplica) |
 | `APP_DEBUG` | `true` solo en desarrollo (muestra detalles de errores) |
 | `APP_TIMEZONE` | Por defecto `America/Bogota` |
-| `DB_DRIVER` | `mysql` o `sqlite` |
+| `DB_DRIVER` | `mysql` (por defecto) o `sqlite` |
 | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` | Conexión MySQL/MariaDB |
 | `DB_PATH` | Archivo SQLite (por defecto `storage/database.sqlite`) |
 | `SESSION_LIFETIME_MINUTES` | Inactividad máxima antes de cerrar la sesión (120) |
@@ -195,7 +190,9 @@ Abre <http://localhost:8000> y el panel en <http://localhost:8000/admin>.
 
 ## 4. Primera cuenta administrativa (de forma segura)
 
-El código no contiene ninguna contraseña ni cuenta predefinida.
+El código y el archivo `.sql` no contienen ninguna contraseña ni cuenta predefinida.
+
+**En XAMPP (localhost):** abre `/admin` y la primera vez aparece el formulario «Crear la primera cuenta». Solo funciona desde el mismo computador y mientras no exista ninguna cuenta.
 
 **Con consola (recomendado):**
 
@@ -207,7 +204,7 @@ php bin/create-admin.php --name="Nombre Apellido" --email=correo@dominio.co --us
 
 La contraseña se pide oculta y no queda en el historial. Debe tener mínimo 10 caracteres y combinar letras y números. Para automatizar se puede pasar en la variable de entorno `VPC_ADMIN_PASSWORD`. Con `--role=editor` se crean editores.
 
-**Sin consola (hosting compartido):**
+**Hosting sin consola:**
 
 1. Define en `.env` un `SETUP_TOKEN` largo y aleatorio (mínimo 24 caracteres).
 2. Visita `/admin/instalar?token=ESE_TOKEN` y crea la cuenta.

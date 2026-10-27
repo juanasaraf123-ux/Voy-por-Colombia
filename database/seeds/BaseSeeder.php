@@ -183,7 +183,9 @@ final class BaseSeeder
         if (!is_file($file) || DB::value("SELECT id FROM media WHERE original_name = 'portada-paisaje.webp'")) {
             return;
         }
+        \App\Core\MediaProcessor::$folder = 'marca';
         $data = \App\Core\MediaProcessor::importLocal($file, 'portada-paisaje.webp');
+        \App\Core\MediaProcessor::$folder = null;
         $id = DB::insert('media', $data + [
             'title' => 'Paisajes de Colombia',
             'alt_text' => 'Costa con aguas turquesa, selva, montañas y una cascada al atardecer',

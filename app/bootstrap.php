@@ -42,6 +42,22 @@ set_exception_handler(static function (Throwable $e) use ($debug): void {
     if (!headers_sent()) {
         http_response_code(500);
     }
+    // Base de datos no disponible o sin importar: guía de instalación en lugar de un error genérico.
+    if ($e instanceof PDOException && !App\Core\Request::wantsJson()) {
+        $code = (string) ($e->errorInfo[1] ?? $e->getCode());
+        $hint = match (true) {
+            str_contains($e->getMessage(), '2002') || $code === '2002' => 'MySQL no está encendido. Abre el panel de XAMPP y pulsa <b>Start</b> junto a <b>MySQL</b>.',
+            $code === '1049' || $code === '1146' || $e->getCode() === '42S02' => 'Falta importar la base de datos. En phpMyAdmin (<b>http://localhost/phpmyadmin</b>) entra en <b>Importar</b> y elige el archivo <b>database/voy_por_colombia.sql</b> de esta carpeta.',
+            $code === '1045' => 'MySQL rechazó el usuario o la contraseña. Si tu MySQL no usa el usuario <b>root</b> sin contraseña de XAMPP, copia <b>.env.example</b> como <b>.env</b> y escribe ahí tus datos.',
+            default => null,
+        };
+        if ($hint !== null) {
+            echo '<!doctype html><meta charset="utf-8"><title>Voy por Colombia · Instalación</title>'
+                . '<body style="font:17px/1.6 system-ui,sans-serif;max-width:640px;margin:12vh auto;padding:0 20px;color:#1f2a24">'
+                . '<h1 style="font-size:1.6rem">Casi listo</h1><p>' . $hint . '</p><p>Luego recarga esta página.</p></body>';
+            return;
+        }
+    }
     if (App\Core\Request::wantsJson()) {
         if (!headers_sent()) {
             header('Content-Type: application/json; charset=utf-8');
