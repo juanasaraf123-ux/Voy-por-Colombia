@@ -1,6 +1,16 @@
 <?php
 declare(strict_types=1);
 
+// Versiones antiguas de XAMPP traen PHP 7: el sitio necesita PHP 8.1 o superior.
+if (PHP_VERSION_ID < 80100) {
+    http_response_code(500);
+    echo '<!doctype html><meta charset="utf-8"><title>Voy por Colombia</title>'
+        . '<body style="font:17px/1.6 system-ui,sans-serif;max-width:640px;margin:12vh auto;padding:0 20px">'
+        . '<h1>Se necesita una versión más nueva de XAMPP</h1><p>Este sitio necesita PHP 8.1 o superior y tu XAMPP tiene PHP '
+        . htmlspecialchars(PHP_VERSION) . '. Descarga XAMPP 8.2 desde apachefriends.org, instálalo y vuelve a copiar la carpeta.</p></body>';
+    exit;
+}
+
 // Servidor embebido de PHP: entrega los archivos estáticos directamente.
 if (PHP_SAPI === 'cli-server') {
     $file = __DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

@@ -144,7 +144,7 @@ return [
         id {PK},
         section VARCHAR(20) NOT NULL,
         title VARCHAR(190) NOT NULL,
-        slug VARCHAR(200) NOT NULL,
+        slug VARCHAR(190) NOT NULL,
         summary VARCHAR(400) NULL,
         body {LONGTEXT} NULL,
         status VARCHAR(12) NOT NULL DEFAULT 'draft',
@@ -200,7 +200,7 @@ return [
     "CREATE TABLE routes (
         id {PK},
         title VARCHAR(190) NOT NULL,
-        slug VARCHAR(200) NOT NULL UNIQUE,
+        slug VARCHAR(190) NOT NULL UNIQUE,
         summary VARCHAR(400) NULL,
         body {LONGTEXT} NULL,
         duration VARCHAR(60) NULL,

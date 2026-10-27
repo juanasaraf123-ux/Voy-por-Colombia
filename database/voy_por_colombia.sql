@@ -245,7 +245,7 @@ CREATE TABLE `entries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `section` varchar(20) NOT NULL,
   `title` varchar(190) NOT NULL,
-  `slug` varchar(200) NOT NULL,
+  `slug` varchar(190) NOT NULL,
   `summary` varchar(400) DEFAULT NULL,
   `body` mediumtext DEFAULT NULL,
   `status` varchar(12) NOT NULL DEFAULT 'draft',
@@ -2053,7 +2053,7 @@ DROP TABLE IF EXISTS `routes`;
 CREATE TABLE `routes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(190) NOT NULL,
-  `slug` varchar(200) NOT NULL,
+  `slug` varchar(190) NOT NULL,
   `summary` varchar(400) DEFAULT NULL,
   `body` mediumtext DEFAULT NULL,
   `duration` varchar(60) DEFAULT NULL,
