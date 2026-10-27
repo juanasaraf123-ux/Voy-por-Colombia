@@ -54,6 +54,12 @@ final class Database
             // Primera vez: se copia la base incluida (departamentos, municipios y contenido de demostración).
             $path = BASE_PATH . '/storage/database.sqlite';
             $bundled = BASE_PATH . '/database/voy_por_colombia.sqlite';
+            // Una base vacía (sin tablas) se reemplaza: suele quedar de un intento anterior.
+            if (is_file($path) && is_file($bundled) && self::sqliteIsEmpty($path)) {
+                foreach (['', '-wal', '-shm', '-journal'] as $suffix) {
+                    @unlink($path . $suffix);
+                }
+            }
             if (!is_file($path) && is_file($bundled) && !copy($bundled, $path)) {
                 throw new \RuntimeException('No se pudo crear storage/database.sqlite. Revisa que la carpeta storage tenga permiso de escritura.');
             }
@@ -65,6 +71,14 @@ final class Database
         $pdo->exec('PRAGMA journal_mode = WAL');
         $pdo->exec('PRAGMA busy_timeout = 5000');
         return $pdo;
+    }
+
+    private static function sqliteIsEmpty(string $path): bool
+    {
+        $check = new PDO('sqlite:' . $path, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $tables = (int) $check->query("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table'")->fetchColumn();
+        $check = null; // libera el archivo (Windows no deja borrarlo mientras está abierto)
+        return $tables === 0;
     }
 
     public static function run(string $sql, array $params = []): PDOStatement
