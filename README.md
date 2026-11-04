@@ -316,7 +316,6 @@ Para retirarlo: **Panel › Configuración › Eliminar demostración**, o `php 
 **Requiere acción de tu parte:**
 
 - **Fotografías y videos reales:** las imágenes actuales son ilustraciones de demostración. Sube fotografías con derechos de uso y registra su crédito y licencia en el centro multimedia.
-- **Imágenes de referencia de diseño:** no llegaron con la solicitud. Si las compartes, se puede ajustar la identidad visual a ellas.
 - **Emprendimientos y noticias reales,** redes sociales y correo de contacto (Configuración).
 - **Revisión de descripciones y fechas** por parte del equipo editorial antes del lanzamiento.
 - **Servidor de producción:** HTTPS, límites de carga en `php.ini`, copias de seguridad y, si se desea, la capa de teselas.
