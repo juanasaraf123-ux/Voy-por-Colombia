@@ -4,7 +4,7 @@ Options -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^(app|bin|database|storage|tests|tools)(/|$) - [F,L]
+    RewriteRule ^(app|bootstrap|config|database|lang|node_modules|resources|routes|storage|tests|tools|vendor)(/|$) - [F,L]
     RewriteRule ^public/ - [L]
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>

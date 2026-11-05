@@ -1,159 +1,146 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\Database as DB;
-use App\Core\MediaProcessor;
+use App\Services\MediaProcessor;
+use App\Support\Text;
+use Illuminate\Database\Eloquent\Model;
 
 /** Biblioteca multimedia reutilizable (imágenes, videos, audios, documentos y videos incrustados). */
-final class Media
+class Media extends Model
 {
+    protected $table = 'media';
+    protected $guarded = [];
+    protected $casts = ['in_gallery' => 'boolean', 'gallery_featured' => 'boolean', 'is_demo' => 'boolean'];
+
     public const KINDS = ['image' => 'Imagen', 'video' => 'Video', 'audio' => 'Audio', 'document' => 'Documento', 'embed' => 'Video en línea'];
 
-    public static function find(int $id): ?array
+    public function department()
     {
-        return DB::one('SELECT * FROM media WHERE id = ?', [$id]);
+        return $this->belongsTo(Department::class);
     }
 
-    public static function findMany(array $ids): array
+    public function municipality()
     {
-        if (!$ids) {
-            return [];
-        }
-        $rows = DB::all('SELECT * FROM media WHERE id IN (' . DB::placeholders($ids) . ')', array_values($ids));
-        $byId = array_column($rows, null, 'id');
-        return array_values(array_filter(array_map(static fn ($id) => $byId[$id] ?? null, $ids)));
+        return $this->belongsTo(Municipality::class);
     }
 
-    public static function list(array $f = []): array
+    public function collection()
     {
-        [$where, $params] = self::where($f);
-        $limit = max(1, min(200, (int) ($f['limit'] ?? 48)));
-        $offset = max(0, (int) ($f['offset'] ?? 0));
-        return DB::all("SELECT m.*, d.name AS department_name, mu.name AS municipality_name, col.name AS collection_name
-            FROM media m LEFT JOIN departments d ON d.id = m.department_id LEFT JOIN municipalities mu ON mu.id = m.municipality_id
-            LEFT JOIN collections col ON col.id = m.collection_id
-            WHERE $where ORDER BY " . (!empty($f['gallery']) ? 'm.gallery_featured DESC, m.created_at DESC, m.id DESC' : 'm.created_at DESC, m.id DESC') . " LIMIT $limit OFFSET $offset", $params);
+        return $this->belongsTo(Collection::class);
     }
 
-    public static function count(array $f = []): int
+    public function variantList(): array
     {
-        [$where, $params] = self::where($f);
-        return (int) DB::value("SELECT COUNT(*) FROM media m WHERE $where", $params);
+        $v = json_decode((string) $this->variants, true);
+        return is_array($v) ? $v : [];
     }
 
-    private static function where(array $f): array
+    /** URL pública del archivo en el tamaño pedido (thumb, medium, large u original). */
+    public function url(string $size = 'large'): string
     {
-        $w = ['1 = 1'];
-        $p = [];
-        if (!empty($f['kind'])) {
-            $kinds = (array) $f['kind'];
-            $w[] = 'm.kind IN (' . DB::placeholders($kinds) . ')';
-            array_push($p, ...$kinds);
+        if (!$this->path) {
+            return asset('assets/img/placeholder.svg');
         }
-        if (!empty($f['gallery'])) {
-            $w[] = 'm.in_gallery = 1';
+        if (str_starts_with($this->path, 'http')) {
+            return $this->path;
         }
-        if (!empty($f['featured'])) {
-            $w[] = 'm.gallery_featured = 1';
-        }
-        if (!empty($f['department_id'])) {
-            $w[] = 'm.department_id = ?';
-            $p[] = (int) $f['department_id'];
-        }
-        if (!empty($f['municipality_id'])) {
-            $w[] = 'm.municipality_id = ?';
-            $p[] = (int) $f['municipality_id'];
-        }
-        if (!empty($f['collection_id'])) {
-            $w[] = 'm.collection_id = ?';
-            $p[] = (int) $f['collection_id'];
-        }
-        if (!empty($f['gallery_section'])) {
-            $w[] = 'm.gallery_section = ?';
-            $p[] = $f['gallery_section'];
-        }
-        if (isset($f['q']) && trim((string) $f['q']) !== '') {
-            $w[] = "(m.title LIKE ? ESCAPE '!' OR m.caption LIKE ? ESCAPE '!' OR m.original_name LIKE ? ESCAPE '!' OR m.credit LIKE ? ESCAPE '!')";
-            $like = '%' . like_escape(trim((string) $f['q'])) . '%';
-            array_push($p, $like, $like, $like, $like);
-        }
-        return [implode(' AND ', $w), $p];
+        $path = $this->variantList()[$size] ?? $this->path;
+        return asset('uploads/' . ltrim($path, '/'));
     }
 
-    /** Número de publicaciones y portadas que usan el archivo. */
-    public static function usage(int $id): int
+    public function thumbUrl(): string
     {
-        return (int) DB::value('SELECT COUNT(*) FROM entry_media WHERE media_id = ?', [$id])
-            + (int) DB::value('SELECT COUNT(*) FROM entries WHERE cover_media_id = ?', [$id])
-            + (int) DB::value('SELECT COUNT(*) FROM routes WHERE cover_media_id = ?', [$id])
-            + (int) DB::value('SELECT COUNT(*) FROM sections WHERE cover_media_id = ?', [$id])
-            + (int) DB::value('SELECT COUNT(*) FROM departments WHERE cover_media_id = ?', [$id]);
+        return match ($this->kind) {
+            'image' => $this->url('thumb'),
+            'embed' => $this->embed_provider === 'youtube'
+                ? 'https://i.ytimg.com/vi/' . rawurlencode((string) $this->embed_id) . '/hqdefault.jpg'
+                : asset('assets/img/video-placeholder.svg'),
+            'video' => asset('assets/img/video-placeholder.svg'),
+            'audio' => asset('assets/img/audio-placeholder.svg'),
+            default => asset('assets/img/document-placeholder.svg'),
+        };
     }
 
-    public static function create(array $data, ?int $userId): int
+    public function embedUrl(): ?string
     {
-        $data += ['title' => null, 'alt_text' => null];
-        $data['uploaded_by'] = $userId;
-        $data['created_at'] = $data['updated_at'] = now();
-        return DB::insert('media', $data);
+        return match ($this->embed_provider) {
+            'youtube' => 'https://www.youtube-nocookie.com/embed/' . rawurlencode((string) $this->embed_id) . '?rel=0',
+            'vimeo' => 'https://player.vimeo.com/video/' . rawurlencode((string) $this->embed_id),
+            default => null,
+        };
     }
 
-    public static function delete(int $id): void
+    public function srcset(): string
     {
-        $m = self::find($id);
-        if (!$m) {
-            return;
+        $parts = [];
+        foreach (['thumb' => 480, 'medium' => 1024, 'large' => 1920] as $key => $w) {
+            if (!empty($this->variantList()[$key])) {
+                $parts[] = asset('uploads/' . $this->variantList()[$key]) . " {$w}w";
+            }
         }
-        DB::run('UPDATE departments SET cover_media_id = NULL WHERE cover_media_id = ?', [$id]);
-        DB::run('DELETE FROM media WHERE id = ?', [$id]);
-        MediaProcessor::deleteFiles($m);
+        return implode(', ', array_unique($parts));
     }
 
-    /** Representación JSON para el selector multimedia y la galería pública. */
-    public static function toJson(array $m): array
+    /** Representación para el frontend (galería, visores y selector del panel). */
+    public function toPublic(): array
     {
+        $image = $this->kind === 'image';
         return [
-            'id' => (int) $m['id'],
-            'kind' => $m['kind'],
-            'title' => $m['title'],
-            'caption' => $m['caption'],
-            'credit' => $m['credit'],
-            'license' => $m['license'],
-            'alt' => $m['alt_text'] ?: $m['title'],
-            'width' => $m['width'] ? (int) $m['width'] : null,
-            'height' => $m['height'] ? (int) $m['height'] : null,
-            'thumb' => self::thumbUrl($m),
-            'medium' => $m['kind'] === 'image' ? media_url($m, 'medium') : self::thumbUrl($m),
-            'large' => $m['kind'] === 'image' ? media_url($m, 'large') : self::thumbUrl($m),
-            'src' => in_array($m['kind'], ['video', 'audio', 'document'], true) ? media_url($m, 'original') : null,
-            'embed' => $m['kind'] === 'embed' ? self::embedUrl($m) : null,
-            'mime' => $m['mime'],
-            'department' => $m['department_name'] ?? null,
-            'municipality' => $m['municipality_name'] ?? null,
-            'collection' => $m['collection_name'] ?? null,
-            'isDemo' => (bool) $m['is_demo'],
+            'id' => $this->id,
+            'kind' => $this->kind,
+            'title' => $this->title,
+            'caption' => $this->caption,
+            'credit' => $this->credit,
+            'license' => $this->license,
+            'alt' => $this->alt_text ?: (string) $this->title,
+            'width' => $this->width,
+            'height' => $this->height,
+            'thumb' => $this->thumbUrl(),
+            'medium' => $image ? $this->url('medium') : $this->thumbUrl(),
+            'large' => $image ? $this->url('large') : $this->thumbUrl(),
+            'srcset' => $image ? $this->srcset() : '',
+            'src' => in_array($this->kind, ['video', 'audio', 'document'], true) ? $this->url('original') : null,
+            'embed' => $this->kind === 'embed' ? $this->embedUrl() : null,
+            'mime' => $this->mime,
+            'department' => $this->department?->name,
+            'municipality' => $this->municipality?->name,
+            'collection' => $this->collection?->name,
+            'isDemo' => (bool) $this->is_demo,
         ];
     }
 
-    public static function thumbUrl(array $m): string
+    public function scopeSearch($q, ?string $term)
     {
-        return match ($m['kind']) {
-            'image' => media_url($m, 'thumb'),
-            'embed' => $m['embed_provider'] === 'youtube' ? 'https://i.ytimg.com/vi/' . rawurlencode((string) $m['embed_id']) . '/hqdefault.jpg' : asset('img/video-placeholder.svg'),
-            'video' => asset('img/video-placeholder.svg'),
-            'audio' => asset('img/audio-placeholder.svg'),
-            default => asset('img/document-placeholder.svg'),
-        };
+        $term = trim((string) $term);
+        if ($term === '') {
+            return $q;
+        }
+        $like = '%' . Text::likeEscape($term) . '%';
+        return $q->where(function ($w) use ($like) {
+            foreach (['title', 'caption', 'original_name', 'credit'] as $col) {
+                $w->orWhereRaw("$col LIKE ? ESCAPE '!'", [$like]);
+            }
+        });
     }
 
-    public static function embedUrl(array $m): ?string
+    /** Número de publicaciones, rutas, secciones y departamentos que usan el archivo. */
+    public function usage(): int
     {
-        return match ($m['embed_provider']) {
-            'youtube' => 'https://www.youtube-nocookie.com/embed/' . rawurlencode((string) $m['embed_id']) . '?rel=0',
-            'vimeo' => 'https://player.vimeo.com/video/' . rawurlencode((string) $m['embed_id']),
-            default => null,
-        };
+        return \DB::table('entry_media')->where('media_id', $this->id)->count()
+            + Entry::where('cover_media_id', $this->id)->count()
+            + TravelRoute::where('cover_media_id', $this->id)->count()
+            + SectionInfo::where('cover_media_id', $this->id)->count()
+            + Department::where('cover_media_id', $this->id)->count();
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Media $m) {
+            Department::where('cover_media_id', $m->id)->update(['cover_media_id' => null]);
+        });
+        static::deleted(function (Media $m) {
+            MediaProcessor::deleteFiles($m->getAttributes());
+        });
     }
 }

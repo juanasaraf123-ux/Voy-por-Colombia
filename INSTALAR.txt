@@ -1,11 +1,13 @@
 VOY POR COLOMBIA · INSTALACIÓN EN XAMPP (2 PASOS)
 =================================================
 
-El sitio trae su propia base de datos dentro de la carpeta (SQLite).
-NO necesita MySQL: no toca tus otras bases de datos ni sus puertos.
+Necesitas XAMPP 8.2 o superior (PHP 8.2+). El sitio trae su propia base de
+datos (SQLite) dentro de la carpeta: NO necesita MySQL ni PostgreSQL y no
+toca tus otras bases de datos ni sus puertos. Tampoco hace falta Composer,
+Node ni la consola.
 
 1) COPIAR
-   Copia esta carpeta completa a la carpeta htdocs de tu XAMPP 8, por ejemplo:
+   Copia esta carpeta completa a la carpeta htdocs de tu XAMPP, por ejemplo:
        C:\xampp8.2\htdocs\voy-por-colombia
    En el panel de XAMPP pulsa «Start» SOLO en Apache.
 
@@ -15,19 +17,28 @@ NO necesita MySQL: no toca tus otras bases de datos ni sus puertos.
    La primera vez que abras el panel te pedirá crear tu cuenta de
    administración (nombre, correo, usuario y contraseña).
 
-Todo lo que crees en el panel se guarda en storage\database.sqlite.
-Para hacer una copia de seguridad, copia ese archivo y la carpeta public\uploads.
+En la primera visita el sitio crea solo su configuración (.env, con una clave
+secreta propia de tu computador) y su base de datos (storage\database.sqlite).
 
-El contenido incluido es de DEMOSTRACIÓN y se puede quitar desde el panel
-(Configuración).
+Copias de seguridad: guarda el archivo storage\database.sqlite y la carpeta
+public\uploads.
+
+El contenido incluido es de DEMOSTRACIÓN y se quita desde el panel
+(Configuración → Eliminar demostración).
+
+Si algo falla, la página te dice qué falta (por ejemplo, una extensión de PHP).
+Si ves «Algo salió mal», revisa storage\logs\laravel.log.
 
 ------------------------------------------------------------------
-OPCIONAL: usar MySQL en lugar de SQLite (por ejemplo en un hosting)
+OPCIONAL: usar MySQL/MariaDB o PostgreSQL (por ejemplo en un hosting)
 ------------------------------------------------------------------
-1. Importa database\voy_por_colombia.sql en phpMyAdmin.
-2. Crea en esta carpeta un archivo llamado .env (Bloc de notas →
-   Guardar como → Tipo «Todos los archivos») con, por ejemplo:
-       DB_DRIVER=mysql
-       DB_PORT=3306
-       DB_USER=root
-       DB_PASS=
+MySQL/MariaDB: importa database\voy_por_colombia.sql en phpMyAdmin.
+Luego edita el archivo .env (se crea en la primera visita) y cambia:
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=voy_por_colombia
+    DB_USERNAME=root
+    DB_PASSWORD=
+PostgreSQL: usa DB_CONNECTION=pgsql (puerto 5432) y, con consola, ejecuta
+    php artisan vpc:install --demo

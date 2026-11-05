@@ -1,80 +1,55 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\Auth;
-use App\Core\Database as DB;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-final class User
+class User extends Authenticatable
 {
-    public static function all(): array
+    use Notifiable;
+
+    public const ROLES = ['admin' => 'Administrador', 'editor' => 'Editor'];
+
+    /** Permisos por rol. El administrador tiene acceso total. Se comprueban en el servidor (Gate) en cada acción. */
+    public const PERMISSIONS = [
+        'admin' => ['*'],
+        'editor' => [
+            'content.manage', 'content.publish', 'content.delete',
+            'media.manage', 'map.manage', 'home.manage', 'routes.manage', 'categories.manage',
+        ],
+    ];
+
+    protected $fillable = ['name', 'email', 'username', 'password', 'role', 'is_active'];
+
+    protected $hidden = ['password', 'remember_token'];
+
+    protected function casts(): array
     {
-        return DB::all('SELECT u.id, u.name, u.email, u.username, u.is_active, u.last_login_at, u.created_at, r.slug AS role, r.name AS role_name
-            FROM users u JOIN roles r ON r.id = u.role_id ORDER BY u.name');
+        return [
+            'password' => 'hashed',
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
+        ];
     }
 
-    public static function find(int $id): ?array
+    public function hasPermission(string $permission): bool
     {
-        return DB::one('SELECT u.*, r.slug AS role, r.name AS role_name FROM users u JOIN roles r ON r.id = u.role_id WHERE u.id = ?', [$id]);
-    }
-
-    public static function roles(): array
-    {
-        return DB::all('SELECT * FROM roles ORDER BY id');
-    }
-
-    public static function roleId(string $slug): ?int
-    {
-        $id = DB::value('SELECT id FROM roles WHERE slug = ?', [$slug]);
-        return $id ? (int) $id : null;
-    }
-
-    public static function activeAdmins(): int
-    {
-        return (int) DB::value("SELECT COUNT(*) FROM users u JOIN roles r ON r.id = u.role_id WHERE r.slug = 'admin' AND u.is_active = 1");
-    }
-
-    /** Valida los datos de una cuenta. Devuelve errores por campo. */
-    public static function validate(array $d, ?int $ignoreId, bool $passwordRequired): array
-    {
-        $errors = [];
-        if (mb_strlen($d['name']) < 2) {
-            $errors['name'] = 'Escribe el nombre completo.';
+        if (!$this->is_active) {
+            return false;
         }
-        if (!filter_var($d['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Escribe un correo válido.';
-        } elseif (DB::value('SELECT id FROM users WHERE email = ? AND id <> ?', [$d['email'], $ignoreId ?? 0])) {
-            $errors['email'] = 'Ya existe una cuenta con este correo.';
-        }
-        if (!preg_match('/^[a-z0-9._-]{3,40}$/', $d['username'])) {
-            $errors['username'] = 'Usa entre 3 y 40 caracteres: letras minúsculas, números, punto, guion o guion bajo.';
-        } elseif (DB::value('SELECT id FROM users WHERE username = ? AND id <> ?', [$d['username'], $ignoreId ?? 0])) {
-            $errors['username'] = 'Este nombre de usuario ya está en uso.';
-        }
-        if ($passwordRequired || $d['password'] !== '') {
-            if ($problem = Auth::passwordProblem($d['password'])) {
-                $errors['password'] = $problem;
-            } elseif ($d['password'] !== ($d['password_confirmation'] ?? null)) {
-                $errors['password_confirmation'] = 'Las contraseñas no coinciden.';
-            }
-        }
-        return $errors;
+        $perms = self::PERMISSIONS[$this->role] ?? [];
+        return in_array('*', $perms, true) || in_array($permission, $perms, true);
     }
 
-    public static function create(string $name, string $email, string $username, string $password, string $role): int
+    public function isAdmin(): bool
     {
-        $roleId = self::roleId($role) ?? throw new \InvalidArgumentException('Rol inválido');
-        return DB::insert('users', [
-            'role_id' => $roleId,
-            'name' => $name,
-            'email' => mb_strtolower($email),
-            'username' => mb_strtolower($username),
-            'password_hash' => Auth::hash($password),
-            'is_active' => 1,
-            'session_version' => bin2hex(random_bytes(8)),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        return $this->role === 'admin';
+    }
+
+    /** Reglas mínimas de contraseña (se usan al crear y cambiar contraseñas). */
+    public static function passwordRules(): array
+    {
+        return ['required', 'string', 'min:10', 'max:200', 'regex:/[A-Za-z]/', 'regex:/\d/'];
     }
 }

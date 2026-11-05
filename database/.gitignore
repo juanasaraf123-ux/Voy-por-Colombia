@@ -1,0 +1,2 @@
+*.sqlite*
+!voy-por-colombia.sqlite

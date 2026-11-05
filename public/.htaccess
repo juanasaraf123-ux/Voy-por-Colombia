@@ -1,22 +1,31 @@
-# Voy por Colombia · reglas para Apache (la raíz pública del sitio es esta carpeta)
+# Voy por Colombia · reglas para Apache (raíz pública del sitio)
 Options -Indexes
 DirectoryIndex index.php
 
 <IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
     RewriteEngine On
+
     # Redirige a HTTPS en producción (descomenta cuando tengas certificado):
     # RewriteCond %{HTTPS} off
     # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # Archivos y carpetas reales se sirven directamente; todo lo demás va al enrutador.
-    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    RewriteCond %{HTTP:x-xsrf-token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+    # Archivos y carpetas reales se sirven directamente; todo lo demás va a Laravel.
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^ index.php [QSA,L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
 </IfModule>
 
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
-    <FilesMatch "\.(css|js|woff2|svg|webp|png|jpg|jpeg|gif|geojson)$">
+    <FilesMatch "\.(css|js|woff2|svg|webp|png|jpg|jpeg|gif|geojson|mp4|mp3)$">
         Header set Cache-Control "public, max-age=604800"
     </FilesMatch>
 </IfModule>

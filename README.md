@@ -1,321 +1,202 @@
 # Voy por Colombia · Colombia, Tierra de Infinitos
 
-Plataforma turística interactiva para descubrir la diversidad turística, gastronómica, cafetera, cultural y emprendedora de Colombia. Incluye:
+Plataforma turística interactiva para descubrir la diversidad turística, gastronómica, cafetera, cultural y emprendedora de Colombia.
 
-- Un sitio público con identidad visual propia.
-- Un mapa con límites geográficos reales de los 33 departamentos y los 1.122 municipios.
-- Un panel administrativo privado para gestionar todo el contenido sin tocar el código.
+- **Inicio de una sola pantalla:** el mapa interactivo es el protagonista y todo ocurre dentro de él, sin que la página se desplace.
+- **Límites geográficos reales:** los 33 departamentos y los 1.122 municipios.
+- **Panel administrativo privado:** se gestiona todo el contenido sin tocar el código.
 
-> **¿Solo quieres verlo en XAMPP?** Copia la carpeta en `htdocs`, enciende **solo Apache** y abre <http://localhost/voy-por-colombia>. Trae su propia base de datos (SQLite), así que no necesita MySQL. Paso a paso: [`INSTALAR.txt`](INSTALAR.txt).
+> **¿Solo quieres verlo en XAMPP?** Copia la carpeta en `htdocs`, enciende **solo Apache** y abre <http://localhost/voy-por-colombia>. Paso a paso: [`INSTALAR.txt`](INSTALAR.txt).
 
-![Portada](docs/capturas/portada.jpg)
+![Portada: el mapa como protagonista](docs/capturas/portada.jpg)
 
-| Mapa con rutas animadas | Visor multimedia dentro del mapa |
+| Departamento y municipios | Rutas animadas y recorrido guiado |
 |---|---|
-| ![Rutas](docs/capturas/mapa-rutas.jpg) | ![Visor](docs/capturas/visor-multimedia.jpg) |
-| **Explorador de Turismo («Modo exploración»)** | **Panel administrativo** |
-| ![Explorador](docs/capturas/explorador-turismo.jpg) | ![Panel](docs/capturas/panel.jpg) |
+| ![Departamento](docs/capturas/mapa-departamento.jpg) | ![Rutas](docs/capturas/mapa-rutas.jpg) |
+| **Video, fotos y audio sin salir del mapa** | **Panel administrativo** |
+| ![Visor](docs/capturas/visor-multimedia.jpg) | ![Panel](docs/capturas/panel.jpg) |
 
 ![Ficha de destino](docs/capturas/ficha-destino.jpg)
 
-![Versión móvil](docs/capturas/movil.jpg)
-
-### El mapa como protagonista
-
-La portada sigue el diseño «Colombia te espera» e integra el mapa interactivo en la primera pantalla:
-
-- **Estilo cartográfico ilustrado.** Cada departamento tiene su propio color y el relieve muestra las tres cordilleras, la Sierra Nevada y las serranías, con líneas de contorno tipo grabado. La textura la genera `tools/geo/build_relief.py` y se ajusta a los límites geográficos reales.
-- **Niveles:** Colombia → departamento (cambia la vista, muestra su contenido y sus fotos) → municipio (lista de sus lugares) → destino.
-- **Puntos vivos.** Los marcadores están animados y tienen un ícono según el tipo de lugar: cascada, mirador, sendero, playa, restaurante, festividad, finca, mercado, experiencia comunitaria, etc. El tipo se elige al editar cada publicación.
-- **Ventanas multimedia.** La tarjeta del lugar abre la galería, el video y el audio en un visor **sin salir del mapa**, e incluye «Cómo llegar» y «Ver más».
-- **Modo descubrimiento.** Filtros por naturaleza, aventura, patrimonio, gastronomía, playas, turismo rural y experiencias comunitarias.
-- **Rutas visuales.** Las rutas curadas se dibujan como líneas animadas que conectan sus paradas, en la portada y en el explorador.
-- **Modo claro y oscuro** con el selector lateral.
+<img src="docs/capturas/movil.jpg" alt="Versión móvil" width="300">
 
 ---
 
-## 1. Qué incluye
+## 1. Tecnología
+
+| Parte | Tecnología |
+|---|---|
+| Servidor y panel | **Laravel 12** (PHP 8.2+) |
+| Interfaz | **React 18** con **Inertia.js**: páginas de una sola aplicación servidas por Laravel |
+| Mapa | **Leaflet + GeoJSON** (límites de geoBoundaries / OpenStreetMap) con textura de relieve ilustrada |
+| Base de datos | **SQLite** (incluida, por defecto), **MySQL/MariaDB** o **PostgreSQL**, con las mismas migraciones |
+| Multimedia | Las imágenes se convierten a WebP en varios tamaños; los videos y audios se reproducen dentro del sitio |
+| Compilación | Vite. El resultado compilado (`public/build`) y las dependencias de PHP (`vendor`, sin herramientas de desarrollo) vienen incluidos |
+
+**Guía turística con IA:** queda como segunda fase. El catálogo de destinos y la API pública de solo lectura (`/api/...`) ya sirven como base para conectarla.
+
+## 2. Qué incluye
+
+### Inicio (una pantalla, el mapa protagonista)
+
+**Niveles del mapa**
+- **País:** al pasar el cursor sobre un departamento se resalta y muestra cuántos lugares tiene.
+- **Departamento:** al tocarlo, el mapa se acerca, aparecen sus municipios y el panel lateral muestra presentación, fotos, lugares y municipios con contenido.
+- **Municipio:** se acerca más y lista los lugares de ese municipio.
+- **Lugar:** muestra galería, video, audio y «Cómo llegar» en un visor que se abre sobre el mapa, además de lugares cercanos, favoritos y «Agregar a mi ruta».
+
+**Herramientas del mapa**
+- **Ruta de navegación** (Colombia › departamento › municipio). La tecla Esc sube un nivel.
+- **Puntos vivos:** pines animados con ícono según el tipo de lugar (cascada, mirador, sendero, playa, festividad…) y burbujas con foto para los destinos destacados.
+- **Filtros de descubrimiento** con contador: Naturaleza, Aventura, Patrimonio, Gastronomía, Playas, Turismo rural, Comunitario.
+- **Rutas:** líneas animadas y botón «Recorrer la ruta en el mapa», que vuela de parada en parada.
+- **Buscador dentro del mapa** (lugares, municipios y departamentos), **«Sorpréndeme»**, **viajar por región**, atajo a San Andrés y tira de **destinos destacados**.
+- **Enlaces compartibles:** la dirección guarda lo que se está viendo, por ejemplo `/?departamento=meta&lugar=3`.
+
+**En el celular:** el mapa ocupa toda la pantalla y la información aparece en un panel inferior que se desliza.
 
 ### Sitio público
-
-| Página | Ruta | Funcionalidad |
-|---|---|---|
-| Inicio | `/` | Portada «Colombia te espera» con el mapa ilustrado integrado (filtros, tarjeta multimedia, rutas animadas), destinos destacados, beneficios, mosaico de 7 categorías, joyas poco conocidas, experiencias, próximas festividades, rutas, noticias, galería y cierre |
-| Turismo | `/turismo` | Explorador **Colombia → departamento → municipio → destino**: zoom, marcadores con foto agrupados, filtros por categoría y por capa (destinos, café, sabores, cultura, emprendimientos), búsqueda, «cerca de mí», panel multimedia, favoritos y ruta personal dibujada en el mapa |
-| Ficha | `/turismo/{slug}` (y equivalentes por sección) | Foto principal, galería con visor, videos (archivo o YouTube/Vimeo), audios, PDF, datos clave, mapa de ubicación, lugares cercanos (distancia real) y botón de compartir |
-| Gastronomía | `/gastronomia` | Mosaico de platos; filtros por región, departamento, municipio, tipo y búsqueda; fichas con ingredientes, preparación paso a paso e historia |
-| Café | `/cafe` | Proceso «del grano a la taza», mapa cafetero, fincas, productores, catas y rutas |
-| Emprendimiento | `/emprendimiento` | Directorio con filtros y buscador; fichas con productos y contacto |
-| Cultura | `/cultura` | Calendario mensual de eventos, próximas fiestas y expresiones culturales filtrables |
-| Galería | `/galeria` | Mosaico tipo revista; filtros por categoría, colección, departamento, municipio y tipo; visor con teclado y gestos; carga progresiva |
-| Noticias | `/noticias` | Noticia destacada, recientes, búsqueda, filtros y paginación |
-| Otras | `/buscar`, `/departamentos/{slug}`, `/rutas`, `/rutas/{slug}`, `/favoritos`, `/mi-ruta` | Buscador global (también como paleta con la tecla `/`), páginas por departamento, rutas curadas, favoritos y planificador de ruta compartible por enlace |
-
-Otras características del sitio público:
-
-- **Favoritos y rutas personales:** se guardan en el navegador del visitante (`localStorage`), sin necesidad de cuentas públicas. Las rutas se comparten con un enlace del tipo `/mi-ruta?ids=…`.
-- **Responsive y accesible:** funciona en computador, tableta y celular. Incluye enlace para saltar al contenido, textos alternativos, navegación con teclado, foco visible y `prefers-reduced-motion`.
+- **Secciones:** Turismo, Gastronomía, Café (con los pasos del proceso y el mapa cafetero), Emprendimiento, Cultura (con próximas celebraciones) y Noticias.
+- **Filtros en cada sección:** búsqueda sin tildes, región, departamento, municipio, categoría y paginación.
+- **Ficha de cada publicación:** galería, videos, audios, documentos, datos prácticos, mapa de ubicación y lugares cercanos.
+- **Otras páginas:**
+  - Galería de fotos y videos.
+  - Buscador general.
+  - Páginas de departamento.
+  - Rutas.
+  - Favoritos y **Mi ruta**: se guardan en el navegador, se pueden ordenar y compartir con un enlace.
+- **Modo claro y oscuro.**
 
 ### Panel administrativo (`/admin`)
-
-| Módulo | Qué permite |
-|---|---|
-| Dashboard | Totales de destinos, departamentos, municipios, fotografías, videos, noticias, experiencias, emprendimientos y rutas. También accesos rápidos, contenido por sección y estado, actividad reciente y avisos (contenido demo, destinos sin coordenadas) |
-| Contenido por sección | Turismo, Gastronomía, Café, Emprendimiento, Cultura y Noticias por separado. Permite crear, editar, publicar, despublicar, programar, archivar y eliminar (con confirmación escrita). Cada sección tiene sus propios campos (actividades, ingredientes, preparación, contacto, fechas de evento, etc.) |
-| Centro multimedia | Carga múltiple (arrastrar y soltar, con barra de progreso), validación de tipo, tamaño y contenido real, optimización a WebP, metadatos (título, texto alternativo, crédito, licencia, fuente, ubicación, colección) y videos de YouTube o Vimeo por enlace. Muestra dónde se usa cada archivo y permite reutilizarlo con el selector multimedia de los formularios |
-| Gestión del mapa | Mapa con todos los marcadores, que se pueden arrastrar para corregir la ubicación. Incluye la lista de publicaciones sin coordenadas y la edición de región, capital, descripción e imagen de cada departamento. En los formularios hay un selector de coordenadas (clic en el mapa o «centro del municipio») |
-| Página de inicio | Textos de portada, imágenes rotativas o video, palabras rotativas, textos de cada bloque, bloques de categorías (título, lema, imagen, orden, visibilidad) y orden de los destacados |
-| Rutas | Rutas curadas con paradas ordenables y notas por parada |
-| Categorías | Nombre, ícono, color y orden por sección |
-| Usuarios (solo administradores) | Crear, editar, cambiar rol, restablecer contraseña, activar y desactivar. Desactivar una cuenta o cambiarle la contraseña cierra sus sesiones de inmediato |
-| Vista previa | Muestra cualquier publicación (borrador, programada o archivada) con el diseño público. Solo para usuarios autenticados |
-| Auditoría (solo administradores) | Registro de ingresos, creaciones, ediciones, publicaciones, archivados, eliminaciones y cargas, con usuario, fecha e IP |
-| Configuración (solo administradores) | Nombre, lema, pie de página, correo y redes sociales. También permite eliminar todo el contenido de demostración |
-
----
-
-## 2. Arquitectura
-
-**Elección:** el repositorio estaba vacío. Se eligió **PHP 8 + MySQL/MariaDB**, la misma base tecnológica de proyectos anteriores en XAMPP y la que ofrece la mayoría de los hostings colombianos. Se complementa con **JavaScript sin frameworks** y **Leaflet** para la cartografía. No requiere Composer, Node ni ningún paso de compilación: se copia la carpeta y funciona. Para desarrollo y pruebas también funciona con **SQLite** sin instalar nada.
-
-```
-voy-por-colombia/
-├── app/
-│   ├── bootstrap.php          Arranque: entorno, autoload, errores, zona horaria
-│   ├── routes.php             Todas las rutas (públicas, API y panel)
-│   ├── Sections.php           Secciones y campos específicos de cada tipo de publicación
-│   ├── helpers.php            Escape HTML, URLs, fechas en español, imágenes responsive…
-│   ├── Core/                  Router, Database (PDO), Auth, Csrf, Session, RateLimiter,
-│   │                          Audit, MediaProcessor, Markdown seguro, Migrator, View
-│   ├── Models/                Entry, Media, Geo, Category, Route, User, Setting, SectionInfo, Demo
-│   ├── Controllers/           PublicController, ApiController y Admin/* (un controlador por módulo)
-│   └── Views/                 layouts/, partials/, public/, admin/
-├── database/
-│   ├── migrations/            Esquema versionado (compatible MySQL y SQLite)
-│   ├── seeds/                 BaseSeeder (datos geográficos y catálogos) y DemoSeeder (demostración)
-│   ├── seeds/demo-media/      51 ilustraciones originales de demostración (WebP)
-│   └── data/municipios.csv    1.122 municipios con departamento y coordenadas
-├── public/                    ← RAÍZ WEB (lo único que debe servir el servidor)
-│   ├── index.php              Controlador frontal
-│   ├── assets/                css/, js/, fuentes, íconos, Leaflet y MarkerCluster (locales)
-│   ├── data/geo/              departamentos.geojson y municipios/{departamento}.geojson
-│   └── uploads/               Archivos subidos (PHP deshabilitado por .htaccess)
-├── storage/                   Base SQLite, sesiones y registros (no accesible por web)
-├── bin/                       install.php, migrate.php, create-admin.php, remove-demo.php
-├── tests/run.php              Pruebas de extremo a extremo (76 verificaciones)
-└── tools/                     Scripts para regenerar los datos geográficos y las ilustraciones
-```
-
-### Base de datos
-
-| Tabla | Contenido |
-|---|---|
-| `roles`, `users` | Cuentas, rol (`admin`/`editor`), hash de contraseña, estado y versión de sesión |
-| `regions`, `departments`, `municipalities` | Regiones naturales → 33 departamentos → 1.122 municipios (con coordenadas) |
-| `entries` | Publicaciones de todas las secciones. Relaciones: departamento, municipio, coordenadas, portada, estado, fecha de publicación, eventos, destacados y campos específicos en `meta` (JSON) |
-| `categories`, `entry_categories` | Categorías por sección (relación N:M) |
-| `media`, `entry_media` | Biblioteca multimedia reutilizable y su vínculo ordenado con publicaciones |
-| `collections` | Colecciones de la galería |
-| `routes`, `route_stops` | Rutas curadas y sus paradas ordenadas |
-| `sections`, `settings` | Presentación editable de secciones y configuración de la portada y el sitio |
-| `audit_log`, `login_attempts` | Auditoría y control de intentos de ingreso |
-
-El contenido se clasifica por sección y su estructura base es la misma. Así el mapa, el buscador, la galería y los destacados consultan una sola tabla, y cada sección conserva sus campos propios. Los archivos pesados nunca se guardan en la base de datos: se guardan en `public/uploads/AAAA/MM/` con nombres aleatorios.
-
----
+- **Inicio de sesión con roles:**
+  - **Administrador:** acceso total.
+  - **Editor:** contenido, multimedia, mapa, portada, rutas y categorías.
+- **Publicaciones de las 6 secciones:**
+  - Borrador, publicado, archivado, o programado con una fecha futura.
+  - Editor de texto con vista previa.
+  - Campos propios de cada sección.
+  - Categorías.
+  - Galería ordenable.
+  - Ubicación con clic en el mapa.
+  - Vista previa antes de publicar.
+- **Centro multimedia:**
+  - Carga de varios archivos con barra de progreso.
+  - Videos de YouTube o Vimeo por enlace.
+  - Créditos, licencia y texto alternativo.
+  - Indica dónde se usa cada archivo.
+- **Gestión del mapa:**
+  - Arrastrar un punto para corregir su ubicación.
+  - Lista de publicaciones sin coordenadas.
+  - Región, capital, presentación e imagen de cada departamento.
+- **Página de inicio:** textos, fondo, video, lugar protagonista, destinos destacados y presentación de cada sección.
+- **Más:** rutas con paradas ordenadas, categorías (ícono y color), usuarios, perfil, auditoría y configuración (datos del sitio, redes y eliminación del contenido de demostración).
 
 ## 3. Instalación
 
-### Requisitos
+### Opción A — XAMPP en 2 pasos (sin configurar nada)
+1. Copia la carpeta a `htdocs` (por ejemplo `C:\xampp\htdocs\voy-por-colombia`) y pulsa **Start** solo en **Apache**. Requiere XAMPP 8.2 o superior.
+2. Abre <http://localhost/voy-por-colombia>. La primera vez que abres `/admin` te pide crear la cuenta de administración.
 
-- PHP **8.1 o superior** con las extensiones `pdo_mysql` (o `pdo_sqlite`), `gd` (con WebP), `fileinfo`, `mbstring` y `intl` (recomendada). XAMPP 8.x las trae activas.
-- MySQL 5.7+ o MariaDB 10.3+ (o SQLite para desarrollo).
-- Apache con `mod_rewrite`, o cualquier servidor que envíe las peticiones a `public/index.php`.
+En la primera visita, `bootstrap/first-run.php` hace lo siguiente:
+- Comprueba la versión de PHP y sus extensiones, y si falta algo lo explica en pantalla.
+- Crea `.env` a partir de `.env.example`, con una `APP_KEY` aleatoria propia del equipo.
+- Copia la base incluida `database/voy-por-colombia.sqlite` (departamentos, municipios y demostración) a `storage/database.sqlite`.
 
-### Opción A — XAMPP en 2 pasos (sin MySQL, sin consola, sin configurar nada)
+La subcarpeta se detecta sola. El `.htaccess` de la raíz envía todo a `public/` y bloquea el código, `vendor`, `storage`, `database` y `.env`.
 
-1. Copia la carpeta del proyecto a `htdocs` (por ejemplo `C:\xampp\htdocs\voy-por-colombia`). En el panel de XAMPP pulsa **Start** solo en **Apache**.
-2. Abre <http://localhost/voy-por-colombia>. El panel está en <http://localhost/voy-por-colombia/admin> y la primera vez pide crear la cuenta de administración.
-
-Sin `.env`, el sitio usa **SQLite**. La primera vez copia `database/voy_por_colombia.sqlite` (departamentos, municipios y contenido de demostración) a `storage/database.sqlite`, y desde ahí guarda todo. No usa MySQL, así que no interfiere con otros MySQL o PostgreSQL instalados en el equipo. La subcarpeta se detecta sola.
-
-> El formulario web de la primera cuenta solo responde a peticiones desde el mismo computador (`localhost`) y solo mientras no exista ninguna cuenta.
-
-### Opción A2 — XAMPP con MySQL/MariaDB
-
-1. En phpMyAdmin → **Importar** → `database/voy_por_colombia.sql`. Crea la base `voy_por_colombia`. Volver a importarlo **reemplaza** todas las tablas.
-2. Crea un `.env` con `DB_DRIVER=mysql` y, si hace falta, `DB_PORT`, `DB_USER` y `DB_PASS`.
-
-### Opción B — Con consola (MySQL/MariaDB o SQLite)
-
+### Opción B — Con consola (desarrollo)
 ```bash
-cp .env.example .env                 # opcional: ajusta la conexión (o DB_DRIVER=sqlite para probar sin MySQL)
-php bin/install.php --demo           # crea tablas, departamentos, municipios y contenido demo
-php bin/create-admin.php             # crea la primera cuenta (pide la contraseña de forma oculta)
-php -S localhost:8000 -t public public/index.php
+composer install
+npm install && npm run build      # o «npm run dev» mientras desarrollas
+cp .env.example .env && php artisan key:generate
+php artisan vpc:install --demo    # tablas + datos base + demostración
+php artisan vpc:admin             # primera cuenta (la contraseña se pide oculta)
+php artisan serve
 ```
 
-Abre <http://localhost:8000> y el panel en <http://localhost:8000/admin>. Para no cargar datos de demostración, ejecuta `php bin/install.php` sin `--demo`.
+### Opción C — Hosting con MySQL/MariaDB o PostgreSQL
+1. **Apunta el dominio a la carpeta `public/`** (lo más seguro).
+2. **Configura `.env`:**
+   - `DB_CONNECTION=mysql` (o `pgsql`) y los datos de conexión.
+   - `APP_URL`.
+   - `SESSION_SECURE_COOKIE=true` si el sitio usa HTTPS.
+3. **Carga la base de datos:**
+   - **MySQL:** importa `database/voy_por_colombia.sql` en phpMyAdmin.
+   - **PostgreSQL** (o MySQL con consola): ejecuta `php artisan vpc:install --demo`.
+4. **Crea la primera cuenta:**
+   - Con consola: `php artisan vpc:admin`.
+   - Sin consola: define `SETUP_TOKEN` (24 caracteres o más) en `.env`, visita `/admin/instalar?token=…` y luego borra ese valor.
+5. **Permisos y límites:**
+   - El servidor web debe poder escribir en `storage/`, `bootstrap/cache/` y `public/uploads/`.
+   - Ajusta `upload_max_filesize` y `post_max_size` en `php.ini` según el tamaño máximo de los videos.
+6. **Copias de seguridad:** respalda la base de datos y `public/uploads/`.
 
-El `.htaccess` de la raíz envía todo a `public/` y bloquea `app/`, `storage/`, `database/`, `.env`, etc.
+### Pasar el contenido de XAMPP (SQLite) a MySQL
+`php artisan vpc:install` carga los datos base en cualquier motor. Para llevar contenido creado en el panel de un motor a otro hace falta exportarlo: es una herramienta pendiente (ver «Estado»).
 
-**Regenerar las bases incluidas** (solo si cambian las migraciones o los datos de demostración):
-1. En una base MySQL vacía ejecuta `php bin/install.php --demo`.
-2. Ejecuta `mysqldump --no-tablespaces --skip-dump-date voy_por_colombia` y antepón las líneas `CREATE DATABASE`/`USE` del archivo actual.
-3. Ejecuta `php tools/db/build_sqlite.php`, que copia esos datos a `database/voy_por_colombia.sqlite`.
-4. Sube también `public/uploads/demo/` y `public/uploads/marca/`, porque las dos bases apuntan a esos archivos.
+## 4. Seguridad
+- **Permisos:**
+  - Cada ruta del panel exige sesión, cuenta activa y su permiso (`can:` con *Gates* de Laravel). Ocultar un botón no es lo que protege.
+  - Un editor que intenta entrar a usuarios o configuración recibe un error 403.
+- **Inicio de sesión:**
+  - Contraseñas con *bcrypt*, de mínimo 10 caracteres con letras y números.
+  - Límite de 5 intentos por cuenta y 20 por IP cada 15 minutos.
+  - Cambiar la contraseña cierra las otras sesiones. Una cuenta desactivada pierde la sesión de inmediato.
+- **Primera cuenta:** el formulario web solo responde desde `localhost` (o con `SETUP_TOKEN`) y solo mientras no exista ninguna cuenta.
+- **Formularios:** protección CSRF y validación en el servidor de todos los campos. La base de datos se consulta con Eloquent y consultas preparadas; la búsqueda escapa los comodines de `LIKE`.
+- **Contenido:** el Markdown se convierte con el HTML del usuario escapado y sin enlaces `javascript:`. React escapa todo el texto.
+- **Archivos subidos:**
+  - Se comprueba el tipo MIME real y que coincida con la extensión.
+  - Las imágenes se vuelven a codificar con GD, lo que elimina metadatos y contenido incrustado.
+  - Se guardan con nombres aleatorios.
+  - `public/uploads/.htaccess` impide ejecutar scripts.
+- **Cabeceras:** `nosniff`, `X-Frame-Options`, `Referrer-Policy` y `Permissions-Policy`. El panel no se indexa ni se guarda en caché.
+- **Auditoría:** se registran inicio y cierre de sesión, creación, edición, publicación, eliminación, cargas y cambios de configuración.
+- **Sin credenciales en el código:** no hay contraseñas ni cuentas predefinidas, y `.env` está en `.gitignore`.
 
-### Producción
-
-- Apunta el **DocumentRoot** directamente a `public/`. Es lo más seguro. Si no es posible, el `.htaccess` raíz lo protege.
-- Activa HTTPS y define `SESSION_SECURE=true`. Descomenta la redirección a HTTPS en `public/.htaccess`.
-- Usa `APP_DEBUG=false`.
-- El usuario del servidor web necesita **escribir** en `storage/` y `public/uploads/`.
-- Ajusta en `php.ini` `upload_max_filesize` y `post_max_size` según el tamaño máximo de video que quieras permitir (por ejemplo `256M`).
-- Haz copias de seguridad de la base de datos **y** de `public/uploads/`.
-- Para actualizar a una versión nueva, ejecuta `php bin/migrate.php`, que aplica solo las migraciones pendientes.
-
-### Variables de entorno (`.env`)
-
-| Variable | Uso |
-|---|---|
-| `APP_NAME`, `APP_URL`, `APP_BASE_PATH` | Nombre, URL pública y subcarpeta (si aplica) |
-| `APP_DEBUG` | `true` solo en desarrollo (muestra detalles de errores) |
-| `APP_TIMEZONE` | Por defecto `America/Bogota` |
-| `DB_DRIVER` | `sqlite` (por defecto) o `mysql` |
-| `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` | Conexión MySQL/MariaDB |
-| `DB_PATH` | Archivo SQLite (por defecto `storage/database.sqlite`, creado desde la base incluida) |
-| `SESSION_LIFETIME_MINUTES` | Inactividad máxima antes de cerrar la sesión (120) |
-| `SESSION_SECURE`, `TRUST_PROXY` | Cookies solo por HTTPS / confiar en `X-Forwarded-*` detrás de un proxy |
-| `UPLOAD_MAX_IMAGE_MB`, `UPLOAD_MAX_VIDEO_MB`, `UPLOAD_MAX_AUDIO_MB`, `UPLOAD_MAX_DOC_MB`, `IMAGE_QUALITY` | Límites de carga y calidad WebP |
-| `MAP_TILE_URL`, `MAP_TILE_ATTRIBUTION` | Capa opcional de calles y relieve (ver sección 7) |
-| `SETUP_TOKEN` | Instalador web de la primera cuenta (ver sección 4) |
-
-`.env` está en `.gitignore`: **nunca** lo subas al repositorio.
-
----
-
-## 4. Primera cuenta administrativa (de forma segura)
-
-El código y el archivo `.sql` no contienen ninguna contraseña ni cuenta predefinida.
-
-**En XAMPP (localhost):** abre `/admin` y la primera vez aparece el formulario «Crear la primera cuenta». Solo funciona desde el mismo computador y mientras no exista ninguna cuenta.
-
-**Con consola (recomendado):**
-
-```bash
-php bin/create-admin.php
-# o sin preguntas:
-php bin/create-admin.php --name="Nombre Apellido" --email=correo@dominio.co --username=usuario
+## 5. Estructura
 ```
-
-La contraseña se pide oculta y no queda en el historial. Debe tener mínimo 10 caracteres y combinar letras y números. Para automatizar se puede pasar en la variable de entorno `VPC_ADMIN_PASSWORD`. Con `--role=editor` se crean editores.
-
-**Hosting sin consola:**
-
-1. Define en `.env` un `SETUP_TOKEN` largo y aleatorio (mínimo 24 caracteres).
-2. Visita `/admin/instalar?token=ESE_TOKEN` y crea la cuenta.
-3. El instalador solo funciona mientras **no exista ninguna cuenta**. Después devuelve 404. Aun así, **borra el `SETUP_TOKEN`** del `.env`.
-
-Las demás cuentas se crean desde **Panel › Usuarios**.
-
-### Roles y permisos
-
-| Permiso | Administrador | Editor |
-|---|:-:|:-:|
-| Contenido (crear, editar, publicar, archivar, eliminar) | ✔ | ✔ |
-| Multimedia, mapa, portada, rutas, categorías | ✔ | ✔ |
-| Usuarios, auditoría, configuración y borrado de demo | ✔ | ✘ |
-
-Los permisos se verifican **en el servidor** en cada acción (`Auth::require` / `Auth::can`). Ocultar los botones en el menú es solo una ayuda visual. Siempre debe existir al menos un administrador activo.
-
----
-
-## 5. Seguridad implementada
-
-- **Contraseñas:** se guardan con `password_hash` (Argon2id cuando está disponible; si no, bcrypt) y se actualizan solas al ingresar si el algoritmo mejora.
-- **Sesiones:** cookies `HttpOnly`, `SameSite=Lax` y `Secure` con HTTPS. El ID de sesión se regenera al ingresar. Se cierran por inactividad y quedan invalidadas al cambiar la contraseña, el rol o al desactivar la cuenta.
-- **CSRF:** token obligatorio en **todas** las peticiones POST. Una petición sin token recibe el error 419.
-- **Intentos de ingreso:** bloqueo de 15 minutos tras 5 intentos fallidos por cuenta (o 20 por IP). Los mensajes no revelan qué cuentas existen.
-- **Inyección SQL:** todas las consultas usan PDO con sentencias preparadas reales (sin emulación). Los comodines de búsqueda se escapan.
-- **XSS:** toda salida pasa por `e()` (`htmlspecialchars`). El editor de texto usa un Markdown reducido que **escapa el HTML** y solo admite enlaces `http(s)`. Además hay una *Content Security Policy* sin scripts en línea, junto con `X-Frame-Options`, `nosniff` y `Referrer-Policy`.
-- **Cargas de archivos:**
-  - Se valida el error de carga, el tamaño y el tipo MIME **real** (finfo), que debe coincidir con la extensión.
-  - Las imágenes se verifican con `getimagesize`, con un límite de 50 MP, y se **recodifican** con GD. Así se eliminan los metadatos EXIF y cualquier contenido incrustado.
-  - Los archivos reciben nombres aleatorios.
-  - En `public/uploads/.htaccess` PHP y los scripts quedan deshabilitados.
-  - No se aceptan SVG de usuarios.
-- **Auditoría** de las acciones administrativas importantes.
-
----
+app/Http/Controllers         PublicController, ApiController y Admin/* (panel)
+app/Models                   Entry, Media, Department, Municipality, TravelRoute, Setting, User…
+app/Services                 MediaProcessor (cargas seguras y WebP), Demo
+app/Support/Sections.php     Secciones, campos propios de cada una y tipos de punto del mapa
+bootstrap/first-run.php      Preparación automática para XAMPP
+database/migrations          Esquema (SQLite, MySQL/MariaDB y PostgreSQL)
+database/data/snapshot.json  Regiones, departamentos, municipios, categorías y demostración
+resources/js/Pages           Páginas en React (públicas y Admin/*)
+resources/js/map             Explorador del inicio, panel lateral y utilidades de Leaflet
+public/assets                Estilos, fuentes (OFL), íconos y relieve
+public/data/geo              GeoJSON de departamentos y municipios
+tests/Feature/SiteTest.php   Pruebas automáticas
+```
 
 ## 6. Pruebas
-
 ```bash
-php tests/run.php
+php artisan test
 ```
+Son 15 pruebas con 137 comprobaciones:
+- Páginas públicas y API.
+- Borradores y publicaciones programadas que no se ven en el sitio.
+- Panel que exige sesión y permisos por rol.
+- Bloqueo por intentos fallidos y cuentas desactivadas.
+- Formulario de la primera cuenta, solo desde el propio equipo.
+- Validaciones de los formularios y HTML escapado.
+- Carga de archivos disfrazados (rechazada).
+- Eliminación del contenido de demostración.
 
-Las pruebas crean una base de datos temporal, levantan el servidor embebido y verifican **76 escenarios**. No tocan la base de datos del proyecto. Cubren:
+La instalación con datos de demostración se probó también con MariaDB y PostgreSQL. Además se probaron en el navegador:
+- Una instalación limpia en una subcarpeta de Apache, sin `.env`.
+- El panel completo y la versión móvil.
 
-- Todas las páginas públicas.
-- Visibilidad de borradores, contenido programado y archivado.
-- Inyección SQL y XSS.
-- CSRF y bloqueo por intentos.
-- Carga de imágenes válidas, PHP disfrazado y extensiones falsas.
-- Creación de una publicación y su aparición en la web y en el mapa.
-- Validaciones, vista previa, archivar, publicar y eliminar.
-- Cambios de portada y galería.
-- Permisos del editor (incluidos los POST directos a rutas de administrador).
-- Desactivación de cuentas con cierre de sesión inmediato, y auditoría.
+## 7. Datos, mapas y derechos
+- **Límites geográficos:** [geoBoundaries](https://www.geoboundaries.org) (datos © colaboradores de OpenStreetMap, licencia ODbL), con la atribución visible en los mapas.
+- **Relieve:** ilustración propia, generada con `tools/geo/build_relief.py`.
+- **Fuentes:** Fraunces, Plus Jakarta Sans, Kaushan Script y Caveat, bajo licencia OFL e incluidas en el proyecto.
+- **Contenido de demostración:** ilustraciones, video y audio generados para el proyecto, marcados como demostración (`is_demo`). No son negocios ni hechos reales; se eliminan desde el panel.
+- **Mapa base opcional:** se activa con `MAP_TILE_URL`. Respeta la política de uso del proveedor.
 
-Contra MySQL/MariaDB (la base indicada **se borra y se recrea**):
-
-```bash
-TEST_DB_DRIVER=mysql TEST_DB_NAME=vpc_test TEST_DB_USER=usuario TEST_DB_PASS=clave php tests/run.php
-```
-
----
-
-## 7. Mapa, datos geográficos y servicios externos
-
-- **Límites de departamentos y municipios:** [geoBoundaries](https://www.geoboundaries.org) (gbOpen, COL ADM1/ADM2), derivados de **OpenStreetMap** bajo licencia **ODbL 1.0**. La atribución aparece en el mapa y en el pie de página. Se simplificaron para la web y cada municipio se asoció a su departamento por relación espacial. Para regenerarlos se usa `tools/geo/build_geo.py` (instrucciones en el encabezado del script).
-- **Biblioteca cartográfica:** Leaflet 1.9.4 y Leaflet.markercluster 1.5.3, servidas localmente (licencias BSD-2 y MIT incluidas).
-- **Fuentes:** Fraunces, Plus Jakarta Sans, Kaushan Script y Caveat, servidas localmente (licencia OFL, incluida).
-- **Imagen de portada:** `database/seeds/brand/portada-paisaje.webp`, proporcionada por el equipo de Voy por Colombia. Se importa en la instalación base (no es contenido de demostración) y se puede cambiar en **Panel › Página de inicio**.
-- **Relieve ilustrado:** `public/assets/img/relief/colombia-relief.webp`, generado con `python3 tools/geo/build_relief.py` (requiere numpy y Pillow). Es una ilustración y no un modelo de elevación exacto.
-- **No se requiere ninguna clave ni API externa.** El mapa funciona solo con los polígonos.
-- **Capa opcional de calles y relieve:** define `MAP_TILE_URL` y `MAP_TILE_ATTRIBUTION` en `.env`. Aparece entonces el botón «Relieve y calles» y la política de seguridad permite ese dominio. Los servidores públicos de OpenStreetMap tienen una [política de uso](https://operations.osmfoundation.org/policies/tiles/) que no admite tráfico alto. Para producción conviene un proveedor de teselas (MapTiler, Stadia, Thunderforest, etc.) con su propia clave en la URL.
-- **Videos de YouTube y Vimeo:** se incrustan con `youtube-nocookie.com` y `player.vimeo.com`. No requieren clave.
-
----
-
-## 8. Contenido de demostración
-
-`php bin/install.php --demo` carga contenido **claramente identificado** como demostración (`is_demo = 1`):
-
-- **51 ilustraciones originales** generadas por código (`tools/demo-art/`). No son fotografías ni obras de terceros, y llevan el crédito «Ilustración de demostración».
-- **Un video corto y un audio de demostración**, generados con ffmpeg a partir de las ilustraciones. Sirven para probar el visor multimedia y el botón «Ver video» de la portada.
-- **Destinos, platos y festividades reales** descritos de forma general, con una nota que invita a verificar condiciones y fechas. Las fechas de eventos son de referencia.
-- **Emprendimientos, la finca y las noticias son ficticios.** En el sitio se muestran con la etiqueta «Demostración» y sus datos de contacto usan `example.com`.
-
-Para retirarlo: **Panel › Configuración › Eliminar demostración**, o `php bin/remove-demo.php`. Lo que hayas creado o editado (desmarcando «Mantener como demostración») se conserva.
-
----
-
-## 9. Estado y pendientes
-
-**Verificado en este entorno:**
-
-- Instalación limpia con SQLite y con MariaDB 10.11 (modo `ONLY_FULL_GROUP_BY`). Las 76 pruebas pasan en ambos motores.
-- Apache 2.4 con `mod_rewrite` en subcarpeta (como XAMPP): rutas, recursos, sesión, bloqueo de carpetas internas y de PHP en `uploads`.
-- Revisión visual en escritorio (1440 px) y móvil (390 px) con Chromium.
-- Pruebas en navegador del explorador (departamento → municipio → destino), el selector multimedia, el selector de coordenadas y la publicación desde el panel. No hubo errores de JavaScript.
-
-**Decisión de diseño a confirmar:** el menú del diseño de referencia tiene 5 opciones (Inicio, Explora, Rutas, Experiencias, Sobre Colombia). Se mantuvieron las **8 secciones** del requerimiento (Inicio, Turismo, Gastronomía, Café, Emprendimiento, Cultura, Galería, Noticias), con el estilo visual del diseño: íconos, subrayado activo, buscador en píldora y acceso de usuario. Rutas, favoritos y la ruta personal siguen accesibles desde los íconos del encabezado.
-
-**Requiere acción de tu parte:**
-
-- **Fotografías y videos reales:** las imágenes actuales son ilustraciones de demostración. Sube fotografías con derechos de uso y registra su crédito y licencia en el centro multimedia.
-- **Emprendimientos y noticias reales,** redes sociales y correo de contacto (Configuración).
-- **Revisión de descripciones y fechas** por parte del equipo editorial antes del lanzamiento.
-- **Servidor de producción:** HTTPS, límites de carga en `php.ini`, copias de seguridad y, si se desea, la capa de teselas.
+## 8. Estado y pendientes
+- **Fotografías y videos reales:** súbelos con su crédito y licencia y reemplaza las ilustraciones de demostración.
+- **Contenido real:** emprendimientos, noticias, redes y correo de contacto (en Configuración). Pide una revisión editorial de los textos y las fechas.
+- **Exportar contenido entre motores:** falta la herramienta para pasar el contenido de SQLite (XAMPP) a MySQL o PostgreSQL (hosting).
+- **Guía turística con IA:** segunda fase.

@@ -1,50 +1,42 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\Database as DB;
-use App\Sections;
+use App\Support\Sections;
+use Illuminate\Database\Eloquent\Model;
 
-/** Presentación editable de cada sección (bloques de la portada y encabezados). */
-final class SectionInfo
+/** Presentación editable de cada sección (título, lema, portada, orden). */
+class SectionInfo extends Model
 {
-    private static ?array $cache = null;
+    public $timestamps = false;
+    protected $table = 'sections';
+    protected $guarded = [];
+    protected $casts = ['show_on_home' => 'boolean'];
 
-    public static function all(): array
+    public function cover()
     {
-        if (self::$cache === null) {
-            $rows = DB::all('SELECT s.*, m.path AS c_path, m.variants AS c_variants, m.alt_text AS c_alt, m.width AS c_width, m.height AS c_height
-                FROM sections s LEFT JOIN media m ON m.id = s.cover_media_id ORDER BY s.sort_order, s.id');
-            self::$cache = [];
-            foreach ($rows as $r) {
-                $key = $r['section_key'];
-                $def = $key === 'gallery' ? Sections::GALLERY : (Sections::ALL[$key] ?? null);
-                if (!$def) {
-                    continue;
-                }
-                $r['def'] = $def;
-                $r['url'] = url('/' . $def['path']);
-                $r['cover'] = $r['c_path'] ? ['path' => $r['c_path'], 'variants' => $r['c_variants'], 'alt_text' => $r['c_alt'] ?: $r['title'], 'width' => $r['c_width'], 'height' => $r['c_height']] : null;
-                self::$cache[$key] = $r;
-            }
-        }
-        return self::$cache;
+        return $this->belongsTo(Media::class, 'cover_media_id');
     }
 
-    public static function get(string $key): array
+    public function definition(): ?array
+    {
+        return $this->section_key === 'gallery' ? Sections::GALLERY : (Sections::ALL[$this->section_key] ?? null);
+    }
+
+    /** Datos para el frontend, con valores por defecto si la sección aún no tiene fila. */
+    public static function present(string $key): array
     {
         $def = $key === 'gallery' ? Sections::GALLERY : Sections::get($key);
-        return self::all()[$key] ?? ['section_key' => $key, 'title' => $def['label'], 'tagline' => '', 'description' => '', 'cover' => null, 'def' => $def, 'url' => url('/' . $def['path']), 'show_on_home' => 1];
-    }
-
-    public static function forHome(): array
-    {
-        return array_values(array_filter(self::all(), static fn ($s) => (int) $s['show_on_home'] === 1));
-    }
-
-    public static function forget(): void
-    {
-        self::$cache = null;
+        $row = static::with('cover')->where('section_key', $key)->first();
+        return [
+            'key' => $key,
+            'title' => $row->title ?? $def['label'],
+            'tagline' => $row->tagline ?? '',
+            'description' => $row->description ?? '',
+            'cover' => $row?->cover?->toPublic(),
+            'path' => '/' . $def['path'],
+            'icon' => $def['icon'],
+            'color' => $def['color'],
+        ];
     }
 }

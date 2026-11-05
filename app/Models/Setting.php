@@ -1,14 +1,18 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\Database as DB;
+use Illuminate\Database\Eloquent\Model;
+use Throwable;
 
 /** Configuración editable desde el panel (textos de portada, redes sociales, etc.). */
-final class Setting
+class Setting extends Model
 {
-    private static ?array $cache = null;
+    public $timestamps = false;
+    public $incrementing = false;
+    protected $primaryKey = 'setting_key';
+    protected $keyType = 'string';
+    protected $guarded = [];
 
     public const DEFAULTS = [
         'site_name' => 'Voy por Colombia',
@@ -19,17 +23,11 @@ final class Setting
         'hero_kicker' => 'Hay un país que todavía no conoces…',
         'hero_title' => 'Colombia te espera',
         'hero_subtitle' => 'Explora sus paisajes, culturas, sabores y vive experiencias únicas.',
-        'hero_cta' => 'Explorar mapa',
         'hero_spotlight_id' => '',
         'hero_note' => 'Cada región, una historia',
         'hero_media_ids' => '[]',
         'hero_video_id' => '',
-        'hero_video_background' => '0',
-        'hero_words' => 'selva,mar,páramo,desierto,café,música,llanura',
-        'map_title' => 'Un mapa para perderse (y encontrarse)',
-        'map_subtitle' => 'Toca un departamento, acércate a sus municipios y descubre lo que guarda cada rincón.',
-        'closing_title' => 'El infinito empieza en el próximo viaje',
-        'closing_text' => 'Guarda tus lugares favoritos, arma tu ruta y deja que Colombia te sorprenda.',
+        'map_hint' => 'Toca un departamento para acercarte',
         'footer_text' => 'Plataforma para descubrir la diversidad turística, gastronómica, cultural, natural y emprendedora de Colombia.',
         'social_instagram' => '',
         'social_facebook' => '',
@@ -37,43 +35,44 @@ final class Setting
         'social_tiktok' => '',
         'social_x' => '',
         'contact_email' => '',
-        'home_featured_title' => 'Lugares que te cambian el ritmo',
-        'home_gems_title' => 'Joyas poco conocidas',
     ];
 
-    public static function all(): array
+    private static ?array $cache = null;
+
+    public static function allValues(): array
     {
         if (self::$cache === null) {
             self::$cache = self::DEFAULTS;
             try {
-                foreach (DB::all('SELECT setting_key, setting_value FROM settings') as $row) {
-                    self::$cache[$row['setting_key']] = $row['setting_value'];
+                foreach (static::query()->get() as $row) {
+                    self::$cache[$row->setting_key] = $row->setting_value;
                 }
-            } catch (\PDOException) {
-                // Base de datos aún no instalada: se usan los valores por defecto.
+            } catch (Throwable) {
+                // Base aún no instalada: valores por defecto.
             }
         }
         return self::$cache;
     }
 
-    public static function get(string $key, mixed $default = null): mixed
+    public static function value(string $key, mixed $default = null): mixed
     {
-        return self::all()[$key] ?? $default;
+        return self::allValues()[$key] ?? $default;
     }
 
     public static function json(string $key): array
     {
-        $v = json_decode((string) self::get($key, '[]'), true);
+        $v = json_decode((string) self::value($key, '[]'), true);
         return is_array($v) ? $v : [];
     }
 
-    public static function set(string $key, ?string $value): void
+    public static function put(string $key, ?string $value): void
     {
-        if (DB::value('SELECT 1 FROM settings WHERE setting_key = ?', [$key])) {
-            DB::update('settings', ['setting_value' => $value, 'updated_at' => now()], 'setting_key = :k', ['k' => $key]);
-        } else {
-            DB::insert('settings', ['setting_key' => $key, 'setting_value' => $value, 'updated_at' => now()]);
-        }
+        static::query()->updateOrInsert(['setting_key' => $key], ['setting_value' => $value, 'updated_at' => now()]);
+        self::$cache = null;
+    }
+
+    public static function forget(): void
+    {
         self::$cache = null;
     }
 }
