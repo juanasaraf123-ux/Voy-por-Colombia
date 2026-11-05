@@ -38,8 +38,8 @@ export function applyRelief(map) {
     map.on('zoomend viewreset', place);
 }
 
-/** Rótulos manuscritos de mares y países vecinos. */
-export function addMapNotes(map) {
+/** Rótulos manuscritos de los mares (los países vecinos se omiten para no recargar el mapa). */
+export function addMapNotes(map, { seasOnly = true } = {}) {
     const arrow = (d) => `<svg viewBox="0 0 34 20"><path d="${d}"/></svg>`;
     const group = L.layerGroup();
     [
@@ -49,16 +49,25 @@ export function addMapNotes(map) {
         [[-0.2, -69.0], 'Brasil', '', arrow('M24 2 C 22 8, 18 12, 12 17 M12 17 l1 -7 M12 17 l7 -2')],
         [[-0.9, -78.0], 'Ecuador', '', arrow('M28 4 C 20 8, 14 12, 6 16 M6 16 l2 -7 M6 16 l7 0')],
         [[-3.3, -73.6], 'Perú', '', arrow('M4 4 C 12 8, 20 12, 28 16 M28 16 l-7 0 M28 16 l-2 -7')],
-    ].forEach(([ll, text, cls, svgArrow]) => {
+    ].filter(([, , cls]) => !seasOnly || cls === 'sea').forEach(([ll, text, cls, svgArrow]) => {
         L.marker(ll, { interactive: false, keyboard: false, icon: L.divIcon({ className: '', iconSize: [120, 50], iconAnchor: [60, 25], html: `<div class="map-note ${cls}">${text}${svgArrow}</div>` }) }).addTo(group);
     });
     return group.addTo(map);
 }
 
-/** Pin con ícono según el tipo de lugar, o burbuja con foto para los destacados de turismo. */
-export function pinIcon(m, selected = false) {
-    if (m.featured && m.thumb && m.section === 'tourism') {
-        return L.divIcon({ className: '', iconSize: [62, 72], iconAnchor: [31, 72], html: `<div class="photo-bubble ${selected ? 'is-selected' : ''}"><img src="${esc(m.thumb)}" alt=""></div>` });
+/**
+ * Marcador según el nivel de acercamiento:
+ * - 'bubble': burbuja con foto (pocos destinos destacados, para no recargar la vista del país).
+ * - 'dot': punto de color discreto (vista del país).
+ * - 'pin': pin con ícono según el tipo de lugar (al acercarse a un departamento).
+ */
+export function pinIcon(m, selected = false, mode = 'pin') {
+    if (mode === 'bubble') {
+        return L.divIcon({ className: '', iconSize: [48, 56], iconAnchor: [24, 56], html: `<div class="photo-bubble ${selected ? 'is-selected' : ''}"><img src="${esc(m.thumb)}" alt=""></div>` });
+    }
+    if (mode === 'dot' && !selected) {
+        const c = m.catColor || m.color;
+        return L.divIcon({ className: '', iconSize: [16, 16], iconAnchor: [8, 8], html: `<div class="map-dot" style="--pc:${esc(c)};--d:${(m.id % 7) * 0.35}s"></div>` });
     }
     const c = m.catColor || m.color;
     return L.divIcon({

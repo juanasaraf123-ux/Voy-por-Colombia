@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import Brand from './Brand';
 import Icon from './Icon';
 import { getJSON, u } from '../lib/url';
-import { useFavorites, useMyRoute, useTheme } from '../lib/store';
+import { useFavorites, useMyRoute } from '../lib/store';
 
 export const NAV = [
     ['/', 'Inicio', 'home', '#ff5a5f'],
@@ -20,16 +20,6 @@ function useCurrentPath() {
     const { url } = usePage();
     const path = url.split('?')[0];
     return (href) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
-}
-
-export function ThemeSwitch() {
-    const [theme, setTheme] = useTheme();
-    return (
-        <div className="theme-switch" role="group" aria-label="Tema de color">
-            <button type="button" aria-pressed={theme === 'dark'} onClick={() => setTheme('dark')} aria-label="Modo oscuro" title="Modo oscuro"><Icon name="moon" /></button>
-            <button type="button" aria-pressed={theme !== 'dark'} onClick={() => setTheme('light')} aria-label="Modo claro" title="Modo claro"><Icon name="sun" /></button>
-        </div>
-    );
 }
 
 function SearchOverlay({ onClose }) {

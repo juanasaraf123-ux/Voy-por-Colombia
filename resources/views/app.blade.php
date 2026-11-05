@@ -17,7 +17,6 @@
         <link rel="stylesheet" href="{{ $v('assets/css/design.css') }}">
         <link rel="stylesheet" href="{{ $v('assets/css/explore.css') }}">
     @endif
-    <script src="{{ $v('assets/js/theme.js') }}"></script>
     @viteReactRefresh
     @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
     @inertiaHead

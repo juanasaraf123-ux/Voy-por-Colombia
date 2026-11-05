@@ -51,6 +51,9 @@ class PublicController extends Controller
             'chips' => $chips,
             'spotlightId' => $spotId ?: (collect($markers)->firstWhere('featured', true)['id'] ?? null),
             'routes' => ApiController::routeList(),
+            // Panel derecho por defecto: lo más nuevo y las noticias destacadas.
+            'newest' => ($n = Entry::visible()->withCard()->where('section', '<>', 'news')->recent()->first()) ? $n->toCard() : null,
+            'news' => Entry::cards(Entry::visible()->withCard()->where('section', 'news')->orderByDesc('is_featured')->recent()->limit(3)->get()),
             'initial' => [
                 'departamento' => $request->query('departamento'),
                 'municipio' => $request->query('municipio'),

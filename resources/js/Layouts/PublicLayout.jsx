@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import Header, { ThemeSwitch } from '../components/Header';
+import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Toasts from '../components/Toasts';
 import { ViewerProvider } from '../components/MediaViewer';
@@ -14,7 +14,6 @@ export default function PublicLayout({ children }) {
             <Header transparent={fullscreen} />
             <main id="contenido" tabIndex={-1} className={fullscreen ? 'main-fullscreen' : ''}>{children}</main>
             {!fullscreen && <Footer />}
-            <ThemeSwitch />
             <Toasts />
         </ViewerProvider>
     );

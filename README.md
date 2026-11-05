@@ -38,22 +38,20 @@ Plataforma turística interactiva para descubrir la diversidad turística, gastr
 ## 2. Qué incluye
 
 ### Inicio (una pantalla, el mapa protagonista)
-
-**Niveles del mapa**
-- **País:** al pasar el cursor sobre un departamento se resalta y muestra cuántos lugares tiene.
-- **Departamento:** al tocarlo, el mapa se acerca, aparecen sus municipios y el panel lateral muestra presentación, fotos, lugares y municipios con contenido.
-- **Municipio:** se acerca más y lista los lugares de ese municipio.
-- **Lugar:** muestra galería, video, audio y «Cómo llegar» en un visor que se abre sobre el mapa, además de lugares cercanos, favoritos y «Agregar a mi ruta».
-
-**Herramientas del mapa**
-- **Ruta de navegación** (Colombia › departamento › municipio). La tecla Esc sube un nivel.
-- **Puntos vivos:** pines animados con ícono según el tipo de lugar (cascada, mirador, sendero, playa, festividad…) y burbujas con foto para los destinos destacados.
-- **Filtros de descubrimiento** con contador: Naturaleza, Aventura, Patrimonio, Gastronomía, Playas, Turismo rural, Comunitario.
-- **Rutas:** líneas animadas y botón «Recorrer la ruta en el mapa», que vuela de parada en parada.
-- **Buscador dentro del mapa** (lugares, municipios y departamentos), **«Sorpréndeme»**, **viajar por región**, atajo a San Andrés y tira de **destinos destacados**.
-- **Enlaces compartibles:** la dirección guarda lo que se está viendo, por ejemplo `/?departamento=meta&lugar=3`.
-
-**En el celular:** el mapa ocupa toda la pantalla y la información aparece en un panel inferior que se desliza.
+- **Mapa a pantalla completa y despejado:**
+  - Vista del país: los lugares son puntos discretos y solo unos pocos destinos destacados llevan foto.
+  - Al acercarse a un departamento aparecen los pines con ícono de ese departamento (cascada, mirador, sendero, playa, festividad…).
+- **Encima, solo lo esencial:**
+  - Una presentación breve con buscador (izquierda); el título se retira al acercarse.
+  - Una fila de filtros (abajo): Naturaleza, Aventura, Patrimonio, Gastronomía, Playas, Turismo rural, Comunitario y Rutas.
+  - Un panel ligero a la derecha.
+- **Panel derecho:**
+  - Por defecto muestra **lo nuevo** (la última publicación) y las **noticias destacadas**.
+  - Al elegir un departamento, municipio, lugar o ruta, muestra su información.
+- **Niveles:** país → departamento (municipios, fotos y lugares) → municipio → lugar (fotos, video, audio y «Cómo llegar» en un visor encima del mapa, lugares cercanos, favoritos y «Agregar a mi ruta»).
+- **Rutas:** líneas animadas y «Recorrer en el mapa», que vuela de parada en parada.
+- **Navegación:** ruta de navegación al acercarse, tecla Esc para subir un nivel y direcciones compartibles (`/?departamento=meta&lugar=3`).
+- **En el celular:** mapa a pantalla completa y panel inferior que se desliza.
 
 ### Sitio público
 - **Secciones:** Turismo, Gastronomía, Café (con los pasos del proceso y el mapa cafetero), Emprendimiento, Cultura (con próximas celebraciones) y Noticias.
@@ -65,7 +63,6 @@ Plataforma turística interactiva para descubrir la diversidad turística, gastr
   - Páginas de departamento.
   - Rutas.
   - Favoritos y **Mi ruta**: se guardan en el navegador, se pueden ordenar y compartir con un enlace.
-- **Modo claro y oscuro.**
 
 ### Panel administrativo (`/admin`)
 - **Inicio de sesión con roles:**
